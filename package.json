@@ -1,0 +1,15 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/sandbox.js",
+    "format": "prettier src/task*.js --write",
+    "test": "vitest watch --reporter=dot",
+    "test:report": "vitest run",
+    "lint": "oxlint src --fix"
+  },
+  "devDependencies": {
+    "oxlint": "^1.23.0",
+    "prettier": "^3.6.2",
+    "vitest": "^3.2.4"
+  }
+}
