@@ -1,38 +1,71 @@
-class Slot {
-    #end
-
-    static errorMessages = {
-        valueType: "Value must be type of Date",
-        valueStart: "Value of start must be < than end",
-        valueEnd: "Value of end must be > than start"
+class SlotRelationError extends Error {
+    constructor(start, end) {
+        const localeStart = start.toLocaleString('ru')
+        const localeEnd = end.toLocaleString('ru')
+        super(`Value of start (${localeStart}) must be < than end (${localeEnd})`)
     }
+}
+
+class DateValueError extends TypeError {
+    constructor() {
+        super("Value must be type of Date")
+    }
+}
+
+class Slot {
+    #start
+    #end
 
     constructor(start, end) {
         this.setStart(start)
         this.setEnd(end)
     }
 
-    checkValue(value) {
+    #checkValue(value) {
         if (!(value instanceof Date)) {
-            throw new Error(Slot.errorMessages.valueType)
+            throw new DateValueError()
         }
+    }
+
+    getStart() {
+        return this.#start
+    }
+
+    getEnd() {
+        return this.#end
+    }
+
+    get start() {
+        return this.#start
+    }
+
+    get end() {
+        return this.#end
+    }
+
+    set start(value) {
+        this.setStart(value)
+    }
+
+    set end(value) {
+        this.setEnd(value)
     }
 
     setStart(start) {
-        this.checkValue(start)
+        this.#checkValue(start)
 
         if (this.#end && (start > this.#end)) {
-            throw new Error(Slot.errorMessages.valueStart)
+            throw new SlotRelationError(start, this.#end)
         }
 
-        this._start = start
+        this.#start = start
     }
 
     setEnd(end) {
-        this.checkValue(end)
+        this.#checkValue(end)
 
-        if (this._start && (end < this._start)) {
-            throw new Error(Slot.errorMessages.valueEnd)
+        if (this.#start && (end < this.#start)) {
+            throw new SlotRelationError(this.#start, end)
         }
 
         this.#end = end
@@ -46,27 +79,26 @@ class Slot {
     static fromObject(slotPlainObject) {
         return new this(slotPlainObject.start, slotPlainObject.end)
     }
+
+    toString() {
+        return {
+            start: this.#start.toLocaleString('ru'),
+            end: this.#end.toLocaleString('ru')
+        }
+    }
+
+    toObject() {
+        return {
+            start: Number(this.#start) / 1000,
+            end: Number(this.#end) / 1000
+        }
+    }
 }
 
-const slot1 = new Slot(new Date(2025, 11, 8, 12), new Date(2025, 11, 8, 13))
-console.log(slot1)
-slot1.setStart(new Date())
+const slot1 = new Slot(new Date(2025, 11, 8, 11), new Date(2025, 11, 8, 12))
+console.log(slot1.toString(), slot1.toObject())
+console.log(slot1.getStart(), slot1.getEnd())
 
-const slot2json = '{ "start": 176503030, "end": 178503040 }'
-const slot2 = Slot.fromJSON(slot2json)
-console.log(slot2)
-
-const slot3object = {
-    start: new Date(2025, 11, 9, 10),
-    end: new Date(2025, 11, 9, 11)
-}
-const slot3 = Slot.fromObject(slot3object)
-console.log(slot3)
-
-console.log(slot3._start)
-slot3._start = null
-slot3.setEnd(new Date())
-console.log(slot3)
-
-// TODO getМетоды для start, end
-// TODO переход к get set для start, end
+console.log(slot1.start, slot1.end)
+slot1.start = new Date()
+console.log(slot1.start, slot1.getEnd())
