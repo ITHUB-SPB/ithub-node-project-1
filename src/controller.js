@@ -1,28 +1,54 @@
-import Timeslot from "./timeslot.js"
-import { bookings } from "./data-provider.js"
+import * as v from 'valibot'
 
-export function getAllBookings() {
-    const bookingObjects = bookings.map(bookingMap => Timeslot.fromMapped(bookingMap))
-    console.log(bookingObjects)
+import Timeslot from './timeslot.js'
+import { bookings } from './data-provider.js'
+import { newBookingInSchema, newBookingOutSchema } from './schema.js'
 
-    return {
-        statusCode: 200,
-        data: {
-            bookings: bookingObjects.map(bookingObject => bookingObject.toString())
+export class BookingController {
+    static findAll() {
+        const bookingObjects = bookings.map((bookingMap) =>
+            Timeslot.fromMapped(bookingMap),
+        )
+        console.log(bookingObjects)
+
+        return {
+            statusCode: 200,
+            data: {
+                bookings: bookingObjects.map((bookingObject) =>
+                    bookingObject.toString(),
+                ),
+            },
         }
     }
-}
 
-export function createBooking() {
-    // сделать проверку входных данных на валидность
-    // сделать проверку выходных данных
-    // обработать плохие случаи
-    bookings.push({ start: 1263280000, end: 1263292000 })
+    static create(payload) {
+        try {
+            const payloadObject = v.parse(
+                newBookingInSchema,
+                JSON.parse(payload),
+            )
 
-    return {
-        statusCode: 201,
-        data: {
-            booking: bookings.at(-1)
+            const slotObject = Timeslot.fromMapped(payloadObject)
+
+            bookings.push({
+                ...slotObject.toMapped(),
+                createdAt: Math.floor(Date.now() / 1000),
+            })
+
+            return v.parse(newBookingOutSchema, {
+                statusCode: 201,
+                data: {
+                    booking: bookings.at(-1),
+                },
+            })
+        } catch (error) {
+            console.error(error)
+            return {
+                statusCode: 400,
+                data: {
+                    error: error.message || '',
+                },
+            }
         }
     }
 }
