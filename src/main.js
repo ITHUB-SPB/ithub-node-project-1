@@ -1,11 +1,11 @@
 import { createServer } from 'node:http'
 import Router from './router.js'
-import { getAllBookings, createBooking } from './controller.js'
+import { BookingController } from './controller.js'
 
 const router = new Router()
 
-router.register({ method: "GET", path: "/bookings" }, getAllBookings)
-router.register({ method: "POST", path: "/bookings" }, createBooking)
+router.register({ method: "GET", path: "/bookings" }, BookingController.findAll)
+router.register({ method: "POST", path: "/bookings" }, BookingController.create)
 
 const server = createServer((request, response) => {
     const headers = {
@@ -14,6 +14,15 @@ const server = createServer((request, response) => {
 
     const method = request.method
     const path = request.url
+
+    if (method === 'GET' || method === 'DELETE') {
+        const { statusCode, data } = router.handle({ method, path })()
+
+        response.writeHead(statusCode, undefined, headers)
+        response.end(JSON.stringify(data))
+        return
+    }
+
     let payload = ''
 
     request.on("data", chunk => {
@@ -22,12 +31,10 @@ const server = createServer((request, response) => {
 
     request.on("end", () => {
         console.log('payload', payload)
+        const { statusCode, data } = router.handle({ method, path })(payload)
+        response.writeHead(statusCode, undefined, headers)
+        response.end(JSON.stringify(data))
     })
-
-    const { statusCode, data } = router.handle({ method, path })()
-
-    response.writeHead(statusCode, undefined, headers)
-    response.end(JSON.stringify(data))
 })
 
 server.listen(3000, () => {
