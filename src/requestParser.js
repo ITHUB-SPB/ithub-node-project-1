@@ -8,8 +8,9 @@ export class RequestParser {
         const urlObject = new URL(request.url, 'http://localhost:3000')
         this.#method = request.method
         this.#resource = this.#parseResource(urlObject)
-        this.#parseBody(request)
+        // this.#parseBody(request)
         this.#params = this.#parseParams(urlObject)
+        console.log(this.#method, this.#resource, this.#params)
     }
 
     #parseParams(urlObject) {
@@ -20,15 +21,24 @@ export class RequestParser {
         // бонус (1 балл): настройки пагинации выдавать в цельном объекте paginate
         // бонус (1 балл): добавить валидацию на основе valibot-схемы (добавить в schema.js)
 
+        const pathname = urlObject.pathname
+        const lastSlashIndex = pathname.lastIndexOf('/')
+
         return {
-            pathParams: { id: 1 }, // или же null, если их нет
-            queryParams: {
-                filter: 'end.eq.1000000', // или же null, если его нет,
-                sort: 'start.asc', // или же null, если его нет,
-                limit: 10, // или же null, если его нет,
-                offset: 0 // или же null, если его нет,
-            } //
+            pathParams: lastSlashIndex === 0 ? null : {
+                id: Number(pathname.slice(lastSlashIndex + 1))
+            }
         }
+
+        // return {
+        //     pathParams: { id: 1 }, // или же null, если их нет
+        //     queryParams: {
+        //         filter: 'end.eq.1000000', // или же null, если его нет,
+        //         sort: 'start.asc', // или же null, если его нет,
+        //         limit: 10, // или же null, если его нет,
+        //         offset: 0 // или же null, если его нет,
+        //     } //
+        // }
     }
 
     #parseResource(urlObject) {
@@ -36,7 +46,10 @@ export class RequestParser {
         // (из адреса http://localhost:3000/bookings возвращать /bookings)
         // (из адреса http://localhost:3000/bookings/1 возвращать /bookings)
         // (из адреса http://localhost:3000/bookings?sort=start.desc возвращать /bookings)
-        return
+        const pathname = urlObject.pathname
+        const lastSlashIndex = pathname.lastIndexOf('/')
+
+        return lastSlashIndex === 0 ? pathname : pathname.substring(0, lastSlashIndex)
     }
 
     #parseBody(request) {
