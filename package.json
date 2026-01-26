@@ -4,9 +4,13 @@
     "dev": "node --watch src/main.js",
     "format": "prettier src/task*.js --write",
     "test": "vitest watch --reporter=dot",
-    "lint": "oxlint src --fix"
+    "lint": "oxlint src --fix",
+    "db:create": "node --no-warnings src/cli.js create",
+    "db:reset": "node --no-warnings src/cli.js reset",
+    "db:seed": "node --no-warnings src/cli.js seed"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.2.0",
     "oxlint": "^1.23.0",
     "prettier": "^3.6.2",
     "typescript": "^5.9.3",
