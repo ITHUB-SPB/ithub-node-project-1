@@ -2,12 +2,12 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch src/main.js",
-    "format": "prettier src/task*.js --write",
+    "format": "prettier src/**/*.js --write",
     "test": "vitest watch --reporter=dot",
     "lint": "oxlint src --fix",
-    "db:create": "node --no-warnings src/cli.js create",
-    "db:reset": "node --no-warnings src/cli.js reset",
-    "db:seed": "node --no-warnings src/cli.js seed"
+    "db:create": "node --no-warnings src/database/cli.js create",
+    "db:reset": "node --no-warnings src/database/cli.js reset",
+    "db:seed": "node --no-warnings src/database/cli.js seed"
   },
   "devDependencies": {
     "@faker-js/faker": "^10.2.0",

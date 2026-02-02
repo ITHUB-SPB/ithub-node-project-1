@@ -1,6 +1,5 @@
 import { assert, test, describe } from "vitest";
-import { RequestParser } from "../src/task1";
-
+import { RequestParser } from '../src/lib/requestParser'
 
 describe("парсинг ресурса", () => {
   test("работает для простых адресов", () => {
