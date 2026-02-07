@@ -1,6 +1,7 @@
 import sqlite from 'node:sqlite';
 
 export function createTables() {
+
     const connection = new sqlite.DatabaseSync('db.sqlite3');
 
     connection.exec(`create table if not exists users (
@@ -20,7 +21,16 @@ export function createTables() {
 }
 
 export function resetTables() {
+    const args = process.argv.slice(2);
+    const tablesToSeed = args.length > 1 ? args : ['users', 'bookings'];
+
     const connection = new sqlite.DatabaseSync('db.sqlite3');
 
-    connection.exec(`delete from users`);
+    if (tablesToSeed.includes('users')) {
+        connection.exec(`delete from users`);
+    } 
+    if (tablesToSeed.includes('bookings')) {
+        connection.exec(`delete from bookings`);
+    }    
+    connection.close();
 }
