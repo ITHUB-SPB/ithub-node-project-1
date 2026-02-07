@@ -1,22 +1,22 @@
 {
-  "type": "module",
-  "scripts": {
-    "dev": "node --watch src/main.js",
-    "format": "prettier src/**/*.js --write",
-    "test": "vitest watch --reporter=dot",
-    "lint": "oxlint src --fix",
-    "db:create": "node --no-warnings src/database/cli.js create",
-    "db:reset": "node --no-warnings src/database/cli.js reset",
-    "db:seed": "node --no-warnings src/database/cli.js seed"
-  },
-  "devDependencies": {
-    "@faker-js/faker": "^10.2.0",
-    "oxlint": "^1.23.0",
-    "prettier": "^3.6.2",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
-  },
-  "dependencies": {
-    "valibot": "^1.2.0"
-  }
+    "type": "module",
+    "scripts": {
+        "dev": "node --watch src/main.js",
+        "format": "prettier src/**/*.js --write",
+        "test": "vitest watch --reporter=dot",
+        "lint": "oxlint src --fix",
+        "db:create": "node --no-warnings src/database/cli/index.js create",
+        "db:reset": "node --no-warnings src/database/cli/index.js reset",
+        "db:seed": "node --no-warnings src/database/cli/index seed"
+    },
+    "devDependencies": {
+        "@faker-js/faker": "^10.2.0",
+        "oxlint": "^1.23.0",
+        "prettier": "^3.6.2",
+        "typescript": "^5.9.3",
+        "vitest": "^3.2.4"
+    },
+    "dependencies": {
+        "valibot": "^1.2.0"
+    }
 }
