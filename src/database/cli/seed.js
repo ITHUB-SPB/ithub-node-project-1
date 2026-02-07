@@ -1,8 +1,7 @@
 import { fakerRU as faker } from '@faker-js/faker';
 import connection from '../connection.js';
 
-export function seedTables() {
-
+export default function seedTables() {
     const usernames = faker.helpers.multiple(faker.internet.username, {
         count: 10,
     });

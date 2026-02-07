@@ -2,7 +2,6 @@ import sqlite from 'node:sqlite';
 import connection from '../connection.js';
 
 export function createTables() {
-
     connection.exec(`create table if not exists users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username STRING UNIQUE,

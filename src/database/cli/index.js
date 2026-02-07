@@ -1,7 +1,7 @@
 import { createTables, resetTables } from './ddl.js'
-import { seedTables } from './seed.js';
+import seedTables from './seed.js';
 
-function cli() {
+export default function cli() {
     const command = process.argv[2];
 
     if (command === 'create') {
