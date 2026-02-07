@@ -1,7 +1,7 @@
 import sqlite from 'node:sqlite';
+import connection from '../connection.js';
 
 export function createTables() {
-    const connection = new sqlite.DatabaseSync('db.sqlite3');
 
     connection.exec(`create table if not exists users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -1,8 +1,7 @@
-import sqlite from 'node:sqlite';
 import { fakerRU as faker } from '@faker-js/faker';
+import connection from '../connection.js';
 
 export function seedTables() {
-    const connection = new sqlite.DatabaseSync('db.sqlite3');
 
     const usernames = faker.helpers.multiple(faker.internet.username, {
         count: 10,
