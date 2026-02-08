@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import sqlite from 'node:sqlite';
 import { fakerRU as faker } from '@faker-js/faker';
 
@@ -34,7 +35,7 @@ function seedUsers(connection){
     const countStatement = connection.prepare('select * from users');
 
     console.log(countStatement.all());
-    console.log(`Было добавлено ${countStatement.all().length} пользователей`);
+    console.log(chalk.green(`Было добавлено ${countStatement.all().length} пользователей`));
 }
 
 function seedBookings(connection) {
@@ -42,7 +43,7 @@ function seedBookings(connection) {
     const users = getUsersStatement.all();
     
     if (users.length === 0) {
-        console.log('Нет пользователей для создания бронирований');
+        console.log(chalk.yellow('Нет пользователей для создания бронирований'));
         return;
     }
 
@@ -50,7 +51,7 @@ function seedBookings(connection) {
     const bookingCount = cs.get().count;
     
     if (bookingCount > 0) {
-        console.log(`Таблица bookings уже содержит ${bookingCount} записей`);
+        console.log(chalk.yellow(`Таблица bookings уже содержит ${bookingCount} записей`));
         return;
     }
 
@@ -72,5 +73,5 @@ function seedBookings(connection) {
     
     const countStatement = connection.prepare('SELECT * FROM bookings');
     const bookings = countStatement.all();
-    console.log(`Было добавлено ${bookings.length} бронирований`);
+    console.log(chalk.green(`Было добавлено ${bookings.length} бронирований`));
 }
