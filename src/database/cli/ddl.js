@@ -1,4 +1,3 @@
-import sqlite from 'node:sqlite';
 import connection from '../connection.js';
 
 export function createTables() {
@@ -18,8 +17,42 @@ export function createTables() {
     )`);
 }
 
-export function resetTables() {
-    const connection = new sqlite.DatabaseSync('db.sqlite3');
+export function resetTables(tables) {
+    if (tables.length === 0) {
+        connection.exec(`delete from users`);
+        connection.exec(`delete from bookings`);
+        return;
+    }
 
-    connection.exec(`delete from users`);
+    const errors = [];
+
+    for (const table of tables) {
+        try {
+            switch (table) {
+                case 'users':
+                    connection.exec(`delete from users`);
+                    console.log(`Таблица users была сброшена`);
+                    break;
+                case 'bookings':
+                    connection.exec(`delete from bookings`);
+                    console.log(`Таблица bookings была сброшена`);
+                    break;
+                default:
+                    throw new Error(`Таблицы ${table} не существует`);
+            }
+        } catch (error) {
+            errors.push({
+                table,
+                message: error.message,
+            });
+        }
+    }
+
+    if (errors.length > 0) {
+        const message = errors
+            .map((e) => `- ${e.table}: ${e.message}`)
+            .join('\n');
+
+        throw new Error(`\n${message}`);
+    }
 }
