@@ -14,7 +14,7 @@ export class SlotRelationError extends RangeError {
         );
     }
 }
-
+ 
 export class Timeslot {
     #start;
     #end;
