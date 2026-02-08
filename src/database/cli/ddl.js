@@ -1,22 +1,19 @@
 import connection from '../connection.js';
 import chalk from 'chalk';
-
 export function createTables(isForce) {
     if (isForce) {
-        connection.exec(`
-                drop table users;
-                drop table bookings
-            `);
+        connection.exec(`DROP TABLE IF EXISTS users`);
+        connection.exec(`DROP TABLE IF EXISTS bookings`);
         console.log(chalk.yellow('! Таблицы форсировано удалены'));
     }
 
-    connection.exec(`create table if not exists users (
+    connection.exec(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username STRING UNIQUE,
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    connection.exec(`create table if not exists bookings (
+    connection.exec(`CREATE TABLE IF NOT EXISTS bookings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         start INTEGER NOT NULL,
         end INTEGER NOT NULL,
@@ -32,7 +29,7 @@ export function resetTables(tables) {
         connection.exec(`delete from bookings`);
         console.log(
             chalk.green(` Таблица users была сброшена`),
-            chalk.green(`\n Таблица bookings была сброшена`),
+            chalk.green(`Таблица bookings была сброшена`),
         );
         return;
     }
@@ -44,7 +41,7 @@ export function resetTables(tables) {
             switch (table) {
                 case 'users':
                     connection.exec(`delete from users`);
-                    console.log(chalk.green(` Таблица users была сброшена`));
+                    console.log(chalk.green(`Таблица users была сброшена`));
                     break;
                 case 'bookings':
                     connection.exec(`delete from bookings`);
