@@ -1,94 +1,91 @@
 import chalk from 'chalk';
 
+const lightGray = chalk.hex('#C0C0C0');
+const lightBlue = chalk.hex('#B0E0E6');
+const pinkItalic = chalk.hex('#FFC0CB').italic;
+const gray = chalk.hex('#696969');
+const yellowItalic = chalk.yellow.italic;
+const green = chalk.green;
+
 export default function help(command) {
     switch (command) {
         case 'general':
             console.log(
-                chalk.hex('#C0C0C0').bold(' Справка по командам:\n'),
+                lightGray.bold(' Справка по командам:\n'),
 
-                chalk.hex('#B0E0E6')('Команда\t\tПараметры\t\t\tОписание\n'),
+                lightBlue('Команда\t\tПараметры\t\t\tОписание\n'),
 
-                chalk.hex('#FFC0CB').italic('db:help\t'),
-                chalk.hex('#696969')('{create || reset || seed}\t'),
+                pinkItalic('db:help\t'),
+                gray('{create || reset || seed}\t'),
                 'Вывести справку по командам\n',
 
-                chalk.hex('#FFC0CB').italic('db:create\t'),
-                chalk.hex('#696969')('{-- --force || -- -F}\t\t'),
+                pinkItalic('db:create\t'),
+                gray('{-- --force || -- -F}\t\t'),
                 'Создание таблиц\n',
 
-                chalk.hex('#FFC0CB').italic('db:reset\t'),
-                chalk.hex('#696969')('{users || bookings}\t\t'),
+                pinkItalic('db:reset\t'),
+                gray('{users || bookings}\t\t'),
                 'Сброс таблиц\n',
 
-                chalk.hex('#FFC0CB').italic('db:seed\t'),
-                chalk.hex('#696969')('{users || bookings}\t\t'),
+                pinkItalic('db:seed\t'),
+                gray('{users || bookings}\t\t'),
                 'Наполнение таблиц фейковыми данными\n',
             );
             break;
         case 'create':
             console.log(
                 ' Использование:',
-                chalk.hex('#FFC0CB').italic('db:create {flag}\n'),
-                chalk.hex('#696969')(
-                    'Команда создает таблицы в базе данных.\n\n',
-                ),
+                pinkItalic('db:create {flag}\n'),
+                gray('Команда создает таблицы в базе данных.\n\n'),
 
                 'Флаги (по желанию):\n',
-                chalk.yellow.italic('-- -F, -- --force'),
-                chalk.hex('#C0C0C0')(
+                yellowItalic('-- -F, -- --force'),
+                lightGray(
                     '  Создать таблицу, удалив ранее существующие таблицы\n\n',
                 ),
 
                 'Примеры использования:\n',
-                chalk.green('  db:create\n'),
-                chalk.green('  db:create -- -F\n'),
-                chalk.green('  db:create -- --force\n'),
+                green('  db:create\n'),
+                green('  db:create -- -F\n'),
+                green('  db:create -- --force\n'),
             );
             break;
         case 'reset':
             console.log(
                 ' Использование:',
-                chalk.hex('#FFC0CB').italic('db:reset {args}\n'),
-                chalk.hex('#696969')(
-                    'Команда сбрасывает таблицу в базе данных.\n',
-                ),
-                chalk.hex('#696969')(
-                    'Аргументы перечисляются через пробел.\n\n',
-                ),
+                pinkItalic('db:reset {args}\n'),
+                gray('Команда сбрасывает таблицу в базе данных.\n'),
+                gray('Аргументы перечисляются через пробел.\n\n'),
 
                 'Аргументы (по желанию):\n',
-                chalk.yellow.italic('users'),
-                chalk.hex('#C0C0C0')('     Сбросить таблицу users\n'),
-                chalk.yellow.italic('bookings'),
-                chalk.hex('#C0C0C0')('  Сбросить таблицу bookings\n\n'),
+                yellowItalic('users'),
+                lightGray('     Сбросить таблицу users\n'),
+                yellowItalic('bookings'),
+                lightGray('  Сбросить таблицу bookings\n\n'),
 
                 'Примеры использования:\n',
-                chalk.green('  db:reset\n'),
-                chalk.green('  db:reset users\n'),
-                chalk.green('  db:reset bookings users\n'),
+                green('  db:reset\n'),
+                green('  db:reset users\n'),
+                green('  db:reset bookings users\n'),
             );
             break;
         case 'seed':
             console.log(
                 ' Использование:',
-                chalk.hex('#FFC0CB').italic('db:seed {args}\n'),
-                chalk.hex('#696969')(
-                    'Команда наполняет таблицу фейковыми данными.\n',
-                ),
-                chalk.hex('#696969')(
-                    'Аргументы перечисляются через пробел.\n\n',
-                ),
+                pinkItalic('db:seed {args}\n'),
+                gray('Команда наполняет таблицу фейковыми данными.\n'),
+                gray('Аргументы перечисляются через пробел.\n\n'),
 
                 'Аргументы (по желанию):\n',
-                chalk.yellow.italic('users'),
-                chalk.hex('#C0C0C0')('     Наполнить таблицу users\n'),
-                chalk.yellow.italic('bookings'),
-                chalk.hex('#C0C0C0')('  Наполнить таблицу bookings\n\n'),
+                yellowItalic('users'),
+                lightGray('     Наполнить таблицу users\n'),
+                yellowItalic('bookings'),
+                lightGray('  Наполнить таблицу bookings\n\n'),
 
                 'Примеры использования:\n',
-                chalk.green('  db:seed\n'),
-                chalk.green('  db:seed users\n'),
-                chalk.green('  db:seed bookings users\n'),
+                green('  db:seed\n'),
+                green('  db:seed users\n'),
+                green('  db:seed bookings users\n'),
             );
             break;
         default:
