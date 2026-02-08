@@ -1,4 +1,5 @@
 import connection from '../connection.js';
+import chalk from 'chalk';
 
 export function createTables(isForce) {
     if (isForce) {
@@ -6,7 +7,7 @@ export function createTables(isForce) {
                 drop table users;
                 drop table bookings
             `);
-        console.log('Таблицы удалены');
+        console.log(chalk.yellow('Таблицы форсировано удалены'));
     }
 
     connection.exec(`create table if not exists users (
@@ -29,6 +30,10 @@ export function resetTables(tables) {
     if (tables.length === 0) {
         connection.exec(`delete from users`);
         connection.exec(`delete from bookings`);
+        console.log(
+            chalk.green(`Таблица users была сброшена`),
+            chalk.green(`\nТаблица bookings была сброшена`),
+        );
         return;
     }
 
@@ -39,11 +44,11 @@ export function resetTables(tables) {
             switch (table) {
                 case 'users':
                     connection.exec(`delete from users`);
-                    console.log(`Таблица users была сброшена`);
+                    console.log(chalk.green(`Таблица users была сброшена`));
                     break;
                 case 'bookings':
                     connection.exec(`delete from bookings`);
-                    console.log(`Таблица bookings была сброшена`);
+                    console.log(chalk.green(`Таблица bookings была сброшена`));
                     break;
                 default:
                     throw new Error(`Таблицы ${table} не существует`);
