@@ -6,7 +6,9 @@ export default function cli() {
 
     if (command === 'create') {
         try {
-            createTables();
+            createTables(
+                process.argv.includes('--force') || process.argv.includes('-F'),
+            );
             console.log('Таблицы созданы (или уже присутствовали)');
         } catch (error) {
             console.error(`Ошибка при создании таблиц: ${error.message}`);
