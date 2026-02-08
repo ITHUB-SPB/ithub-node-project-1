@@ -1,60 +1,97 @@
 import chalk from 'chalk';
-import ora from 'ora';
 
-import { createTables, resetTables } from './ddl.js';
-import seedTables from './seed.js';
+const lightGray = chalk.hex('#C0C0C0');
+const lightBlue = chalk.hex('#B0E0E6');
+const pinkItalic = chalk.hex('#FFC0CB').italic;
+const gray = chalk.hex('#696969');
+const yellowItalic = chalk.yellow.italic;
+const green = chalk.green;
 
-export default function cli() {
-    const command = process.argv[2];
-    const spinner = ora({ text: 'Выполнение...', color: 'cyan' });
+export default function help(command) {
+    switch (command) {
+        case 'general':
+            console.log(
+                lightGray.bold(' Справка по командам:\n'),
 
-    if (command === 'create') {
-        const forceFlag =
-            process.argv.includes('--force') || process.argv.includes('-F');
-        spinner.start('Создание таблиц...');
+                lightBlue('Команда\t\tПараметры\t\t\tОписание\n'),
 
-        try {
-            createTables(forceFlag);
-            spinner.succeed(chalk.green(' Таблицы созданы'));
-        } catch (error) {
-            spinner.fail(chalk.red(` Ошибка: ${error.message}`));
-            process.exit(1);
-        }
-    } else if (command === 'reset') {
-        const tablesToReset = process.argv.slice(3);
-        spinner.start('Сброс таблиц...');
+                pinkItalic('db:help\t'),
+                gray('{create || reset || seed}\t'),
+                'Вывести справку по командам\n',
 
-        try {
-            resetTables(
-                tablesToReset.length > 0
-                    ? tablesToReset
-                    : ['users', 'bookings'],
+                pinkItalic('db:create\t'),
+                gray('{-- --force || -- -F}\t\t'),
+                'Создание таблиц\n',
+
+                pinkItalic('db:reset\t'),
+                gray('{users || bookings}\t\t'),
+                'Сброс таблиц\n',
+
+                pinkItalic('db:seed\t'),
+                gray('{users || bookings}\t\t'),
+                'Наполнение таблиц фейковыми данными\n',
             );
-            spinner.succeed(chalk.green('Таблицы сброшены'));
-        } catch (error) {
-            spinner.fail(chalk.red(`Ошибка: ${error.message}`));
-            process.exit(1);
-        }
-    } else if (command === 'seed') {
-        const tablesToSeed = process.argv.slice(3);
-        spinner.start('Наполнение таблиц...');
+            break;
+        case 'create':
+            console.log(
+                ' Использование:',
+                pinkItalic('db:create {flag}\n'),
+                gray('Команда создает таблицы в базе данных.\n\n'),
 
-        try {
-            seedTables(
-                tablesToSeed.length > 0 ? tablesToSeed : ['users', 'bookings'],
+                'Флаги (по желанию):\n',
+                yellowItalic('-- -F, -- --force'),
+                lightGray(
+                    '  Создать таблицу, удалив ранее существующие таблицы\n\n',
+                ),
+
+                'Примеры использования:\n',
+                green('  db:create\n'),
+                green('  db:create -- -F\n'),
+                green('  db:create -- --force\n'),
             );
-            spinner.succeed(chalk.green('✅ Таблицы наполнены'));
-        } catch (error) {
-            spinner.fail(chalk.red(`Ошибка: ${error.message}`));
-            process.exit(1);
-        }
-    } else if (command === 'help' || !command) {
-        showHelp();
-    } else {
-        console.log(chalk.red(` Неизвестная команда: ${command}`));
-        showHelp();
-        process.exit(1);
+            break;
+        case 'reset':
+            console.log(
+                ' Использование:',
+                pinkItalic('db:reset {args}\n'),
+                gray('Команда сбрасывает таблицу в базе данных.\n'),
+                gray('Аргументы перечисляются через пробел.\n\n'),
+
+                'Аргументы (по желанию):\n',
+                yellowItalic('users'),
+                lightGray('     Сбросить таблицу users\n'),
+                yellowItalic('bookings'),
+                lightGray('  Сбросить таблицу bookings\n\n'),
+
+                'Примеры использования:\n',
+                green('  db:reset\n'),
+                green('  db:reset users\n'),
+                green('  db:reset bookings users\n'),
+            );
+            break;
+        case 'seed':
+            console.log(
+                ' Использование:',
+                pinkItalic('db:seed {args}\n'),
+                gray('Команда наполняет таблицу фейковыми данными.\n'),
+                gray('Аргументы перечисляются через пробел.\n\n'),
+
+                'Аргументы (по желанию):\n',
+                yellowItalic('users'),
+                lightGray('     Наполнить таблицу users\n'),
+                yellowItalic('bookings'),
+                lightGray('  Наполнить таблицу bookings\n\n'),
+
+                'Примеры использования:\n',
+                green('  db:seed\n'),
+                green('  db:seed users\n'),
+                green('  db:seed bookings users\n'),
+            );
+            break;
+        default:
+            throw new Error('Такой команды не существует.');
     }
+<<<<<<< HEAD
 }
 
 function showHelp() {
@@ -91,3 +128,6 @@ function showHelp() {
 if (import.meta.url === `file://${process.argv[1]}`) {
     cli();
 }
+=======
+}
+>>>>>>> 6b1b9e20955b33b7a64fd26f145b152392dc497e

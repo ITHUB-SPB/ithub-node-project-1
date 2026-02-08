@@ -46,7 +46,7 @@ export function resetTables(tables) {
                 case 'bookings':
                     connection.exec(`delete from bookings`);
                     console.log(
-                        chalk.green(`Таблица bookings была сброшена`),
+                        chalk.green(` Таблица bookings была сброшена`),
                     );
                     break;
                 default:
