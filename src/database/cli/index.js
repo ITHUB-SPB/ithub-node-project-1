@@ -33,5 +33,6 @@ export default function cli() {
         spinner.fail(chalk.red('Команда не существует. Запросите help для информации'));
     }
 }
-
-cli();
+setTimeout(() => {
+    cli();
+}, 2000);
