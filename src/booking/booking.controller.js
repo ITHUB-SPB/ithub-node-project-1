@@ -2,7 +2,7 @@ import * as v from 'valibot';
 
 import { Timeslot } from './booking.model.js';
 import * as schema from './booking.schema.js';
-
+ 
 export default class BookingController {
     static findAll() {
         const bookingObjects = bookings.map((bookingMap) =>
