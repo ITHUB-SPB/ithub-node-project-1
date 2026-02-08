@@ -1,6 +1,14 @@
 import connection from '../connection.js';
 
-export function createTables() {
+export function createTables(isForce) {
+    if (isForce) {
+        connection.exec(`
+                drop table users;
+                drop table bookings
+            `);
+        console.log('Таблицы удалены');
+    }
+
     connection.exec(`create table if not exists users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username STRING UNIQUE,
