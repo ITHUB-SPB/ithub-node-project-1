@@ -28,8 +28,8 @@ export function resetTables(tables) {
         connection.exec(`delete from users`);
         connection.exec(`delete from bookings`);
         console.log(
-            chalk.green(`✔ Таблица users была сброшена`),
-            chalk.green(`\n✔ Таблица bookings была сброшена`),
+            chalk.green(` Таблица users была сброшена`),
+            chalk.green(`\n Таблица bookings была сброшена`),
         );
         return;
     }
@@ -41,12 +41,12 @@ export function resetTables(tables) {
             switch (table) {
                 case 'users':
                     connection.exec(`delete from users`);
-                    console.log(chalk.green(`✔ Таблица users была сброшена`));
+                    console.log(chalk.green(`Таблица users была сброшена`));
                     break;
                 case 'bookings':
                     connection.exec(`delete from bookings`);
                     console.log(
-                        chalk.green(`✔ Таблица bookings была сброшена`),
+                        chalk.green(` Таблица bookings была сброшена`),
                     );
                     break;
                 default:
