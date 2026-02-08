@@ -33,6 +33,19 @@ export default function cli() {
         spinner.fail(chalk.red('Команда не существует. Запросите help для информации'));
     }
 }
-setTimeout(() => {
-    cli();
-}, 2000);
+
+export function help() {
+    spinner.succeed(`Существующие команды db:(${chalk.green('create')}/${chalk.red('reset')}/${chalk.yellow('seed')}), ${chalk.green('\ndb:create - создание таблиц,')} ${chalk.green('\ndb:reset - удаление таблиц,')} ${chalk.green('\ndb:seed - наполнения таблиц фейкавыми данными')}`);
+}
+
+const command = process.argv[2]; 
+
+if(command === 'help'){
+    setTimeout(() => {
+        help();
+    }, 2000);
+}else{
+    setTimeout(() => {
+        cli();
+    }, 2000);
+}
