@@ -91,43 +91,4 @@ export default function help(command) {
         default:
             throw new Error('Такой команды не существует.');
     }
-<<<<<<< HEAD
 }
-
-function showHelp() {
-    console.log(chalk.blue.bold('\n=== CLI для управления базой данных ===\n'));
-
-    console.log(chalk.yellow('Доступные команды:'));
-    console.log(
-        chalk.green('  db:create [--force]        ') + 'Создать таблицы',
-    );
-    console.log(
-        chalk.green('  db:reset [tables]          ') + 'Очистить таблицы',
-    );
-    console.log(
-        chalk.green('  db:seed [tables]           ') +
-            'Наполнить таблицы данными',
-    );
-    console.log(
-        chalk.green('  db:help                    ') + 'Показать эту справку\n',
-    );
-
-    console.log(chalk.yellow('Аргументы:'));
-    console.log('  --force или -F           Удалить таблицы перед созданием');
-    console.log('  users                    Работать с таблицей пользователей');
-    console.log(
-        '  bookings                 Работать с таблицей бронирований\n',
-    );
-
-    console.log(chalk.yellow('Примеры:'));
-    console.log('  npm run db:create -- --force');
-    console.log('  npm run db:seed users');
-    console.log('  npm run db:reset users bookings');
-}
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-    cli();
-}
-=======
-}
->>>>>>> 6b1b9e20955b33b7a64fd26f145b152392dc497e
