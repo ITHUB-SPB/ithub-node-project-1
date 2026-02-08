@@ -1,4 +1,4 @@
-import { createTables, resetTables } from './ddl.js'
+import { createTables, resetTables } from './ddl.js';
 import seedTables from './seed.js';
 
 export default function cli() {
@@ -19,9 +19,10 @@ export default function cli() {
             console.error(`Ошибка при сбросе таблиц: ${error.message}`);
         }
     } else if (command === 'seed') {
+        const tablesToSeed = process.argv.slice(3);
+
         try {
-            seedTables();
-            console.log('Таблицы наполнены фейковыми данными');
+            seedTables(tablesToSeed);
         } catch (error) {
             console.error(`Ошибка при наполнении таблиц: ${error.message}`);
         }
