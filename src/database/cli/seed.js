@@ -16,7 +16,7 @@ function seedUsers(connection) {
 
     const countStatement = connection.prepare('select * from users');
     console.log(countStatement.all());
-    console.log(`Было добавлено ${countStatement.all().length} пользователей`);
+    console.log(chalk.green.bold(`Было добавлено ${countStatement.all().length} пользователей`));
 }
 
 function seedBookings(connection) {

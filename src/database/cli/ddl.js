@@ -55,7 +55,7 @@ function resetTables() {
     if (args.length === 0) {
         connection.exec(`delete from bookings`);
         connection.exec(`delete from users`);
-        console.log("удалил буки и юзеры");
+        console.log(chalk.green.bold("удалил буки и юзеры"));
         return;
     }
     
@@ -64,12 +64,12 @@ function resetTables() {
     
     if (hasBookings) {
         connection.exec(`delete from bookings`);
-        console.log("удалил буки");
+        console.log(chalk.green.bold("удалил буки"));
     }
     
     if (hasUsers) {
         connection.exec(`delete from users`);
-        console.log("удалил юзеры");
+        console.log(chalk.green.bold("удалил юзеры"));
 
     }
 }
