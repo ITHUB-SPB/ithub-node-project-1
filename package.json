@@ -7,7 +7,8 @@
         "lint": "oxlint src --fix",
         "db:create": "node --no-warnings src/database/cli/index.js create",
         "db:reset": "node --no-warnings src/database/cli/index.js reset",
-        "db:seed": "node --no-warnings src/database/cli/index seed"
+        "db:seed": "node --no-warnings src/database/cli/index.js seed",
+        "db:help": "node --no-warnings src/database/cli/index.js help"
     },
     "devDependencies": {
         "@faker-js/faker": "^10.2.0",
@@ -17,6 +18,7 @@
         "vitest": "^3.2.4"
     },
     "dependencies": {
+        "chalk": "^5.6.2",
         "valibot": "^1.2.0"
     }
 }

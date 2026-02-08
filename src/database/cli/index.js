@@ -1,5 +1,6 @@
 import { createTables, resetTables } from './ddl.js';
 import seedTables from './seed.js';
+import help from './help.js';
 
 export default function cli() {
     const command = process.argv[2];
@@ -28,6 +29,13 @@ export default function cli() {
             seedTables(tablesToSeed);
         } catch (error) {
             console.error(`Ошибка при наполнении таблиц: ${error.message}`);
+        }
+    } else if (command === 'help') {
+        const helpCommand = process.argv[3] || 'general';
+        try {
+            help(helpCommand);
+        } catch (error) {
+            console.error(`Ошибка при вызове help: ${error.message}`);
         }
     } else {
         console.log('Команда не существует. Запросите help для информации');
