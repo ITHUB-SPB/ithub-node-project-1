@@ -62,7 +62,7 @@ function seedUsers() {
 
     console.log(
         chalk.green(
-            `Было добавлено ${countStatement.all().length} записей в users`,
+            `✔ Было добавлено ${countStatement.all().length} записей в users`,
         ),
     );
 }
@@ -91,7 +91,7 @@ function seedBookings() {
 
     console.log(
         chalk.green(
-            `Было добавлено ${countStatement.all().length} записей в bookings`,
+            `✔ Было добавлено ${countStatement.all().length} записей в bookings`,
         ),
     );
 }

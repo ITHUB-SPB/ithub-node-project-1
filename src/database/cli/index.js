@@ -1,7 +1,12 @@
+import chalk from 'chalk';
+import ora from 'ora';
+
 import { createTables, resetTables } from './ddl.js';
 import seedTables from './seed.js';
 import help from './help.js';
-import chalk from 'chalk';
+
+const spinner = ora('Загрузка...').start();
+spinner.spinner = 'binary';
 
 export default function cli() {
     const command = process.argv[2];
@@ -11,11 +16,12 @@ export default function cli() {
             createTables(
                 process.argv.includes('--force') || process.argv.includes('-F'),
             );
-            console.log(
+
+            spinner.succeed(
                 chalk.green('Таблицы созданы (или уже присутствовали)'),
             );
         } catch (error) {
-            console.error(
+            spinner.fail(
                 chalk.red(`Ошибка при создании таблиц: ${error.message}`),
             );
         }
@@ -24,8 +30,9 @@ export default function cli() {
 
         try {
             resetTables(tablesToReset);
+            spinner.stop();
         } catch (error) {
-            console.error(
+            spinner.fail(
                 chalk.red(`Ошибка при сбросе таблиц: ${error.message}`),
             );
         }
@@ -34,8 +41,9 @@ export default function cli() {
 
         try {
             seedTables(tablesToSeed);
+            spinner.stop();
         } catch (error) {
-            console.error(
+            spinner.fail(
                 chalk.red(`Ошибка при наполнении таблиц: ${error.message}`),
             );
         }
@@ -43,14 +51,17 @@ export default function cli() {
         const helpCommand = process.argv[3] || 'general';
         try {
             help(helpCommand);
+            spinner.stop();
         } catch (error) {
-            console.error(
-                chalk.red(`Ошибка при вызове help: ${error.message}`),
-            );
+            spinner.fail(chalk.red(`Ошибка при вызове help: ${error.message}`));
         }
     } else {
-        console.log('Команда не существует. Запросите help для информации');
+        spinner.fail(
+            chalk.red('Команда не существует. Запросите help для информации'),
+        );
     }
 }
 
-cli();
+setTimeout(() => {
+    cli();
+}, 1500);

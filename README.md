@@ -40,7 +40,7 @@
 
 ✔️ 4.2 (1 балл) Используйте библиотеку [chalk](https://github.com/chalk/chalk) для красочного и форматированного вывода консольных сообщений и ошибок.
 
-4.3 (1 балл) Используйте на выбор [ora](https://github.com/sindresorhus/ora) либо [yocto-spinner](https://github.com/sindresorhus/yocto-spinner) для отображения спиннера во время выполнения действия.
+✔️ 4.3 (1 балл) Используйте на выбор [ora](https://github.com/sindresorhus/ora) либо [yocto-spinner](https://github.com/sindresorhus/yocto-spinner) для отображения спиннера во время выполнения действия.
 
 #### Задача 4 (альтернатива). Доработка DX при использовании cli-утилиты
 
