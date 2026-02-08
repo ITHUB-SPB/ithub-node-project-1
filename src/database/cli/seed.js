@@ -1,5 +1,6 @@
 import { fakerRU as faker } from '@faker-js/faker';
 import connection from '../connection.js';
+import chalk from 'chalk';
 
 export default function seedTables(tables) {
     if (tables.length === 0) {
@@ -60,7 +61,9 @@ function seedUsers() {
     }
 
     console.log(
-        `Было добавлено ${countStatement.all().length} записей в users`,
+        chalk.green(
+            `Было добавлено ${countStatement.all().length} записей в users`,
+        ),
     );
 }
 
@@ -87,6 +90,8 @@ function seedBookings() {
     }
 
     console.log(
-        `Было добавлено ${countStatement.all().length} записей в bookings`,
+        chalk.green(
+            `Было добавлено ${countStatement.all().length} записей в bookings`,
+        ),
     );
 }
