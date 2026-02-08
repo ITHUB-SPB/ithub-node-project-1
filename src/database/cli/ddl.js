@@ -7,7 +7,7 @@ export function createTables(isForce) {
                 drop table users;
                 drop table bookings
             `);
-        console.log(chalk.yellow('Таблицы форсировано удалены'));
+        console.log(chalk.yellow('! Таблицы форсировано удалены'));
     }
 
     connection.exec(`create table if not exists users (
@@ -31,8 +31,8 @@ export function resetTables(tables) {
         connection.exec(`delete from users`);
         connection.exec(`delete from bookings`);
         console.log(
-            chalk.green(`Таблица users была сброшена`),
-            chalk.green(`\nТаблица bookings была сброшена`),
+            chalk.green(`✔ Таблица users была сброшена`),
+            chalk.green(`\n✔ Таблица bookings была сброшена`),
         );
         return;
     }
@@ -44,11 +44,13 @@ export function resetTables(tables) {
             switch (table) {
                 case 'users':
                     connection.exec(`delete from users`);
-                    console.log(chalk.green(`Таблица users была сброшена`));
+                    console.log(chalk.green(`✔ Таблица users была сброшена`));
                     break;
                 case 'bookings':
                     connection.exec(`delete from bookings`);
-                    console.log(chalk.green(`Таблица bookings была сброшена`));
+                    console.log(
+                        chalk.green(`✔ Таблица bookings была сброшена`),
+                    );
                     break;
                 default:
                     throw new Error(`Таблицы ${table} не существует`);
