@@ -61,7 +61,3 @@ export default function cli() {
         );
     }
 }
-
-setTimeout(() => {
-    cli();
-}, 1000);
