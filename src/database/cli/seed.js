@@ -19,28 +19,33 @@ export default function seedTables() {
 }
 
 function seedUsers(connection) {
-    // Проверяем, есть ли уже записи
-    const countStatement = connection.prepare('SELECT COUNT(*) as count FROM users');
+    const countStatement = connection.prepare(
+        'SELECT COUNT(*) as count FROM users',
+    );
     const userCount = countStatement.get().count;
-    
+
     if (userCount > 0) {
-        console.log(chalk.yellow(`Таблица users уже содержит ${userCount} записей`));
+        console.log(
+            chalk.yellow(`Таблица users уже содержит ${userCount} записей`),
+        );
         return;
     }
-    
+
     const usernames = faker.helpers.multiple(faker.internet.username, {
         count: 10,
     });
-    
+
     const insertStatement = connection.prepare(
-        'INSERT INTO users (username) VALUES (?)'
+        'INSERT INTO users (username) VALUES (?)',
     );
-    
+
     for (const username of usernames) {
         insertStatement.run(username);
     }
-    
-    console.log(chalk.green(`Было добавлено ${usernames.length} пользователей`));
+
+    console.log(
+        chalk.green(`Было добавлено ${usernames.length} пользователей`),
+    );
 }
 
 function seedBookings(connection) {

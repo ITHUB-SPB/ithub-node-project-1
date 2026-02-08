@@ -9,9 +9,10 @@ export default function cli() {
     const spinner = ora({ text: 'Выполнение...', color: 'cyan' });
 
     if (command === 'create') {
-        const forceFlag = process.argv.includes('--force') || process.argv.includes('-F');
+        const forceFlag =
+            process.argv.includes('--force') || process.argv.includes('-F');
         spinner.start('Создание таблиц...');
-        
+
         try {
             createTables(forceFlag);
             spinner.succeed(chalk.green('✅ Таблицы созданы'));
@@ -22,9 +23,13 @@ export default function cli() {
     } else if (command === 'reset') {
         const tablesToReset = process.argv.slice(3);
         spinner.start('Сброс таблиц...');
-        
+
         try {
-            resetTables(tablesToReset.length > 0 ? tablesToReset : ['users', 'bookings']);
+            resetTables(
+                tablesToReset.length > 0
+                    ? tablesToReset
+                    : ['users', 'bookings'],
+            );
             spinner.succeed(chalk.green('✅ Таблицы сброшены'));
         } catch (error) {
             spinner.fail(chalk.red(`❌ Ошибка: ${error.message}`));
@@ -33,9 +38,11 @@ export default function cli() {
     } else if (command === 'seed') {
         const tablesToSeed = process.argv.slice(3);
         spinner.start('Наполнение таблиц...');
-        
+
         try {
-            seedTables(tablesToSeed.length > 0 ? tablesToSeed : ['users', 'bookings']);
+            seedTables(
+                tablesToSeed.length > 0 ? tablesToSeed : ['users', 'bookings'],
+            );
             spinner.succeed(chalk.green('✅ Таблицы наполнены'));
         } catch (error) {
             spinner.fail(chalk.red(`❌ Ошибка: ${error.message}`));
@@ -52,18 +59,29 @@ export default function cli() {
 
 function showHelp() {
     console.log(chalk.blue.bold('\n=== CLI для управления базой данных ===\n'));
-    
+
     console.log(chalk.yellow('Доступные команды:'));
-    console.log(chalk.green('  db:create [--force]        ') + 'Создать таблицы');
-    console.log(chalk.green('  db:reset [tables]          ') + 'Очистить таблицы');
-    console.log(chalk.green('  db:seed [tables]           ') + 'Наполнить таблицы данными');
-    console.log(chalk.green('  db:help                    ') + 'Показать эту справку\n');
-    
+    console.log(
+        chalk.green('  db:create [--force]        ') + 'Создать таблицы',
+    );
+    console.log(
+        chalk.green('  db:reset [tables]          ') + 'Очистить таблицы',
+    );
+    console.log(
+        chalk.green('  db:seed [tables]           ') +
+            'Наполнить таблицы данными',
+    );
+    console.log(
+        chalk.green('  db:help                    ') + 'Показать эту справку\n',
+    );
+
     console.log(chalk.yellow('Аргументы:'));
     console.log('  --force или -F           Удалить таблицы перед созданием');
     console.log('  users                    Работать с таблицей пользователей');
-    console.log('  bookings                 Работать с таблицей бронирований\n');
-    
+    console.log(
+        '  bookings                 Работать с таблицей бронирований\n',
+    );
+
     console.log(chalk.yellow('Примеры:'));
     console.log('  npm run db:create -- --force');
     console.log('  npm run db:seed users');

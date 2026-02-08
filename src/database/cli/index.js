@@ -3,7 +3,7 @@ import ora from 'ora';
 
 import { createTables, resetTables } from './ddl.js';
 import seedTables from './seed.js';
-import help from './help.js'; 
+import help from './help.js';
 
 const spinner = ora('Загрузка...').start();
 spinner.spinner = 'binary';
