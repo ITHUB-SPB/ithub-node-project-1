@@ -12,9 +12,10 @@ export default function cli() {
             console.error(`Ошибка при создании таблиц: ${error.message}`);
         }
     } else if (command === 'reset') {
+        const tablesToReset = process.argv.slice(3);
+
         try {
-            resetTables();
-            console.log('Данные из таблиц успешно удалены');
+            resetTables(tablesToReset);
         } catch (error) {
             console.error(`Ошибка при сбросе таблиц: ${error.message}`);
         }
