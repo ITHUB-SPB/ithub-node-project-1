@@ -1,9 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
-    "unicorn",
-    "oxc"
-  ],
+  "plugins": ["unicorn","oxc"],
   "jsPlugins": null,
   "categories": {},
   "rules": {
