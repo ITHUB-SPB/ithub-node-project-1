@@ -1,0 +1,70 @@
+import connection from '../connection.js';
+import chalk from 'chalk';
+export function createTables(isForce) {
+    if (isForce) {
+        connection.exec(`DROP TABLE IF EXISTS users`);
+        connection.exec(`DROP TABLE IF EXISTS bookings`);
+        console.log(chalk.yellow('! Таблицы форсировано удалены'));
+    }
+
+    connection.exec(`CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username STRING UNIQUE,
+        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    connection.exec(`CREATE TABLE IF NOT EXISTS bookings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        start INTEGER NOT NULL,
+        end INTEGER NOT NULL,
+        userId INTEGER,
+        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+    )`);
+}
+
+export function resetTables(tables) {
+    if (tables.length === 0) {
+        connection.exec(`delete from users`);
+        connection.exec(`delete from bookings`);
+        console.log(
+            chalk.green(` Таблица users была сброшена`),
+            chalk.green(`Таблица bookings была сброшена`),
+        );
+        return;
+    }
+
+    const errors = [];
+
+    for (const table of tables) {
+        try {
+            switch (table) {
+                case 'users':
+                    connection.exec(`delete from users`);
+                    console.log(chalk.green(`Таблица users была сброшена`));
+                    break;
+                case 'bookings':
+                    connection.exec(`delete from bookings`);
+                    console.log(
+                        chalk.green(` Таблица bookings была сброшена`),
+                    );
+                    break;
+                default:
+                    throw new Error(`Таблицы ${table} не существует`);
+            }
+        } catch (error) {
+            errors.push({
+                table,
+                message: error.message,
+            });
+        }
+    }
+
+    if (errors.length > 0) {
+        const message = errors
+            .map((e) => `- ${e.table}: ${e.message}`)
+            .join('\n');
+
+        throw new Error(`\n${message}`);
+    }
+}
