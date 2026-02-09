@@ -18,7 +18,7 @@ export function createTables() {
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
     )`);
-} 
+}
 
 export function resetTables() {
     const args = process.argv.slice(2);

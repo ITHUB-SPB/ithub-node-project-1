@@ -4,13 +4,13 @@ import { fakerRU as faker } from '@faker-js/faker';
 
 export default function seedTables() {
     const args = process.argv.slice(2);
-    const tablesToSeed = args.length > 1 ? args : ['users', 'bookings'];
+    const tablesSeed = args.length > 1 ? args : ['users', 'bookings'];
     const connection = new sqlite.DatabaseSync('db.sqlite3');
 
-    if (tablesToSeed.includes('users')) {
+    if (tablesSeed.includes('users')) {
         seedUsers(connection);
     } 
-    if (tablesToSeed.includes('bookings')) {
+    if (tablesSeed.includes('bookings')) {
         seedBookings(connection);
     }    
     connection.close();
