@@ -7,7 +7,7 @@ const gray = chalk.hex('#696969');
 const yellowItalic = chalk.yellow.italic;
 const green = chalk.green;
 
-export default function help(command) {
+export default function help(command: any) {
     switch (command) {
         case 'general':
             console.log(

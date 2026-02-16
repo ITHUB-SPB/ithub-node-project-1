@@ -1,9 +1,10 @@
 {
     "type": "module",
     "scripts": {
-        "dev": "node --watch src/main.js",
-        "format": "prettier src/**/*.js --write",
+        "dev": "tsx --watch src/main.js",
+        "format": "oxfmt {src,tests}/**/*.{js,ts}",
         "test": "vitest watch --reporter=dot",
+        "test:cov": "vitest run --coverage",
         "lint": "oxlint src --fix",
         "db:create": "node --no-warnings src/database/cli/index.js create",
         "db:reset": "node --no-warnings src/database/cli/index.js reset",
@@ -12,10 +13,14 @@
     },
     "devDependencies": {
         "@faker-js/faker": "^10.2.0",
+        "@tsconfig/recommended": "^1.0.13",
+        "@types/node": "^25.2.3",
+        "@vitest/coverage-v8": "^4.0.18",
+        "oxfmt": "^0.32.0",
         "oxlint": "^1.23.0",
-        "prettier": "^3.6.2",
+        "tsx": "^4.21.0",
         "typescript": "^5.9.3",
-        "vitest": "^3.2.4"
+        "vitest": "^4.0.17"
     },
     "dependencies": {
         "chalk": "^5.6.2",

@@ -4,8 +4,8 @@ import chalk from 'chalk';
 export function createTables(isForce) {
     if (isForce) {
         connection.exec(`
-                drop table users;
-                drop table bookings
+                drop table if exists users;
+                drop table if exists bookings
             `);
         console.log(chalk.yellow('! Таблицы форсировано удалены'));
     }
