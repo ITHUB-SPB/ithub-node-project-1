@@ -1,18 +1,17 @@
 import * as v from 'valibot';
 
 import { Timeslot } from './booking.model.js';
+import BookingService from './booking.service.js'
 import * as schema from './booking.schema.js';
 
 export default class BookingController {
     static findAll() {
-        const bookingObjects = bookings.map((bookingMap) =>
-            Timeslot.fromMapped(bookingMap),
-        );
+        const bookings = BookingService.findAll()
 
         return {
             statusCode: 200,
             data: {
-                bookings: bookingObjects.map((bookingObject) =>
+                bookings: bookings.map((bookingObject) =>
                     bookingObject.toString(),
                 ),
             },
@@ -28,15 +27,15 @@ export default class BookingController {
 
             const slotObject = Timeslot.fromMapped(payloadObject);
 
-            bookings.push({
-                ...slotObject.toMapped(),
-                createdAt: Math.floor(Date.now() / 1000),
-            });
+            const createdBooking = BookingService.create({
+                    ...slotObject.toMapped(),
+                    createdAt: Math.floor(Date.now() / 1000),
+            })
 
             return v.parse(schema.newBookingOutSchema, {
                 statusCode: 201,
                 data: {
-                    booking: bookings.at(-1),
+                    booking: createdBooking,
                 },
             });
         } catch (error) {
@@ -52,7 +51,16 @@ export default class BookingController {
 
     static delete(options) {
         try {
-            v.parse(schema.bookingDeleteSchema, options);
+            const { params } = v.parse(schema.bookingDeleteSchema, options);
+            
+            BookingService.delete(params.pathParams.id)
+            
+            return {
+                statusCode: 204,
+                data: {
+                    message: `Record with id ${idToDelete} successfully removed`,
+                },
+            };
         } catch (error) {
             console.error(error);
             return {
@@ -62,28 +70,5 @@ export default class BookingController {
                 },
             };
         }
-
-        const idToDelete = options.params.pathParams.id;
-        const indexToDelete = bookings.findIndex(
-            (booking) => booking.id === idToDelete,
-        );
-
-        if (indexToDelete === -1) {
-            return {
-                statusCode: 400,
-                data: {
-                    error: `Record with id ${idToDelete} not found`,
-                },
-            };
-        }
-
-        bookings.splice(indexToDelete, 1);
-
-        return {
-            statusCode: 204,
-            data: {
-                message: `Record with id ${idToDelete} successfully removed`,
-            },
-        };
     }
 }
