@@ -22,7 +22,7 @@ export default function cli() {
             );
         } catch (error) {
             spinner.fail(
-                chalk.red(`Ошибка при создании таблиц: ${error.message}`),
+                chalk.red(`Ошибка при создании таблиц: ${(error as Error).message}`),
             );
         }
     } else if (command === 'reset') {
@@ -33,7 +33,7 @@ export default function cli() {
             spinner.stop();
         } catch (error) {
             spinner.fail(
-                chalk.red(`Ошибка при сбросе таблиц: ${error.message}`),
+                chalk.red(`Ошибка при сбросе таблиц: ${(error as Error).message}`),
             );
         }
     } else if (command === 'seed') {
@@ -44,7 +44,7 @@ export default function cli() {
             spinner.stop();
         } catch (error) {
             spinner.fail(
-                chalk.red(`Ошибка при наполнении таблиц: ${error.message}`),
+                chalk.red(`Ошибка при наполнении таблиц: ${(error as Error).message}`),
             );
         }
     } else if (command === 'help') {
@@ -53,7 +53,7 @@ export default function cli() {
             help(helpCommand);
             spinner.stop();
         } catch (error) {
-            spinner.fail(chalk.red(`Ошибка при вызове help: ${error.message}`));
+            spinner.fail(chalk.red(`Ошибка при вызове help: ${(error as Error).message}`));
         }
     } else {
         spinner.fail(

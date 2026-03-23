@@ -28,7 +28,7 @@ export class RequestParser {
     #method;
     #params;
 
-    constructor(request) {
+    constructor(request: Request) {
         this.#request = request;
         this.#urlObject = new URL(request.url, 'http://localhost:3000');
 

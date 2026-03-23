@@ -1,11 +1,12 @@
 import connection from '../connection.js';
 import chalk from 'chalk';
 
-export function createTables(isForce) {
+export function createTables(isForce: boolean) {
     if (isForce) {
         connection.exec(`
                 drop table if exists users;
-                drop table if exists bookings
+                drop table if exists bookings;
+                drop table if exists areas;
             `);
         console.log(chalk.yellow('! Таблицы форсировано удалены'));
     }
@@ -14,6 +15,11 @@ export function createTables(isForce) {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username STRING UNIQUE,
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    connection.exec(`create table if not exists areas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title STRING UNIQUE
     )`);
 
     connection.exec(`create table if not exists bookings (
@@ -26,13 +32,15 @@ export function createTables(isForce) {
     )`);
 }
 
-export function resetTables(tables) {
+export function resetTables(tables: string[]) {
     if (tables.length === 0) {
         connection.exec(`delete from users`);
         connection.exec(`delete from bookings`);
+        connection.exec(`delete from areas`);
         console.log(
             chalk.green(`✔ Таблица users была сброшена`),
             chalk.green(`\n✔ Таблица bookings была сброшена`),
+            chalk.green(`\n✔ Таблица areas была сброшена`),
         );
         return;
     }
@@ -46,6 +54,10 @@ export function resetTables(tables) {
                     connection.exec(`delete from users`);
                     console.log(chalk.green(`✔ Таблица users была сброшена`));
                     break;
+                case 'areas':
+                    connection.exec(`delete from areas`);
+                    console.log(chalk.green(`✔ Таблица areas была сброшена`));
+                    break;
                 case 'bookings':
                     connection.exec(`delete from bookings`);
                     console.log(
@@ -58,7 +70,7 @@ export function resetTables(tables) {
         } catch (error) {
             errors.push({
                 table,
-                message: error.message,
+                message: (error as Error).message,
             });
         }
     }

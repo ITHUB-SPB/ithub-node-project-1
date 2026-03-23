@@ -1,15 +1,15 @@
 {
     "type": "module",
     "scripts": {
-        "dev": "tsx --watch src/main.js",
+        "dev": "tsx --watch src/main.ts",
         "format": "oxfmt {src,tests}/**/*.{js,ts}",
         "test": "vitest watch --reporter=dot",
         "test:cov": "vitest run --coverage",
         "lint": "oxlint src --fix",
-        "db:create": "node --no-warnings src/database/cli/index.js create",
-        "db:reset": "node --no-warnings src/database/cli/index.js reset",
-        "db:seed": "node --no-warnings src/database/cli/index.js seed",
-        "db:help": "node --no-warnings src/database/cli/index.js help"
+        "db:create": "tsx --no-warnings src/database/cli/index.js create",
+        "db:reset": "tsx --no-warnings src/database/cli/index.js reset",
+        "db:seed": "tsx --no-warnings src/database/cli/index.js seed",
+        "db:help": "tsx --no-warnings src/database/cli/index.js help"
     },
     "devDependencies": {
         "@faker-js/faker": "^10.2.0",

@@ -6,6 +6,7 @@ export default function seedTables(tables) {
     if (tables.length === 0) {
         seedUsers();
         seedBookings();
+        seedAreas();
         return;
     }
 
@@ -21,6 +22,10 @@ export default function seedTables(tables) {
                 case 'bookings':
                     seedBookings();
                     break;
+                
+                case 'areas':
+                    seedAreas();
+                    break;
 
                 default:
                     throw new Error(`Таблицы ${table} не существует`);
@@ -28,7 +33,7 @@ export default function seedTables(tables) {
         } catch (error) {
             errors.push({
                 table,
-                message: error.message,
+                message: (error as Error).message,
             });
         }
     }
@@ -48,7 +53,7 @@ function seedUsers() {
         throw new Error('Таблица users уже содержит записи');
     }
 
-    const usernames = faker.helpers.multiple(faker.internet.username, {
+    const usernames = faker.helpers.multiple(() => faker.internet.username(), {
         count: 10,
     });
 
@@ -67,15 +72,40 @@ function seedUsers() {
     );
 }
 
+function seedAreas() {
+    const countStatement = connection.prepare('select * from areas');
+    if (countStatement.all().length > 0) {
+        throw new Error('Таблица areas уже содержит записи');
+    }
+
+    const areas = faker.helpers.multiple(() => faker.number.int({ min: 1, max: 200 }), {
+        count: 10,
+    });
+
+    const insertStatement = connection.prepare(
+        'insert into areas (title) values (?)',
+    );
+
+    for (const areaNumber of areas) {
+        insertStatement.run(`Кабинет ${areaNumber}`);
+    }
+
+    console.log(
+        chalk.green(
+            `✔ Было добавлено ${countStatement.all().length} записей в areas`,
+        ),
+    );
+}
+
 function seedBookings() {
     const countStatement = connection.prepare('select * from bookings');
     if (countStatement.all().length > 0) {
         throw new Error('Таблица bookings уже содержит записи');
     }
 
-    const userIdentificators = connection.prepare('select id from users').all();
-    const startDates = faker.helpers.multiple(faker.date.past, { count: 20 });
-    const endDates = faker.helpers.multiple(faker.date.recent, { count: 20 });
+    const userIdentificators = connection.prepare('select id from users').all()
+    const startDates = faker.helpers.multiple(() => faker.date.past(), { count: 20 });
+    const endDates = faker.helpers.multiple(() => faker.date.recent(), { count: 20 });
 
     const insertStatement = connection.prepare(
         'insert into bookings (start, end, userId) values (?, ?, ?)',
@@ -83,9 +113,9 @@ function seedBookings() {
 
     for (const elementIx in userIdentificators) {
         insertStatement.run(
-            startDates[elementIx].getTime(),
-            endDates[elementIx].getTime(),
-            userIdentificators[elementIx].id,
+            startDates[elementIx]!.getTime(),
+            endDates[elementIx]!.getTime(),
+            userIdentificators[elementIx]!['id']
         );
     }
 
