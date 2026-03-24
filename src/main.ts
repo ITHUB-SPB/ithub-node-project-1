@@ -11,10 +11,10 @@ for (const { method, resource, handler } of [...areaRoutes]) {
     router.register({ method, resource }, handler);
 }
 
-const server = createServer((request, response) => {
-    const { method, resource, params, payload } = new RequestParser(
-        request,
-    ).toObject();
+const server = createServer(async (request, response) => {
+    const requestParser = new RequestParser(request)
+
+    const { method, resource, params, payload } = await requestParser.toObject();
 
     const { statusCode, data } = router.handle({ method, resource })({
         params,

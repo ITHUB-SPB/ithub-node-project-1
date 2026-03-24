@@ -1,64 +1,47 @@
+import type { IncomingMessage } from 'node:http';
 import * as v from 'valibot';
-
-const paginationSchema = v.object({
-    limit: v.optional(
-        v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(50)),
-    ),
-    offset: v.optional(v.pipe(v.number(), v.integer(), v.minValue(0))),
-});
-
-const filterSchema = v.object({
-    filter: v.optional(v.string()),
-});
-
-const sortingSchema = v.object({
-    sort: v.optional(v.string()),
-});
-
-export const getAllQuerySchema = v.object({
-    ...paginationSchema.entries,
-    ...filterSchema.entries,
-    ...sortingSchema.entries,
-});
+import * as schema from './schema.js';
 
 export class RequestParser {
     #request;
     #urlObject;
-    #resource;
-    #method;
-    #params;
+    #resource: schema.Resource;
+    #method: schema.Method;
+    #params: schema.Params;
 
-    constructor(request: Request) {
+    constructor(request: IncomingMessage) {
         this.#request = request;
-        this.#urlObject = new URL(request.url, 'http://localhost:3000');
+        this.#urlObject = new URL(request.url!, 'http://localhost:3000');
 
-        this.#parseMethod();
-        this.#parseResource();
-        this.#parseParams();
+        this.#method = this.#parseMethod();
+        this.#resource = this.#parseResource();
+        this.#params = this.#parseParams();
 
         console.log(this.#method, this.#resource, this.#params);
     }
 
     #parseMethod() {
-        this.#method = this.#request.method;
+        return v.parse(schema.methodSchema, this.#request);
     }
 
     #parseParams() {
         const pathname = this.#urlObject.pathname;
         const lastSlashIndex = pathname.lastIndexOf('/');
 
-        const pathParams =
+        const pathParams = v.parse(
+            schema.pathParamsSchema,
             lastSlashIndex === 0
                 ? null
                 : {
                       id: Number(pathname.slice(lastSlashIndex + 1)),
-                  };
+                  },
+        );
 
-        const queryParams = v.safeParse(getAllQuerySchema, [
+        const queryParams = v.parse(schema.queryParamsSchema, [
             ...this.#urlObject.searchParams.entries(),
         ]);
 
-        this.#params = {
+        return {
             pathParams,
             queryParams,
         };
@@ -68,13 +51,15 @@ export class RequestParser {
         const pathname = this.#urlObject.pathname;
         const lastSlashIndex = pathname.lastIndexOf('/');
 
-        this.#resource =
+        const resource =
             lastSlashIndex === 0
                 ? pathname
                 : pathname.substring(0, lastSlashIndex);
+
+        return v.parse(schema.resourceSchema, resource);
     }
 
-    #parseBody() {
+    #parseBody(): Promise<string> {
         return new Promise((resolve, reject) => {
             let payload = '';
 
@@ -92,20 +77,23 @@ export class RequestParser {
         });
     }
 
-    toObject() {
+    async toObject(): schema.ParserOutput {
         const base = {
             resource: this.#resource,
             method: this.#method,
             params: this.#params,
+            payload: null,
         };
 
         if (this.#method === 'GET' || this.#method === 'DELETE') {
             return base;
         }
 
-        return this.#parseBody().then((payload) => ({
-            ...base,
-            payload,
-        }));
+        return this.#parseBody()
+            .then(JSON.parse)
+            .then((payload) => ({
+                ...base,
+                payload,
+            }));
     }
 }
