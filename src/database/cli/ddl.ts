@@ -6,6 +6,7 @@ export function createTables(isForce: boolean) {
         connection.exec(`
                 drop table if exists users;
                 drop table if exists bookings;
+                drop table if exists timeslots;
                 drop table if exists areas;
             `);
         console.log(chalk.yellow('! Таблицы форсировано удалены'));
@@ -22,12 +23,18 @@ export function createTables(isForce: boolean) {
         title STRING UNIQUE
     )`);
 
-    connection.exec(`create table if not exists bookings (
+    connection.exec(`create table if not exists timeslots (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         start INTEGER NOT NULL,
         end INTEGER NOT NULL,
+    )`);
+
+    connection.exec(`create table if not exists bookings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        timeslotId INTEGER NOT NULL,
         userId INTEGER,
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (timeslotId) REFERENCES timeslots(id) ON DELETE CASCADE
         FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
     )`);
 }
@@ -37,10 +44,12 @@ export function resetTables(tables: string[]) {
         connection.exec(`delete from users`);
         connection.exec(`delete from bookings`);
         connection.exec(`delete from areas`);
+        connection.exec(`delete from timeslots`);
         console.log(
             chalk.green(`✔ Таблица users была сброшена`),
             chalk.green(`\n✔ Таблица bookings была сброшена`),
             chalk.green(`\n✔ Таблица areas была сброшена`),
+            chalk.green(`\n✔ Таблица timeslots была сброшена`),
         );
         return;
     }
@@ -57,6 +66,10 @@ export function resetTables(tables: string[]) {
                 case 'areas':
                     connection.exec(`delete from areas`);
                     console.log(chalk.green(`✔ Таблица areas была сброшена`));
+                    break;
+                case 'timeslots':
+                    connection.exec(`delete from timeslots`);
+                    console.log(chalk.green(`✔ Таблица timeslots была сброшена`));
                     break;
                 case 'bookings':
                     connection.exec(`delete from bookings`);

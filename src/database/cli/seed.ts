@@ -2,11 +2,12 @@ import { fakerRU as faker } from '@faker-js/faker';
 import connection from '../connection.js';
 import chalk from 'chalk';
 
-export default function seedTables(tables) {
+export default function seedTables(tables: string[]) {
     if (tables.length === 0) {
         seedUsers();
-        seedBookings();
+        seedTimeslots();
         seedAreas();
+        seedBookings();
         return;
     }
 
@@ -22,7 +23,11 @@ export default function seedTables(tables) {
                 case 'bookings':
                     seedBookings();
                     break;
-                
+
+                case 'timeslots':
+                    seedTimeslots();
+                    break;
+    
                 case 'areas':
                     seedAreas();
                     break;
@@ -87,12 +92,40 @@ function seedAreas() {
     );
 
     for (const areaNumber of areas) {
-        insertStatement.run(`Кабинет ${areaNumber}`);
+        insertStatement.run(`Помещение ${areaNumber}`);
     }
 
     console.log(
         chalk.green(
             `✔ Было добавлено ${countStatement.all().length} записей в areas`,
+        ),
+    );
+}
+
+function seedTimeslots() {
+    const countStatement = connection.prepare('select * from timeslots');
+    
+    if (countStatement.all().length > 0) {
+        throw new Error('Таблица timeslots уже содержит записи');
+    }
+
+    // TODO
+    const timeslots = faker.helpers.multiple(() => ({
+        start: faker.number.int({ min: 1, max: 200 }),
+        end: faker.number.int({ min: 1, max: 200 }),
+    }), { count: 10 });
+
+    const insertStatement = connection.prepare(
+        'insert into timeslots (start, end) values (?, ?)',
+    );
+
+    for (const { start, end } of timeslots) {
+        insertStatement.run(start, end);
+    }
+
+    console.log(
+        chalk.green(
+            `✔ Было добавлено ${countStatement.all().length} записей в timeslots`,
         ),
     );
 }
@@ -103,6 +136,7 @@ function seedBookings() {
         throw new Error('Таблица bookings уже содержит записи');
     }
 
+    // TODO
     const userIdentificators = connection.prepare('select id from users').all()
     const startDates = faker.helpers.multiple(() => faker.date.past(), { count: 20 });
     const endDates = faker.helpers.multiple(() => faker.date.recent(), { count: 20 });
