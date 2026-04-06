@@ -25,8 +25,8 @@ export function createTables(isForce: boolean) {
 
     connection.exec(`create table if not exists timeslots (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        start INTEGER NOT NULL,
-        end INTEGER NOT NULL,
+        start VARCHAR(5) NOT NULL,
+        end VARCHAR(5) NOT NULL,
     )`);
 
     connection.exec(`create table if not exists bookings (
