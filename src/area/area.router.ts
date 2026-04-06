@@ -6,4 +6,4 @@ export const areaRoutes = [
         resource: '/areas',
         handler: AreaController.findAll,
     }
-];
+] as const;

@@ -6,4 +6,4 @@ export const timeslotRoutes = [
         resource: '/timeslots',
         handler: TimeslotController.findAll,
     },
-];
+] as const;

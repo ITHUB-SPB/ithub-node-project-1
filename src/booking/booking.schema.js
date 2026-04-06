@@ -5,16 +5,23 @@ export const newBookingInSchema = v.object({
     end: v.pipe(v.number(), v.integer()),
 });
 
-export const newBookingOutSchema = v.object({
-    statusCode: v.picklist([201, 400]),
-    data: v.object({
-        booking: v.object({
-            start: v.pipe(v.number(), v.integer()),
-            end: v.pipe(v.number(), v.integer()),
-            createdAt: v.pipe(v.number(), v.integer()),
+export const newBookingOutSchema = v.union([
+    v.object({
+        statusCode: v.literal(201),
+        data: v.object({
+            booking: v.object({
+                start: v.pipe(v.number(), v.integer()),
+                end: v.pipe(v.number(), v.integer()),
+                createdAt: v.pipe(v.number(), v.integer()),
+            }),
         }),
     }),
-});
+    v.object({
+        statusCode: v.literal(400),
+        data: v.object({}), // TODO
+    }),
+]);
+
 
 export const bookingDeleteSchema = v.object({
     params: v.strictObject({

@@ -1,3 +1,13 @@
+import type { ParserOutput } from "./schema.js";
+
+type Pattern = Omit<Awaited<ParserOutput>, "params" | "payload">
+type HandlerParams = Pick<Awaited<ParserOutput>, "params" | "payload">
+
+type Handler = ({ params, payload } : HandlerParams) => { 
+    statusCode: number,
+    data: object
+}
+
 export default class Router {
     #routes;
 
@@ -14,7 +24,7 @@ export default class Router {
         };
     }
 
-    handle(pattern) {
+    handle(pattern: Pattern) {
         const handler = this.#routes.get(JSON.stringify(pattern));
 
         if (!handler) {
@@ -24,7 +34,7 @@ export default class Router {
         return handler;
     }
 
-    register(pattern, handler) {
+    register(pattern: Pattern, handler: Handler) {
         this.#routes.set(JSON.stringify(pattern), handler);
     }
 }

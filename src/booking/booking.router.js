@@ -4,7 +4,7 @@ export const bookingRoutes = [
     {
         method: 'GET',
         resource: '/bookings',
-        handler: BookingController.findAll,
+        handler: BookingController.find,
     },
     {
         method: 'POST',

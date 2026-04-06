@@ -7,6 +7,6 @@ import connection from '../database/connection.js'
 
 export default class TimeslotService {
     static findAll() {
-        return         
+        return v.parse(schema.timeslotsSchema, [])
     }
 }
