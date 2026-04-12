@@ -115,10 +115,7 @@ export class Timeslot {
         return this.fromMapped(JSON.parse(data));
     }
 
-    static fromMapped({ start, end }: {
-        start: number,
-        end: number
-    }) {
+    static fromMapped({ start, end }: { start: number; end: number }) {
         return new this(new Date(start * 1000), new Date(end * 1000));
     }
 }

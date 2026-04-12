@@ -5,5 +5,5 @@ export const areaRoutes = [
         method: 'GET',
         resource: '/areas',
         handler: AreaController.findAll,
-    }
+    },
 ] as const;

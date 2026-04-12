@@ -27,7 +27,7 @@ export default function seedTables(tables: string[]) {
                 case 'timeslots':
                     seedTimeslots();
                     break;
-    
+
                 case 'areas':
                     seedAreas();
                     break;
@@ -83,9 +83,12 @@ function seedAreas() {
         throw new Error('Таблица areas уже содержит записи');
     }
 
-    const areas = faker.helpers.multiple(() => faker.number.int({ min: 1, max: 200 }), {
-        count: 10,
-    });
+    const areas = faker.helpers.multiple(
+        () => faker.number.int({ min: 1, max: 200 }),
+        {
+            count: 10,
+        },
+    );
 
     const insertStatement = connection.prepare(
         'insert into areas (title) values (?)',
@@ -104,7 +107,7 @@ function seedAreas() {
 
 function seedTimeslots() {
     const countStatement = connection.prepare('select * from timeslots');
-    
+
     if (countStatement.all().length > 0) {
         throw new Error('Таблица timeslots уже содержит записи');
     }
@@ -116,7 +119,7 @@ function seedTimeslots() {
         ['14:00', '15:00'],
         ['15:00', '16:00'],
         ['16:00', '18:00'],
-    ]
+    ];
 
     const insertStatement = connection.prepare(
         'insert into timeslots (start, end) values (?, ?)',

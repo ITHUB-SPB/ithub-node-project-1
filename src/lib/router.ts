@@ -1,12 +1,12 @@
-import type { ParserOutput } from "./schema.js";
+import type { ParserOutput } from './schema.js';
 
-type Pattern = Omit<Awaited<ParserOutput>, "params" | "payload">
-type HandlerParams = Pick<Awaited<ParserOutput>, "params" | "payload">
+type Pattern = Omit<Awaited<ParserOutput>, 'params' | 'payload'>;
+type HandlerParams = Pick<Awaited<ParserOutput>, 'params' | 'payload'>;
 
-type Handler = ({ params, payload } : HandlerParams) => { 
-    statusCode: number,
-    data: object
-}
+type Handler = ({ params, payload }: HandlerParams) => {
+    statusCode: number;
+    data: object;
+};
 
 export default class Router {
     #routes;

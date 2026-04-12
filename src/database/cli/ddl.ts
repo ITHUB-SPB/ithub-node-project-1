@@ -69,7 +69,9 @@ export function resetTables(tables: string[]) {
                     break;
                 case 'timeslots':
                     connection.exec(`delete from timeslots`);
-                    console.log(chalk.green(`✔ Таблица timeslots была сброшена`));
+                    console.log(
+                        chalk.green(`✔ Таблица timeslots была сброшена`),
+                    );
                     break;
                 case 'bookings':
                     connection.exec(`delete from bookings`);

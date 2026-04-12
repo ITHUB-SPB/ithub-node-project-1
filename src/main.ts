@@ -1,20 +1,22 @@
 import { createServer } from 'node:http';
 
-import Router from './lib/router.js'
+import Router from './lib/router.js';
 import { RequestParser } from './lib/requestParser.js';
 
 // import { bookingRoutes } from './booking/booking.router.js';
-import { areaRoutes } from './area/area.router.js'
+import { areaRoutes } from './area/area.router.js';
 
 const router = new Router();
-for (const { method, resource, handler } of [...areaRoutes]) {
+const allRouters = [...areaRoutes]
+for (const { method, resource, handler } of allRouters) {
     router.register({ method, resource }, handler);
 }
 
 const server = createServer(async (request, response) => {
-    const requestParser = new RequestParser(request)
+    const requestParser = new RequestParser(request);
 
-    const { method, resource, params, payload } = await requestParser.toObject();
+    const { method, resource, params, payload } =
+        await requestParser.toObject();
 
     const { statusCode, data } = router.handle({ method, resource })({
         params,

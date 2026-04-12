@@ -22,7 +22,6 @@ export const newBookingOutSchema = v.union([
     }),
 ]);
 
-
 export const bookingDeleteSchema = v.object({
     params: v.strictObject({
         pathParams: v.strictObject(
