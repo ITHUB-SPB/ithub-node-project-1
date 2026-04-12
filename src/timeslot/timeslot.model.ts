@@ -61,6 +61,14 @@ export class Timeslot {
         return this.#end; // либо this.getEnd()
     }
 
+    get isAM() {
+        return this.#end.getHours() < 12;
+    }
+
+    get isPM() {
+        return this.#start.getHours() >= 12;
+    }
+
     setStart(newDate: any) {
         if (!this.#isDate(newDate)) {
             throw new TypeError('Value must be a Time');
