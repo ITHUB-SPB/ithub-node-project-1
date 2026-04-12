@@ -4,10 +4,33 @@ import { areasSchema, type AreasSchema } from './area.schema.js'
 
 
 export default class AreaService {
-    static findAll(): AreasSchema {
-        const statement = connection.prepare('select * from areas order by title')
-        const areas = statement.all()
+    static findAll(params: any): AreasSchema {
+        let query = 'SELECT * FROM areas';
+        const values: any[] = [];
+        const conditions: string[] = [];
 
-        return v.parse(areasSchema, areas)
+        if (params?.filter) {
+            conditions.push('title LIKE ?');
+            values.push(`%${params.filter}%`);
+        }
+
+        if (conditions.length) {
+            query += ' WHERE ' + conditions.join(' AND ');
+        }
+
+        if (params?.limit) {
+            query += ' LIMIT ?';
+            values.push(params.limit);
+        }
+
+        if (params?.offset) {
+            query += ' OFFSET ?';
+            values.push(params.offset);
+        }
+
+        const statement = connection.prepare(query);
+        const areas = statement.all(...values);
+
+        return v.parse(areasSchema, areas);
     }
 }
