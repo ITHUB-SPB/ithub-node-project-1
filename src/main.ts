@@ -9,7 +9,7 @@ import { bookingRoutes } from './booking/booking.router.js'
 
 const router = new Router();
 for (const { method, resource, handler } of [...areaRoutes, ...bookingRoutes, ...timeslotRoutes]) {
-    router.register({ method, resource }, handler);
+    router.register({ method, resource }, handler); // я не разобрался как это фиксить, поэтому решил оставить как есть
 }
 
 const server = createServer(async (request, response) => {
