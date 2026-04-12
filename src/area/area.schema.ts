@@ -10,9 +10,9 @@ export const areasSchema = v.array(areaSchema)
 export const areasResponseSchema = v.strictObject({
     statusCode: v.literal(200),
     data: v.object({
-        areas: areasSchema
-        // TODO
-    })
+        areas: areasSchema,
+        totalItems: v.number(),
+    }),
 })
 
 export type AreasSchema = v.InferOutput<typeof areasSchema>
