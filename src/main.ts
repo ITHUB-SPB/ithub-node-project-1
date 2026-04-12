@@ -5,9 +5,10 @@ import { RequestParser } from './lib/requestParser.js';
 
 // import { bookingRoutes } from './booking/booking.router.js';
 import { areaRoutes } from './area/area.router.js';
+import { timeslotRoutes } from './timeslot/timeslot.router.js';
 
 const router = new Router();
-const allRouters = [...areaRoutes]
+const allRouters = [...areaRoutes, ...timeslotRoutes];
 for (const { method, resource, handler } of allRouters) {
     router.register({ method, resource }, handler);
 }

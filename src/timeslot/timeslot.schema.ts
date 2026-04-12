@@ -1,6 +1,10 @@
 import * as v from 'valibot';
 
-const timeslotSchema = v.object({});
+const timeslotSchema = v.object({
+    id: v.number(),
+    start: v.number(),
+    end: v.number(),
+});
 
 export const timeslotsSchema = v.array(timeslotSchema);
 
@@ -10,5 +14,8 @@ export const timeslotsResponseSchema = v.strictObject({
 });
 
 // TODO
-export type TimeslotsSchema = unknown;
-export type TimeslotsResponseSchema = unknown;
+export type TimeslotRoutes = v.InferOutput<typeof timeslotSchema>;
+export type TimeslotsSchema = v.InferOutput<typeof timeslotsSchema>;
+export type TimeslotsResponseSchema = v.InferOutput<
+    typeof timeslotsResponseSchema
+>;

@@ -11,7 +11,7 @@ export const areasResponseSchema = v.strictObject({
     statusCode: v.literal(200),
     data: v.object({
         areas: areasSchema,
-        totalItems: v.pipe(v.number(), v.integer(), v.minValue(0))
+        totalItems: v.pipe(v.number(), v.integer(), v.minValue(0)),
     }),
 });
 

@@ -58,7 +58,20 @@ export class Timeslot {
     }
 
     get end() {
-        return this.#end; // либо this.getEnd()
+        return this.#end;
+    }
+
+    // ДОБАВЛЕНО: Возвращает true, если слот завершается до 12:00 включительно
+    get AM() {
+        const hours = this.#end.getHours();
+        const minutes = this.#end.getMinutes();
+        const seconds = this.#end.getSeconds();
+        return hours < 12 || (hours === 12 && minutes === 0 && seconds === 0);
+    }
+
+    // ДОБАВЛЕНО: Возвращает true, если слот начинается в 12:00 или позже
+    get PM() {
+        return this.#start.getHours() >= 12;
     }
 
     setStart(newDate: any) {
@@ -95,8 +108,8 @@ export class Timeslot {
 
     toMapped() {
         return {
-            start: this.#start.valueOf() / 1000,
-            end: this.#start.valueOf() / 1000,
+            start: Math.floor(this.#start.valueOf() / 1000),
+            end: Math.floor(this.#end.valueOf() / 1000), // ИСПРАВЛЕНО: было this.#start
         };
     }
 
@@ -115,7 +128,7 @@ export class Timeslot {
         return this.fromMapped(JSON.parse(data));
     }
 
-    static fromMapped({ start, end }: { start: number; end: number }) {
+    static fromMapped({ id, start, end }: { id?: number; start: number; end: number }) {
         return new this(new Date(start * 1000), new Date(end * 1000));
     }
 }
