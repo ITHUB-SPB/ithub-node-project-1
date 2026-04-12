@@ -3,7 +3,6 @@ import * as schema from './area.schema.js';
 import type { Params } from '../lib/schema.js';
 
 export default class AreaController {
-    // TODO
     static findAll({ params }: { params: Params }): schema.AreasResponseSchema {
         const areas = AreaService.findAll(params);
 
