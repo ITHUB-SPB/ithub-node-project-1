@@ -149,7 +149,7 @@ function seedBookings() {
         insertStatement.run(
             startDates[elementIx]!.getTime(),
             endDates[elementIx]!.getTime(),
-            userIdentificators[elementIx]!['id']
+            userIdentificators[elementIx]!['id']??null
         );
     }
 
