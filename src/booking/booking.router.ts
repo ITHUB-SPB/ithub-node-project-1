@@ -16,4 +16,4 @@ export const bookingRoutes = [
         resource: '/bookings',
         handler: BookingController.delete,
     },
-];
+] as const;

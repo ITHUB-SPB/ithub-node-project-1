@@ -21,7 +21,7 @@ export class RequestParser {
     }
 
     #parseMethod() {
-        return v.parse(schema.methodSchema, this.#request);
+        return v.parse(schema.methodSchema, this.#request.method);
     }
 
     #parseParams() {

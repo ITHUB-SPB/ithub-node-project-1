@@ -1,7 +1,7 @@
 import * as v from 'valibot';
 
 export const resourceSchema = v.picklist(
-    ['/areas', '/bookings'],
+    ['/areas', '/timeslots', '/bookings'],
     'Неизвестный ресурс',
 );
 

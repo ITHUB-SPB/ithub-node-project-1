@@ -26,7 +26,7 @@ export function createTables(isForce: boolean) {
     connection.exec(`create table if not exists timeslots (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         start VARCHAR(5) NOT NULL,
-        end VARCHAR(5) NOT NULL,
+        end VARCHAR(5) NOT NULL
     )`);
 
     connection.exec(`create table if not exists bookings (
@@ -34,7 +34,7 @@ export function createTables(isForce: boolean) {
         timeslotId INTEGER NOT NULL,
         userId INTEGER,
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (timeslotId) REFERENCES timeslots(id) ON DELETE CASCADE
+        FOREIGN KEY (timeslotId) REFERENCES timeslots(id) ON DELETE CASCADE,
         FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
     )`);
 }

@@ -16,7 +16,7 @@ export default class BookingController {
         };
     }
 
-    static create(payload) {
+    static create(payload: unknown) {
         try {
             const payloadObject = v.parse(schema.newBookingInSchema, payload);
 
@@ -44,7 +44,7 @@ export default class BookingController {
         }
     }
 
-    static delete(options) {
+    static delete(options: unknown) {
         try {
             const { params } = v.parse(schema.bookingDeleteSchema, options);
             const idToDelete = params.pathParams.id;

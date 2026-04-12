@@ -93,10 +93,22 @@ export class Timeslot {
         this.setEnd(newDate);
     }
 
+    get AM() {
+        return (
+            this.#end.getHours() < 12 ||
+            (this.#end.getHours() === 12 && this.#end.getMinutes() === 0)
+        );
+
+    }
+
+    get PM() {
+        return this.#start.getHours() >= 12;
+    }
+
     toMapped() {
         return {
             start: this.#start.valueOf() / 1000,
-            end: this.#start.valueOf() / 1000,
+            end: this.#end.valueOf() / 1000,
         };
     }
 

@@ -3,11 +3,16 @@ import { createServer } from 'node:http';
 import Router from './lib/router.js'
 import { RequestParser } from './lib/requestParser.js';
 
-// import { bookingRoutes } from './booking/booking.router.js';
+import { bookingRoutes } from './booking/booking.router.js';
 import { areaRoutes } from './area/area.router.js'
+import { timeslotRoutes } from './timeslot/timeslot.router.js'
 
 const router = new Router();
-for (const { method, resource, handler } of [...areaRoutes]) {
+for (const { method, resource, handler } of [
+    ...areaRoutes,
+    ...timeslotRoutes,
+    ...bookingRoutes,
+]) {
     router.register({ method, resource }, handler);
 }
 

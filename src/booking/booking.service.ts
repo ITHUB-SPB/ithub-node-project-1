@@ -1,4 +1,9 @@
-const bookings = [];
+const bookings: Array<{
+    id: number;
+    start: number;
+    end: number;
+    createdAt: number;
+}> = [];
 let nextBookingId = 1;
 
 export default class BookingService {
@@ -6,7 +11,11 @@ export default class BookingService {
         return bookings;
     }
 
-    static create(payload) {
+    static create(payload: {
+        start: number;
+        end: number;
+        createdAt: number;
+    }) {
         const createdBooking = {
             id: nextBookingId++,
             start: payload.start,
@@ -19,7 +28,7 @@ export default class BookingService {
         return createdBooking;
     }
 
-    static delete(idToDelete) {
+    static delete(idToDelete: number) {
         const indexToDelete = bookings.findIndex(
             (booking) => booking.id === idToDelete,
         );
