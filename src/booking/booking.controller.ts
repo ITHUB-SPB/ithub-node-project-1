@@ -11,14 +11,14 @@ export default class BookingController {
         return {
             statusCode: 200,
             data: {
-                bookings: bookings.map((bookingObject) =>
+                bookings: bookings.map((bookingObject: any) =>
                     bookingObject.toString(),
                 ),
             },
         };
     }
 
-    static create(payload) {
+    static create(payload: string) {
         try {
             const payloadObject = v.parse(
                 schema.newBookingInSchema,
@@ -40,18 +40,22 @@ export default class BookingController {
             });
         } catch (error) {
             console.error(error);
+
+            const message = error instanceof Error ? error.message : String(error);
+
             return {
                 statusCode: 400,
                 data: {
-                    error: error.message || '',
+                    error: message,
                 },
             };
         }
     }
 
-    static delete(options) {
+    static delete(options: unknown) {
         try {
             const { params } = v.parse(schema.bookingDeleteSchema, options);
+            const idToDelete = params.pathParams.id;
             
             BookingService.delete(params.pathParams.id)
             
@@ -61,12 +65,15 @@ export default class BookingController {
                     message: `Record with id ${idToDelete} successfully removed`,
                 },
             };
-        } catch (error) {
+        } catch (error: unknown) {
             console.error(error);
+
+            const message = error instanceof Error ? error.message : String(error);
+
             return {
                 statusCode: 400,
                 data: {
-                    error: error.message || '',
+                    error: message,
                 },
             };
         }

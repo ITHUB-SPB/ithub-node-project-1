@@ -7,12 +7,12 @@ import connection from '../database/connection.js'
 
 export default class BookingService {
     static findAll() {
-        return bookings.map((bookingMap) =>
+        return bookings.map((bookingMap: any) =>
             Timeslot.fromMapped(bookingMap),
         );            
     }
 
-    static create(payload) {
+    static create(payload: any) {
         bookings.push({
             ...payload.toMapped(),
             createdAt: Math.floor(Date.now() / 1000),
@@ -21,9 +21,9 @@ export default class BookingService {
         return bookings.at(-1)
     }
 
-    static delete(idToDelete) {
+    static delete(idToDelete: number) {
         const indexToDelete = bookings.findIndex(
-            (booking) => booking.id === idToDelete,
+            (booking: any) => booking.id === idToDelete,
         );
 
         if (indexToDelete === -1) {
