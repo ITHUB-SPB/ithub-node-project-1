@@ -16,12 +16,14 @@ export class SlotRelationError extends RangeError {
 }
 
 export class Timeslot {
+    #id: number;
     #start: Date;
     #end: Date;
 
-    constructor(start: Date, end: Date) {
-        this.#start = this.setStart(start);
-        this.#end = this.setEnd(end);
+    constructor(start: Date, end: Date, id: number) {
+        this.#id = id;
+        this.#start = start;
+        this.#end = end;
     }
 
     #isDate(value: any) {
@@ -105,8 +107,9 @@ export class Timeslot {
 
     toMapped() {
         return {
-            start: this.#start.valueOf() / 1000,
-            end: this.#start.valueOf() / 1000,
+            id: this.#id,
+            start: Math.floor(this.#start.getTime() / 1000),
+            end: Math.floor(this.#end.getTime() / 1000),
         };
     }
 
@@ -125,7 +128,15 @@ export class Timeslot {
         return this.fromMapped(JSON.parse(data));
     }
 
-    static fromMapped({ start, end }: { start: number; end: number }) {
-        return new this(new Date(start * 1000), new Date(end * 1000));
+    static fromMapped({
+        id,
+        start,
+        end,
+    }: {
+        id: number;
+        start: number;
+        end: number;
+    }) {
+        return new this(new Date(start * 1000), new Date(end * 1000), id);
     }
 }

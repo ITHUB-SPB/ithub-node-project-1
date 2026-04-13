@@ -8,14 +8,12 @@ export default class AreaController {
 
         const totalItems = areas.length;
 
-        const data = {
-            areas,
-            totalItems,
-        };
-
         return {
             statusCode: 200,
-            data,
+            data: {
+                areas,
+                totalItems,
+            },
         };
     }
 }
