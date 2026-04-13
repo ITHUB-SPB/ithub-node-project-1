@@ -1,33 +1,21 @@
-import { createServer } from 'node:http';
-
-import Router from './lib/router.js'
-import { RequestParser } from './lib/requestParser.js';
+import express from 'express';
 
 // import { bookingRoutes } from './booking/booking.router.js';
 import { areaRoutes } from './area/area.router.js'
 
-const router = new Router();
-for (const { method, resource, handler } of [...areaRoutes]) {
-    router.register({ method, resource }, handler);
-}
 
-const server = createServer(async (request, response) => {
-    const requestParser = new RequestParser(request)
+const app = express()
 
-    const { method, resource, params, payload } = await requestParser.toObject();
+app.use(express.json())
 
-    const { statusCode, data } = router.handle({ method, resource })({
-        params,
-        payload,
-    });
+app.use('/areas', areaRoutes)
 
-    response.writeHead(statusCode, undefined, {
-        'Content-Type': 'application/json',
-    });
+app.get('/health', (_, response) => {
+    return response.json({
+        status: "OK"
+    })
+})
 
-    response.end(JSON.stringify(data));
-});
-
-server.listen(3000, () => {
+app.listen(3000, () => {
     console.log(`API server listening: http://localhost:3000`);
 });

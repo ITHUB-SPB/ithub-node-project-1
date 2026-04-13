@@ -1,10 +1,14 @@
+import { type Request, type Response } from 'express';
+import * as v from 'valibot'
 import AreaService from './area.service.js';
 import * as schema from './area.schema.js';
 
 export default class AreaController {
-    // TODO
-    static findAll(): schema.AreasResponseSchema {
-        const areas = AreaService.findAll() // TODO
+    static findAll(request: Request, response: Response): Response<schema.AreasResponseSchema> {
+        const queryParams = v.parse(schema.areasQuerySchema, request.query)
+        
+        const areas = AreaService.findAll(queryParams)
+
         const totalItems = areas.length
 
         const data = {
@@ -12,9 +16,7 @@ export default class AreaController {
             totalItems
         }
 
-        return {
-            statusCode: 200,
-            data,
-        };
+        response.statusCode = 200
+        return response.json(data)
     }
 }
