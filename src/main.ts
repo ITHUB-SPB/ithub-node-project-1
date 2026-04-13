@@ -21,7 +21,7 @@ const rooms = [
     { id: 3, title: "B-200", capacity: '5-10' }
 ]
 
-app.get('/', (request: Request, response: Response) => {
+app.get('/', (_: Request, response: Response) => {
     // работать ajax-запросами
     response.render('partials/index', { rooms })
 })
