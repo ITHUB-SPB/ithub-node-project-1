@@ -1,34 +1,5 @@
+import { totalmem } from 'node:os';
 import * as v from 'valibot';
-
-const paginationSchema = v.object({
-    limit: v.optional(
-        v.pipe(
-            v.union([
-                v.pipe(v.string(), v.transform(Number), v.number()),
-                v.number(),
-            ]),
-            v.integer(), v.minValue(1), v.maxValue(50)
-        )
-    ),
-    offset: v.optional(
-        v.pipe(
-            v.union([
-                v.pipe(v.string(), v.transform(Number), v.number()),
-                v.number(),
-            ]),
-            v.integer(), v.minValue(1)
-        )
-    ),
-});
-
-const filterSchema = v.object({
-    filter: v.optional(v.string()),
-});
-
-export const areasQuerySchema = v.object({
-    ...paginationSchema.entries,
-    ...filterSchema.entries
-})
 
 const areaSchema = v.object({
     id: v.pipe(v.number(), v.integer(), v.minValue(1)),
@@ -41,11 +12,9 @@ export const areasResponseSchema = v.strictObject({
     statusCode: v.literal(200),
     data: v.object({
         areas: areasSchema,
-        totalItems: v.number()
+        totalItems: v.pipe(v.number(),v.integer(),v.minValue(0))
     })
 })
 
-export type AreasQuerySchema = v.InferOutput<typeof areasQuerySchema>
 export type AreasSchema = v.InferOutput<typeof areasSchema>
 export type AreasResponseSchema = v.InferOutput<typeof areasResponseSchema>
-

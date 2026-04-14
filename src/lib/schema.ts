@@ -1,7 +1,7 @@
 import * as v from 'valibot';
 
 export const resourceSchema = v.picklist(
-    ['/areas', '/bookings'],
+    ['/areas', '/bookings','/timeslots'],
     'Неизвестный ресурс',
 );
 
@@ -34,11 +34,15 @@ const sortingSchema = v.object({
     sort: v.optional(v.string()),
 });
 
-export const queryParamsSchema = v.object({
-    ...paginationSchema.entries,
-    ...filterSchema.entries,
-    ...sortingSchema.entries,
-});
+export const queryParamsSchema = v.partial(
+    v.object({
+        limit: v.pipe(v.string(), v.transform(Number), v.integer()),
+        offset: v.pipe(v.string(), v.transform(Number), v.integer()),
+        filter: v.string(),
+        sort: v.string(),
+    })
+);
+
 
 export const paramsSchema = v.object({
     pathParams: pathParamsSchema,

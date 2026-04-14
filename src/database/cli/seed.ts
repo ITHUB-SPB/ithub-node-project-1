@@ -109,21 +109,18 @@ function seedTimeslots() {
         throw new Error('Таблица timeslots уже содержит записи');
     }
 
-    const timeslots = [
-        ['10:00', '11:00'],
-        ['11:00', '12:00'],
-        ['12:00', '13:00'],
-        ['14:00', '15:00'],
-        ['15:00', '16:00'],
-        ['16:00', '18:00'],
-    ]
+    // TODO
+    const timeslots = faker.helpers.multiple(() => ({
+        start: faker.number.int({ min: 1, max: 200 }),
+        end: faker.number.int({ min: 1, max: 200 }),
+    }), { count: 10 });
 
     const insertStatement = connection.prepare(
         'insert into timeslots (start, end) values (?, ?)',
     );
 
-    for (const timeslot of timeslots) {
-        insertStatement.run(...timeslot);
+    for (const { start, end } of timeslots) {
+        insertStatement.run(start, end);
     }
 
     console.log(
@@ -135,30 +132,30 @@ function seedTimeslots() {
 
 function seedBookings() {
     const countStatement = connection.prepare('select * from bookings');
-
     if (countStatement.all().length > 0) {
         throw new Error('Таблица bookings уже содержит записи');
     }
 
-    // const userIdentificators = connection.prepare('select id from users').all()
-    // const startDates = faker.helpers.multiple(() => faker.date.past(), { count: 20 });
-    // const endDates = faker.helpers.multiple(() => faker.date.recent(), { count: 20 });
+    // TODO
+    const userIdentificators = connection.prepare('select id from users').all()
+    const startDates = faker.helpers.multiple(() => faker.date.past(), { count: 20 });
+    const endDates = faker.helpers.multiple(() => faker.date.recent(), { count: 20 });
 
-    // const insertStatement = connection.prepare(
-    //     'insert into bookings (start, end, userId) values (?, ?, ?)',
-    // );
+    const insertStatement = connection.prepare(
+        'insert into bookings (start, end, userId) values (?, ?, ?)',
+    );
 
-    // for (const elementIx in userIdentificators) {
-    //     insertStatement.run(
-    //         startDates[elementIx]!.getTime(),
-    //         endDates[elementIx]!.getTime(),
-    //         userIdentificators[elementIx]!['id']
-    //     );
-    // }
+    for (const elementIx in userIdentificators) {
+        insertStatement.run(
+            startDates[elementIx]!.getTime(),
+            endDates[elementIx]!.getTime(),
+            userIdentificators[elementIx]!['id']??null
+        );
+    }
 
-    // console.log(
-    //     chalk.green(
-    //         `✔ Было добавлено ${countStatement.all().length} записей в bookings`,
-    //     ),
-    // );
+    console.log(
+        chalk.green(
+            `✔ Было добавлено ${countStatement.all().length} записей в bookings`,
+        ),
+    );
 }

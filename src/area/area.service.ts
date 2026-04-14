@@ -1,15 +1,30 @@
-import * as v from 'valibot'
-import connection from '../database/connection.js'
-import { areasSchema, type AreasSchema, type AreasQuerySchema } from './area.schema.js'
-
+import * as v from "valibot";
+import connection from "../database/connection.js";
+import { areasSchema, type AreasSchema } from "./area.schema.js";
+import type { Params } from "../lib/schema.js";
 
 export default class AreaService {
-    static findAll(queryParams: AreasQuerySchema): AreasSchema {
-        const statement = connection.prepare('select * from areas order by title')
-        const areas = statement.all()
+  static findAll(params: Params): AreasSchema {
+    const { filter = "", limit = 10, offset = 0 } = params.queryParams;
 
-        console.log('!', queryParams)
+    let query = "SELECT * FROM areas";
+    const queryParams: (string | number)[] = [];
 
-        return v.parse(areasSchema, areas)
+    if (filter) {
+      query += " WHERE title LIKE ?";
+      queryParams.push(`%${filter}%`);
     }
+
+    query += " ORDER BY title";
+
+    if (limit !== undefined && offset !== undefined) {
+      query += " LIMIT ? OFFSET ?";
+      queryParams.push(limit, offset);
+    }
+
+    const statement = connection.prepare(query);
+    const areas = statement.all(...queryParams) as any[];
+
+    return v.parse(areasSchema, areas);
+  }
 }
