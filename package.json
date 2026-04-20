@@ -5,6 +5,7 @@
         "format": "oxfmt {src,tests}/**/*.{js,ts}",
         "test": "vitest watch --reporter=dot",
         "test:cov": "vitest run --coverage",
+        "typecheck": "tsc --noEmit",
         "lint": "oxlint src --fix",
         "db:create": "tsx --no-warnings src/database/cli/index.js create",
         "db:reset": "tsx --no-warnings src/database/cli/index.js reset",
