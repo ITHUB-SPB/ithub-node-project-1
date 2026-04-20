@@ -4,10 +4,10 @@ import AreaService from './area.service.js';
 import * as schema from './area.schema.js';
 
 export default class AreaController {
-    static findAll(request: Request, response: Response): Response<schema.AreasResponseSchema> {
+    static async findAll(request: Request, response: Response): Promise<Response<schema.AreasResponseSchema>> {
         const queryParams = v.parse(schema.areasQuerySchema, request.query)
         
-        const areas = AreaService.findAll(queryParams)
+        const areas = await AreaService.findAll(queryParams)
 
         const totalItems = areas.length
 

@@ -45,6 +45,7 @@ export const areasResponseSchema = v.strictObject({
     })
 })
 
+export type AreaSchema = v.InferOutput<typeof areaSchema>
 export type AreasQuerySchema = v.InferOutput<typeof areasQuerySchema>
 export type AreasSchema = v.InferOutput<typeof areasSchema>
 export type AreasResponseSchema = v.InferOutput<typeof areasResponseSchema>
