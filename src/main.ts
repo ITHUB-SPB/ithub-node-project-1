@@ -21,9 +21,9 @@ const rooms = [
     { id: 3, title: "B-200", capacity: '5-10' }
 ]
 
-app.get('/', (_: Request, response: Response) => {
+app.get('/', (request: Request, response: Response) => {
     // работать ajax-запросами
-    response.render('partials/index', { rooms })
+    response.render('index', { rooms })
 })
 
 app.get('/rooms/:roomId', (request: Request, response: Response) => {
@@ -31,7 +31,7 @@ app.get('/rooms/:roomId', (request: Request, response: Response) => {
     const room = rooms.find(room => room.id === Number(roomId))
 
     // работать классически
-    response.render('partials/detail', { room })
+    response.render('detail', { room })
 })
 
 app.get('/booking/:roomId', (request: Request, response: Response) => {
@@ -39,12 +39,10 @@ app.get('/booking/:roomId', (request: Request, response: Response) => {
     const room = rooms.find(room => room.id === Number(roomId))
 
     // работать классически
-    response.render('partials/booking', { room })
+    response.render('booking', { room })
 })
 
 app.use('/api/areas', areaRoutes)
-app.use('/api/bookings', bookingRoutes)
-app.use('/api/timeslots', timeslotRoutes)
 
 app.get('/api/health', (_, response) => {
     return response.json({
