@@ -1,5 +1,5 @@
 import * as v from 'valibot'
-import db from '../database/connection.js'
+import db from '../../database/connection.js'
 import { areasSchema, type AreasSchema, type AreasQuerySchema } from './area.schema.js'
 
 
