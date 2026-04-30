@@ -1,7 +1,7 @@
-import * as v from 'valibot';
+import * as v from "valibot";
 
 export const timeslotsQuerySchema = v.object({
-  part: v.optional(v.picklist(['AM', 'PM'])),
+  part: v.optional(v.picklist(["AM", "PM"])),
 });
 
 export const timeslotSchema = v.object({
@@ -20,4 +20,6 @@ export const timeslotsResponseSchema = v.object({
 export type TimeslotSchema = v.InferOutput<typeof timeslotSchema>;
 export type TimeslotsQuerySchema = v.InferOutput<typeof timeslotsQuerySchema>;
 export type TimeslotsSchema = v.InferOutput<typeof timeslotsSchema>;
-export type TimeslotsResponseSchema = v.InferOutput<typeof timeslotsResponseSchema>;
+export type TimeslotsResponseSchema = v.InferOutput<
+  typeof timeslotsResponseSchema
+>;

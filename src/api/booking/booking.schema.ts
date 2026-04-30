@@ -16,4 +16,6 @@ export const bookingsResponseSchema = v.object({
 
 export type BookingSchema = v.InferOutput<typeof bookingSchema>;
 export type BookingsSchema = v.InferOutput<typeof bookingsSchema>;
-export type BookingsResponseSchema = v.InferOutput<typeof bookingsResponseSchema>;
+export type BookingsResponseSchema = v.InferOutput<
+  typeof bookingsResponseSchema
+>;

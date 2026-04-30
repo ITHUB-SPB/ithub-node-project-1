@@ -6,7 +6,9 @@ const numberFromQuerySchema = v.union([
 ]);
 
 export const areasQuerySchema = v.object({
-  limit: v.optional(v.pipe(numberFromQuerySchema, v.integer(), v.minValue(1), v.maxValue(50))),
+  limit: v.optional(
+    v.pipe(numberFromQuerySchema, v.integer(), v.minValue(1), v.maxValue(50)),
+  ),
   offset: v.optional(v.pipe(numberFromQuerySchema, v.integer(), v.minValue(0))),
   filter: v.optional(v.string()),
 });
