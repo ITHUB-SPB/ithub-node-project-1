@@ -1,28 +1,35 @@
 import * as v from 'valibot';
 
 const numberFromQuerySchema = v.union([
-  v.pipe(v.string(), v.transform(Number), v.number()),
-  v.number(),
+    v.pipe(v.string(), v.transform(Number), v.number()),
+    v.number(),
 ]);
 
 export const areasQuerySchema = v.object({
-  limit: v.optional(
-    v.pipe(numberFromQuerySchema, v.integer(), v.minValue(1), v.maxValue(50)),
-  ),
-  offset: v.optional(v.pipe(numberFromQuerySchema, v.integer(), v.minValue(0))),
-  filter: v.optional(v.string()),
+    limit: v.optional(
+        v.pipe(
+            numberFromQuerySchema,
+            v.integer(),
+            v.minValue(1),
+            v.maxValue(50),
+        ),
+    ),
+    offset: v.optional(
+        v.pipe(numberFromQuerySchema, v.integer(), v.minValue(0)),
+    ),
+    filter: v.optional(v.string()),
 });
 
 export const areaSchema = v.object({
-  id: v.pipe(v.number(), v.integer(), v.minValue(1)),
-  title: v.pipe(v.string(), v.nonEmpty()),
+    id: v.pipe(v.number(), v.integer(), v.minValue(1)),
+    title: v.pipe(v.string(), v.nonEmpty()),
 });
 
 export const areasSchema = v.array(areaSchema);
 
 export const areasResponseSchema = v.object({
-  areas: areasSchema,
-  totalItems: v.number(),
+    areas: areasSchema,
+    totalItems: v.number(),
 });
 
 export type AreaSchema = v.InferOutput<typeof areaSchema>;

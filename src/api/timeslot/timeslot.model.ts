@@ -1,135 +1,135 @@
 export class SlotValueError extends TypeError {
-  constructor(message: string | undefined) {
-    super(`Value must be a Timeslot ${message ? message : ""}`);
-  }
+    constructor(message: string | undefined) {
+        super(`Value must be a Timeslot ${message ? message : ''}`);
+    }
 }
 
 export class SlotRelationError extends RangeError {
-  constructor(start: Date, end: Date) {
-    const localeStart = start.toLocaleString("ru");
-    const localeEnd = end.toLocaleString("ru");
+    constructor(start: Date, end: Date) {
+        const localeStart = start.toLocaleString('ru');
+        const localeEnd = end.toLocaleString('ru');
 
-    super(
-      `Value of start (${localeStart}) must be less than end (${localeEnd})`,
-    );
-  }
+        super(
+            `Value of start (${localeStart}) must be less than end (${localeEnd})`,
+        );
+    }
 }
 
 export class Timeslot {
-  #start: Date;
-  #end: Date;
+    #start: Date;
+    #end: Date;
 
-  constructor(start: Date, end: Date) {
-    this.#start = this.setStart(start);
-    this.#end = this.setEnd(end);
-  }
-
-  #isDate(value: any) {
-    return value instanceof Date;
-  }
-
-  static isIntersect(timeslot: any, otherTimeslot: any) {
-    if (!(timeslot instanceof Timeslot)) {
-      throw new SlotValueError(timeslot.toString());
+    constructor(start: Date, end: Date) {
+        this.#start = this.setStart(start);
+        this.#end = this.setEnd(end);
     }
 
-    if (!(otherTimeslot instanceof Timeslot)) {
-      throw new SlotValueError(otherTimeslot.toString());
+    #isDate(value: any) {
+        return value instanceof Date;
     }
 
-    return (
-      (otherTimeslot.start > timeslot.start &&
-        otherTimeslot.end < timeslot.end) ||
-      (otherTimeslot.start < timeslot.start &&
-        otherTimeslot.end > timeslot.start)
-    );
-  }
+    static isIntersect(timeslot: any, otherTimeslot: any) {
+        if (!(timeslot instanceof Timeslot)) {
+            throw new SlotValueError(timeslot.toString());
+        }
 
-  getStart() {
-    return this.#start;
-  }
+        if (!(otherTimeslot instanceof Timeslot)) {
+            throw new SlotValueError(otherTimeslot.toString());
+        }
 
-  get start() {
-    return this.#start;
-  }
-
-  getEnd() {
-    return this.#end;
-  }
-
-  get end() {
-    return this.#end; // либо this.getEnd()
-  }
-
-  get AM() {
-    return (
-      this.#end.getHours() < 12 ||
-      (this.#end.getHours() === 12 && this.#end.getMinutes() === 0)
-    );
-  }
-
-  get PM() {
-    return (
-      this.#start.getHours() > 12 ||
-      (this.#start.getHours() === 12 && this.#start.getMinutes() === 0)
-    );
-  }
-
-  setStart(newDate: any) {
-    if (!this.#isDate(newDate)) {
-      throw new TypeError("Value must be a Time");
+        return (
+            (otherTimeslot.start > timeslot.start &&
+                otherTimeslot.end < timeslot.end) ||
+            (otherTimeslot.start < timeslot.start &&
+                otherTimeslot.end > timeslot.start)
+        );
     }
 
-    if (this.#end && newDate >= this.#end) {
-      throw new SlotRelationError(newDate, this.#end);
+    getStart() {
+        return this.#start;
     }
 
-    return newDate;
-  }
-
-  set start(newDate) {
-    this.setStart(newDate);
-  }
-
-  setEnd(newDate: any) {
-    if (!this.#isDate(newDate)) {
-      throw new TypeError("Value must be a Time");
+    get start() {
+        return this.#start;
     }
 
-    if (newDate <= this.#start) {
-      throw new SlotRelationError(this.#start, newDate);
+    getEnd() {
+        return this.#end;
     }
 
-    return newDate;
-  }
+    get end() {
+        return this.#end; // либо this.getEnd()
+    }
 
-  set end(newDate) {
-    this.setEnd(newDate);
-  }
+    get AM() {
+        return (
+            this.#end.getHours() < 12 ||
+            (this.#end.getHours() === 12 && this.#end.getMinutes() === 0)
+        );
+    }
 
-  toMapped() {
-    return {
-      start: this.#start.valueOf() / 1000,
-      end: this.#start.valueOf() / 1000,
-    };
-  }
+    get PM() {
+        return (
+            this.#start.getHours() > 12 ||
+            (this.#start.getHours() === 12 && this.#start.getMinutes() === 0)
+        );
+    }
 
-  toString() {
-    return {
-      start: this.#start.toLocaleString("ru"),
-      end: this.#end.toLocaleString("ru"),
-    };
-  }
+    setStart(newDate: any) {
+        if (!this.#isDate(newDate)) {
+            throw new TypeError('Value must be a Time');
+        }
 
-  toJSON() {
-    return JSON.stringify(this.toMapped());
-  }
+        if (this.#end && newDate >= this.#end) {
+            throw new SlotRelationError(newDate, this.#end);
+        }
 
-  static fromJSON(data: string) {
-    return this.fromMapped(JSON.parse(data));
-  }
+        return newDate;
+    }
 
-  static fromMapped({ start, end }: { start: number; end: number }) {
-    return new this(new Date(start * 1000), new Date(end * 1000));
-  }
+    set start(newDate) {
+        this.setStart(newDate);
+    }
+
+    setEnd(newDate: any) {
+        if (!this.#isDate(newDate)) {
+            throw new TypeError('Value must be a Time');
+        }
+
+        if (newDate <= this.#start) {
+            throw new SlotRelationError(this.#start, newDate);
+        }
+
+        return newDate;
+    }
+
+    set end(newDate) {
+        this.setEnd(newDate);
+    }
+
+    toMapped() {
+        return {
+            start: this.#start.valueOf() / 1000,
+            end: this.#start.valueOf() / 1000,
+        };
+    }
+
+    toString() {
+        return {
+            start: this.#start.toLocaleString('ru'),
+            end: this.#end.toLocaleString('ru'),
+        };
+    }
+
+    toJSON() {
+        return JSON.stringify(this.toMapped());
+    }
+
+    static fromJSON(data: string) {
+        return this.fromMapped(JSON.parse(data));
+    }
+
+    static fromMapped({ start, end }: { start: number; end: number }) {
+        return new this(new Date(start * 1000), new Date(end * 1000));
+    }
 }
