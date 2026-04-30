@@ -1,100 +1,43 @@
+import { sql } from 'kysely';
 import connection from '../connection.js';
-import chalk from 'chalk';
 
-export function createTables(isForce: boolean) {
-    if (isForce) {
-        connection.exec(`
-                drop table if exists users;
-                drop table if exists bookings;
-                drop table if exists timeslots;
-                drop table if exists areas;
-            `);
-        console.log(chalk.yellow('! Таблицы форсировано удалены'));
-    }
+export async function createTables() {
+    await sql`
+        create table if not exists users (
+            id integer primary key autoincrement,
+            username text not null,
+            createdAt text not null
+        )
+    `.execute(connection);
 
-    connection.exec(`create table if not exists users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username STRING UNIQUE,
-        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )`);
+    await sql`
+        create table if not exists areas (
+            id integer primary key autoincrement,
+            title text not null
+        )
+    `.execute(connection);
 
-    connection.exec(`create table if not exists areas (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title STRING UNIQUE
-    )`);
+    await sql`
+        create table if not exists timeslots (
+            id integer primary key autoincrement,
+            start text not null,
+            end text not null
+        )
+    `.execute(connection);
 
-    connection.exec(`create table if not exists timeslots (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        start VARCHAR(5) NOT NULL,
-        end VARCHAR(5) NOT NULL,
-    )`);
-
-    connection.exec(`create table if not exists bookings (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        timeslotId INTEGER NOT NULL,
-        userId INTEGER,
-        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (timeslotId) REFERENCES timeslots(id) ON DELETE CASCADE
-        FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
-    )`);
+    await sql`
+        create table if not exists bookings (
+            id integer primary key autoincrement,
+            timeslotId integer not null,
+            userId integer,
+            createdAt text not null
+        )
+    `.execute(connection);
 }
 
-export function resetTables(tables: string[]) {
-    if (tables.length === 0) {
-        connection.exec(`delete from users`);
-        connection.exec(`delete from bookings`);
-        connection.exec(`delete from areas`);
-        connection.exec(`delete from timeslots`);
-        console.log(
-            chalk.green(`✔ Таблица users была сброшена`),
-            chalk.green(`\n✔ Таблица bookings была сброшена`),
-            chalk.green(`\n✔ Таблица areas была сброшена`),
-            chalk.green(`\n✔ Таблица timeslots была сброшена`),
-        );
-        return;
-    }
-
-    const errors = [];
-
-    for (const table of tables) {
-        try {
-            switch (table) {
-                case 'users':
-                    connection.exec(`delete from users`);
-                    console.log(chalk.green(`✔ Таблица users была сброшена`));
-                    break;
-                case 'areas':
-                    connection.exec(`delete from areas`);
-                    console.log(chalk.green(`✔ Таблица areas была сброшена`));
-                    break;
-                case 'timeslots':
-                    connection.exec(`delete from timeslots`);
-                    console.log(
-                        chalk.green(`✔ Таблица timeslots была сброшена`),
-                    );
-                    break;
-                case 'bookings':
-                    connection.exec(`delete from bookings`);
-                    console.log(
-                        chalk.green(`✔ Таблица bookings была сброшена`),
-                    );
-                    break;
-                default:
-                    throw new Error(`Таблицы ${table} не существует`);
-            }
-        } catch (error) {
-            errors.push({
-                table,
-                message: (error as Error).message,
-            });
-        }
-    }
-
-    if (errors.length > 0) {
-        const message = errors
-            .map((e) => `- ${e.table}: ${e.message}`)
-            .join('\n');
-
-        throw new Error(`\n${message}`);
-    }
+export async function resetTables() {
+    await sql`delete from bookings`.execute(connection);
+    await sql`delete from users`.execute(connection);
+    await sql`delete from areas`.execute(connection);
+    await sql`delete from timeslots`.execute(connection);
 }

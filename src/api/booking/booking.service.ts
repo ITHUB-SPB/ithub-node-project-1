@@ -1,10 +1,10 @@
 import * as v from 'valibot';
-import { bookingsSchema } from './booking.schema.js';
+import { bookingsSchema, type BookingsSchema } from './booking.schema.js';
 
 export default class BookingService {
-  static async findAll() {
-    const bookings = [];
+    static async findAll() {
+        const bookings: BookingsSchema = [];
 
-    return v.parse(bookingsSchema, bookings);
-  }
+        return v.parse(bookingsSchema, bookings);
+    }
 }
