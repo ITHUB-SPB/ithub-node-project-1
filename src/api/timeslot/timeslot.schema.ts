@@ -1,14 +1,23 @@
 import * as v from 'valibot';
 
-const timeslotSchema = v.object({});
+export const timeslotsQuerySchema = v.object({
+  part: v.optional(v.picklist(['AM', 'PM'])),
+});
+
+export const timeslotSchema = v.object({
+  id: v.pipe(v.number(), v.integer(), v.minValue(1)),
+  start: v.string(),
+  end: v.string(),
+});
 
 export const timeslotsSchema = v.array(timeslotSchema);
 
-export const timeslotsResponseSchema = v.strictObject({
-    statusCode: v.literal(200),
-    data: v.object({}), // TODO
+export const timeslotsResponseSchema = v.object({
+  timeslots: timeslotsSchema,
+  totalItems: v.number(),
 });
 
-// TODO
-export type TimeslotsSchema = unknown;
-export type TimeslotsResponseSchema = unknown;
+export type TimeslotSchema = v.InferOutput<typeof timeslotSchema>;
+export type TimeslotsQuerySchema = v.InferOutput<typeof timeslotsQuerySchema>;
+export type TimeslotsSchema = v.InferOutput<typeof timeslotsSchema>;
+export type TimeslotsResponseSchema = v.InferOutput<typeof timeslotsResponseSchema>;
