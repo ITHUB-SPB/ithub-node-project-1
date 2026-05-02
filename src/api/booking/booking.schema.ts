@@ -37,3 +37,12 @@ export const bookingDeleteSchema = v.object({
         ),
     }),
 });
+
+export const bookingSchema = v.object({
+    id: v.pipe(v.number(), v.integer(), v.minValue(1)),
+    start: v.pipe(v.number(), v.integer()),
+    end: v.pipe(v.number(), v.integer()),
+    createdAt: v.pipe(v.number(), v.integer()),
+})
+
+export type BookingSchema = v.InferOutput<typeof bookingSchema>
