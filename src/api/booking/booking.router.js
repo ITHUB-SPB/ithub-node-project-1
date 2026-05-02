@@ -6,3 +6,4 @@ export const bookingRoutes = Router({ mergeParams: true })
 bookingRoutes.get('/', BookingController.find)
 bookingRoutes.post('/', BookingController.create)
 bookingRoutes.delete('/:id', BookingController.delete)
+//just comment 
