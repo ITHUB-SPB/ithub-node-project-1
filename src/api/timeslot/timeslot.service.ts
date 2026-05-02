@@ -1,24 +1,21 @@
-import { Timeslot } from './timeslot.model.js';
-import connection from '../../database/connection.js'
-
+import db from "../../database/connection.js";
 
 export default class TimeslotService {
-    static findAll(filter?: 'AM' | 'PM') {
-        const statement = connection.prepare('SELECT * FROM timeslots');
-        const rows = statement.all();
+    static async findAll(filter?: 'AM' | 'PM') {
+        let query = db.selectFrom('timeslots').selectAll()
 
-        let slots = rows.map(
-            (r: any) => new Timeslot(new Date(r.start), new Date(r.end))
-        );
+        const rows = await query.execute()
+
+        let slots = rows
 
         if (filter === 'AM') {
-            slots = slots.filter(s => s.isAM);
-        }
-        
-        if (filter === 'PM') {
-            slots = slots.filter(s => s.isPM);
+            slots = slots.filter((s: any) => new Date(s.start).getHours() < 12)
         }
 
-        return slots;
+        if (filter === 'PM') {
+            slots = slots.filter((s: any) => new Date(s.start).getHours() >= 12)
+        }
+
+        return slots
     }
 }

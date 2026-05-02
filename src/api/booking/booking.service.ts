@@ -1,35 +1,15 @@
-import * as v from 'valibot';
-
-import { Timeslot } from '../timeslot/timeslot.model.js';
-import * as schema from './booking.schema.js';
-import connection from '../../database/connection.js'
-
+import db from "../../database/connection.js";
 
 export default class BookingService {
-    static findAll() {
-        return bookings.map((bookingMap: any) =>
-            Timeslot.fromMapped(bookingMap),
-        );            
+    static async findAll() {
+        return await db.selectFrom('bookings').selectAll().execute()
     }
 
-    static create(payload: any) {
-        bookings.push({
-            ...payload.toMapped(),
-            createdAt: Math.floor(Date.now() / 1000),
-        });
-
-        return bookings.at(-1)
+    static async create(payload: any) {
+        return await db.insertInto('bookings').values(payload).returningAll().executeTakeFirst()
     }
 
-    static delete(idToDelete: number) {
-        const indexToDelete = bookings.findIndex(
-            (booking: any) => booking.id === idToDelete,
-        );
-
-        if (indexToDelete === -1) {
-            throw new Error(`Record with id ${idToDelete} not found`)
-        }
-
-        bookings.splice(indexToDelete, 1);
+    static async delete(id: number) {
+        await db.deleteFrom('bookings').where('id', '=', id).execute()
     }
 }

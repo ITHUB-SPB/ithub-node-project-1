@@ -3,17 +3,6 @@ import TimeslotService from './timeslot.service.js';
 import * as v from 'valibot'
 import * as schema from './timeslot.schema.js'
 
-// export default class TimeslotController {
-//     static findAll({ query }: any) {
-//         const slots = TimeslotService.findAll(query?.period);
-
-//         return {
-//             statusCode: 200,
-//             data: { slots },
-//         };
-//     }
-// }
-
 export default class TimeslotController {
     static async findAll(request: Request, response: Response): Promise<Response> {
         try {
@@ -22,7 +11,7 @@ export default class TimeslotController {
                 request.query
             )
 
-            const slots = TimeslotService.findAll(query.period)
+            const slots = await TimeslotService.findAll(query.period)
 
             return response.status(200).json({
                 slots,

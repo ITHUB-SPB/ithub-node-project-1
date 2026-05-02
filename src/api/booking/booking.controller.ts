@@ -7,10 +7,10 @@ import * as schema from './booking.schema.js';
 
 export default class BookingController {
     static async find(request: Request, response: Response): Promise<Response> {
-        const bookings = BookingService.findAll()
+        const bookings = await BookingService.findAll()
 
         const data = {
-            bookings: bookings.map((b: any) => b.toString()),
+            bookings: bookings,
         }
 
         return response.status(200).json(data)
@@ -25,7 +25,7 @@ export default class BookingController {
 
             const slot = Timeslot.fromMapped(payload)
 
-            const createdBooking = BookingService.create({
+            const createdBooking = await BookingService.create({
                 ...slot.toMapped(),
                 createdAt: Math.floor(Date.now() / 1000)
             })
@@ -55,7 +55,7 @@ export default class BookingController {
                 }
             ).params.pathParams.id
 
-            BookingService.delete(id)
+            await BookingService.delete(id)
 
             return response.status(204).json({
                 message: `Запись с id ${id} была удалена`
