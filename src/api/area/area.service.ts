@@ -12,13 +12,8 @@ export default class AreaService {
             statement = statement.limit(queryParams.limit).offset(offset)
         }
 
-        // TODO уточнить фильтры (а именно, фильтровать по множественным id комнат)
-        // вариант запроса №1 ?filter[id][in]=1,3,4
-        // вариант запроса №2 ?id[in]=1,3,4
-        if (queryParams.filter) {
-            // TODO перенести это действие в валибот
-            const ids = queryParams.filter.split(',').map(Number)
-            statement = statement.where('areas.id', 'in', ids)
+        if (queryParams.filter?.length) {
+            statement = statement.where('areas.id', 'in', queryParams.filter)
         }
 
         // const statement = connection.prepare('select * from areas order by title')

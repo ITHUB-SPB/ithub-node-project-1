@@ -22,8 +22,16 @@ const paginationSchema = v.object({
 });
 
 const filterSchema = v.object({
-    filter: v.optional(v.string()),
-});
+    filter: v.optional(
+        v.pipe(
+            v.string(),
+            v.transform((value) => value
+                .split(',')
+                .map((v) => Number(v))
+                .filter((n) => Number.isInteger(n) && n > 0)
+        )
+    ),
+)});
 
 export const areasQuerySchema = v.object({
     ...paginationSchema.entries,
