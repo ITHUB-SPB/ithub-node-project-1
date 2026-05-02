@@ -1,34 +1,55 @@
-import { createServer } from 'node:http';
+import express, { type Request, type Response } from 'express';
+import { engine } from 'express-handlebars';
+// import { bookingRoutes } from './booking/booking.router.js';
+import { areaRoutes } from './api/area/area.router.js'
 
-import Router from './lib/router.js'
-import { RequestParser } from './lib/requestParser.js';
 
-import { areaRoutes } from './area/area.router.js'
-import { timeslotRoutes } from './timeslot/timeslot.router.js'
-import { bookingRoutes } from './booking/booking.router.js'
+const app = express()
 
-const router = new Router();
-for (const { method, resource, handler } of [...areaRoutes, ...bookingRoutes, ...timeslotRoutes]) {
-    router.register({ method, resource }, handler); // я не разобрался как это фиксить, поэтому решил оставить как есть
-}
+app.engine('handlebars', engine())
+app.set('view engine', 'handlebars')
+app.set('views', import.meta.dirname + '/views')
 
-const server = createServer(async (request, response) => {
-    const requestParser = new RequestParser(request)
+app.use('/public', express.static('public'))
 
-    const { method, resource, params, payload } = await requestParser.toObject();
+app.use(express.json())
 
-    const { statusCode, data } = router.handle({ method, resource })({
-        params,
-        payload,
-    });
+const rooms = [
+    { id: 1, title: "A-101", capacity: '20-24' },
+    { id: 2, title: "A-102", capacity: '10-14' },
+    { id: 3, title: "B-200", capacity: '5-10' }
+]
 
-    response.writeHead(statusCode, undefined, {
-        'Content-Type': 'application/json',
-    });
+app.get('/', (request: Request, response: Response) => {
+    // работать ajax-запросами
+    response.render('partials/index', { rooms })
+})
 
-    response.end(JSON.stringify(data));
-});
+app.get('/rooms/:roomId', (request: Request, response: Response) => {
+    const roomId = request.params["roomId"]
+    const room = rooms.find(room => room.id === Number(roomId))
 
-server.listen(3000, () => {
-    console.log(`API server listening: http://localhost:3000`);
+    // работать классически
+    response.render('partials/detail', { room })
+})
+
+app.get('/booking/:roomId', (request: Request, response: Response) => {
+    const roomId = request.params["roomId"]
+    const room = rooms.find(room => room.id === Number(roomId))
+
+    // работать классически
+    response.render('partials/booking', { room })
+})
+
+app.use('/api/areas', areaRoutes)
+
+app.get('/api/health', (_, response) => {
+    return response.json({
+        status: "OK"
+    })
+})
+
+app.listen(3000, () => {
+    console.log(`App listening: http://localhost:3000/`);
+    console.log(`API listening: http://localhost:3000/api/`);
 });
