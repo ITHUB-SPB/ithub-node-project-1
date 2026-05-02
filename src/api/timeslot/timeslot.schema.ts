@@ -15,5 +15,6 @@ export const timeslotsQuerySchema = v.object({
     )
 })
 
+export type TimeslotSchema = v.InferOutput<typeof timeslotSchema>
 export type TimeslotsSchema = v.InferOutput<typeof timeslotsSchema>
 export type TimeslotsQuerySchema = v.InferOutput<typeof timeslotsQuerySchema>

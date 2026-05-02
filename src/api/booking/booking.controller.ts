@@ -30,7 +30,7 @@ export default class BookingController {
                 createdAt: Math.floor(Date.now() / 1000)
             })
 
-            return response.status(200).json({
+            return response.status(201).json({
                 booking: createdBooking,
             })
         } catch (error) {
