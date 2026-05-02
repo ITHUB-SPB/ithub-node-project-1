@@ -12,6 +12,6 @@ const dialect = new SqliteDialect({
     database: connection
 })
 
-const db = new Kysely<Database>({ dialect })
+export const db = new Kysely<Database>({ dialect })
 
-export default db;
+export default connection;

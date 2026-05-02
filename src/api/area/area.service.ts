@@ -1,6 +1,6 @@
 import * as v from 'valibot'
-import db from '../../database/connection.js'
-import { areasSchema, type AreasSchema, type AreasQuerySchema } from './area.schema.js'
+import { db } from '../../database/connection.js'
+import { areasSchema, type AreasSchema, type AreasQuerySchema, type AreaSchema } from './area.schema.js'
 
 
 export default class AreaService {
@@ -25,5 +25,10 @@ export default class AreaService {
         const areas = await statement.execute()
 
         return v.parse(areasSchema, areas)
+    }
+
+    static async findOne(id: number): Promise<AreaSchema | undefined> {
+        const area = await db.selectFrom('areas').selectAll().where('id', '=', id).executeTakeFirst()
+        return area
     }
 }

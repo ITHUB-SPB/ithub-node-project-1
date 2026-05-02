@@ -1,35 +1,42 @@
 import * as v from 'valibot';
 
-import { Timeslot } from './booking.model.js';
 import * as schema from './booking.schema.js';
-import connection from '../../database/connection.js'
+import { db } from '../../database/connection.js'
 
 
 export default class BookingService {
-    static findAll() {
-        return bookings.map((bookingMap) =>
-            Timeslot.fromMapped(bookingMap),
-        );            
-    }
+    static async findAll(queryParams = {}) {
+        let statement = db.selectFrom('bookings').selectAll()
 
-    static create(payload) {
-        bookings.push({
-            ...payload.toMapped(),
-            createdAt: Math.floor(Date.now() / 1000),
-        });
-
-        return bookings.at(-1)
-    }
-
-    static delete(idToDelete) {
-        const indexToDelete = bookings.findIndex(
-            (booking) => booking.id === idToDelete,
-        );
-
-        if (indexToDelete === -1) {
-            throw new Error(`Record with id ${idToDelete} not found`)
+        if (queryParams.limit) {
+            const offset = queryParams.offset || 0
+            statement = statement.limit(queryParams.limit).offset(offset)
         }
 
-        bookings.splice(indexToDelete, 1);
+        const bookings = await statement.execute()
+        return v.parse(schema.bookingsSchema, bookings)
+    }
+
+    static async create(payload) {
+        const booking = await db.insertInto('bookings')
+            .values({
+                timeslotId: payload.timeslotId,
+                userId: payload.userId || null,
+                createdAt: new Date().toISOString()
+            })
+            .returningAll()
+            .executeTakeFirst()
+
+        return booking
+    }
+
+    static async delete(idToDelete) {
+        const booking = await db.deleteFrom('bookings')
+            .where('id', '=', idToDelete)
+            .executeTakeFirst()
+
+        if (!booking) {
+            throw new Error(`Record with id ${idToDelete} not found`)
+        }
     }
 }

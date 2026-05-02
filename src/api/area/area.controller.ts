@@ -19,4 +19,20 @@ export default class AreaController {
         response.statusCode = 200
         return response.json(data)
     }
+
+    static async findOne(request: Request, response: Response) {
+        const id = parseInt(request.params["id"] as string)
+        if (isNaN(id)) {
+            response.statusCode = 400
+            return response.json({ message: 'Invalid id' })
+        }
+        const area = await AreaService.findOne(id)
+        if (area) {
+            response.statusCode = 200
+            return response.json(area)
+        } else {
+            response.statusCode = 404
+            return response.json({ message: 'Area not found' })
+        }
+    }
 }
