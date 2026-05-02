@@ -1,6 +1,6 @@
 import * as v from 'valibot';
 
-import { Timeslot } from './booking.model.js';
+import { Timeslot } from '../timeslot/timeslot.model.js';
 import * as schema from './booking.schema.js';
 import connection from '../../database/connection.js'
 

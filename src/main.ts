@@ -1,8 +1,9 @@
 import express, { type Request, type Response } from 'express';
 import { engine } from 'express-handlebars';
-// import { bookingRoutes } from './booking/booking.router.js';
-import { areaRoutes } from './api/area/area.router.js'
 
+import { areaRoutes } from './api/area/area.router.js'
+import { bookingRoutes } from './api/booking/booking.router.js';
+import { timeslotRoutes } from './api/timeslot/timeslot.router.js';
 
 const app = express()
 
@@ -42,6 +43,8 @@ app.get('/booking/:roomId', (request: Request, response: Response) => {
 })
 
 app.use('/api/areas', areaRoutes)
+app.use('/api/bookings', bookingRoutes)
+app.use('/api/timeslots', timeslotRoutes)
 
 app.get('/api/health', (_, response) => {
     return response.json({

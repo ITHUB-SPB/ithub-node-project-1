@@ -1,3 +1,4 @@
+import { type Request, type Response } from 'express';
 import * as v from 'valibot';
 
 import { Timeslot } from '../timeslot/timeslot.model.js';
@@ -5,77 +6,66 @@ import BookingService from './booking.service.js'
 import * as schema from './booking.schema.js';
 
 export default class BookingController {
-    static find() {
+    static async find(request: Request, response: Response): Promise<Response> {
         const bookings = BookingService.findAll()
 
-        return {
-            statusCode: 200,
-            data: {
-                bookings: bookings.map((bookingObject: any) =>
-                    bookingObject.toString(),
-                ),
-            },
-        };
+        const data = {
+            bookings: bookings.map((b: any) => b.toString()),
+        }
+
+        return response.status(200).json(data)
     }
 
-    static create(payload: string) {
+    static async create(request: Request, response: Response): Promise<Response> {
         try {
-            const payloadObject = v.parse(
+            const payload = v.parse(
                 schema.newBookingInSchema,
-                JSON.parse(payload),
-            );
+                request.body
+            )
 
-            const slotObject = Timeslot.fromMapped(payloadObject);
+            const slot = Timeslot.fromMapped(payload)
 
             const createdBooking = BookingService.create({
-                    ...slotObject.toMapped(),
-                    createdAt: Math.floor(Date.now() / 1000),
+                ...slot.toMapped(),
+                createdAt: Math.floor(Date.now() / 1000)
             })
 
-            return v.parse(schema.newBookingOutSchema, {
-                statusCode: 201,
-                data: {
-                    booking: createdBooking,
-                },
-            });
+            return response.status(200).json({
+                booking: createdBooking,
+            })
         } catch (error) {
-            console.error(error);
+            const message = error instanceof Error ? error.message : String(error)
 
-            const message = error instanceof Error ? error.message : String(error);
-
-            return {
-                statusCode: 400,
-                data: {
-                    error: message,
-                },
-            };
+            return response.status(400).json({
+                error: message,
+            })
         }
     }
 
-    static delete(options: unknown) {
+    static async delete(request: Request, response: Response): Promise<Response> {
         try {
-            const { params } = v.parse(schema.bookingDeleteSchema, options);
-            const idToDelete = params.pathParams.id;
-            
-            BookingService.delete(params.pathParams.id)
-            
-            return {
-                statusCode: 204,
-                data: {
-                    message: `Record with id ${idToDelete} successfully removed`,
-                },
-            };
-        } catch (error: unknown) {
-            console.error(error);
+            const id = v.parse(
+                schema.bookingDeleteSchema,
+                {
+                    params: {
+                        pathParams: {
+                            id: Number(request.params['id']),
+                        }
+                    }
+                }
+            ).params.pathParams.id
 
-            const message = error instanceof Error ? error.message : String(error);
+            BookingService.delete(id)
 
-            return {
-                statusCode: 400,
-                data: {
-                    error: message,
-                },
-            };
+            return response.status(204).json({
+                message: `Запись с id ${id} была удалена`
+            })
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error)
+
+            return response.status(400).json({
+                error: message
+            })
         }
     }
 }
