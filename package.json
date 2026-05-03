@@ -1,16 +1,13 @@
 {
     "type": "module",
     "scripts": {
-        "dev": "tsx --watch src/main.ts",
-        "format": "oxfmt {src,tests}/**/*.{js,ts}",
-        "test": "vitest watch --reporter=dot",
-        "test:cov": "vitest run --coverage",
-        "typecheck": "tsc --noEmit",
-        "lint": "oxlint src --fix",
-        "db:create": "tsx --no-warnings src/database/cli/index.js create",
-        "db:reset": "tsx --no-warnings src/database/cli/index.js reset",
-        "db:seed": "tsx --no-warnings src/database/cli/index.js seed",
-        "db:help": "tsx --no-warnings src/database/cli/index.js help"
+    "dev": "npx tsx main.ts",
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "db:create": "npx tsx database/index.ts create",
+    "db:seed": "npx tsx database/index.ts seed",
+    "db:reset": "npx tsx database/index.ts reset",
+    "db:setup": "npx tsx database/index.ts create --force && npx tsx database/index.ts seed"
     },
     "devDependencies": {
         "@faker-js/faker": "^10.2.0",
@@ -34,4 +31,6 @@
         "ora": "^9.3.0",
         "valibot": "^1.2.0"
     }
+    
 }
+
