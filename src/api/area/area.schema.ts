@@ -11,14 +11,14 @@ const paginationSchema = v.object({
         )
     ),
     offset: v.optional(
-        v.pipe(
-            v.union([
-                v.pipe(v.string(), v.transform(Number), v.number()),
-                v.number(),
-            ]),
-            v.integer(), v.minValue(1)
-        )
-    ),
+    v.pipe(
+        v.union([
+            v.pipe(v.string(), v.transform(Number), v.number()),
+            v.number(),
+        ]),
+        v.integer(), v.minValue(0) 
+    )
+),
 });
 
 const filterSchema = v.object({
@@ -49,4 +49,3 @@ export type AreaSchema = v.InferOutput<typeof areaSchema>
 export type AreasQuerySchema = v.InferOutput<typeof areasQuerySchema>
 export type AreasSchema = v.InferOutput<typeof areasSchema>
 export type AreasResponseSchema = v.InferOutput<typeof areasResponseSchema>
-
