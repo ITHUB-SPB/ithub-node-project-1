@@ -1,51 +1,36 @@
-import { createServer } from "node:http";
+import express, { type Request, type Response } from "express";
+import { areaRoutes } from "./api/area/area.router.js";
+import bookingRouter from "./api/booking/booking.router.js";
+import timeslotRouter from "./api/timeslot/timeslot.router.js";
+import { engine } from "express-handlebars";
 
-import Router from "./lib/router.js";
-import { RequestParser } from "./lib/requestParser.js";
+const app = express();
 
-import { bookingRoutes } from "./booking/booking.router.js";
-import { areaRoutes } from "./area/area.router.js";
-import { timeslotRoutes } from "./timeslot/timeslot.router.js";
+app.engine("handlebars", engine());
+app.set("view engine", "handlebars");
+app.set("views", import.meta.dirname + "/views");
 
-const router = new Router();
+app.use("/public", express.static("/public"));
 
-const allRoutes = [...areaRoutes, ...timeslotRoutes, ...bookingRoutes];
+app.use(express.json());
 
-for (const route of allRoutes) {
-  router.register(
-    { method: route.method, resource: route.resource },
-    route.handler as any,
-  );
-}
+app.get("/", (request: Request, response: Response) => {
+  const roomId = request.params["roomId"]
+  const room = rooms.find(1)
 
-const server = createServer(async (request, response) => {
-  try {
-    const requestParser = new RequestParser(request);
-    const { method, resource, params, payload } =
-      await requestParser.toObject();
 
-    const handler = router.handle({ method, resource });
 
-    if (!handler) {
-      response.writeHead(404);
-      return response.end(JSON.stringify({ error: "Route not found" }));
-    }
-
-    const { statusCode, data } = handler({ params, payload });
-
-    response.writeHead(statusCode, { "Content-Type": "application/json" });
-    response.end(JSON.stringify(data));
-  } catch (error: any) {
-    response.writeHead(400, { "Content-Type": "application/json" });
-    response.end(
-      JSON.stringify({
-        error: "Bad Request",
-        details: error.issues || error.message,
-      }),
-    );
-  }
+  response.render("booking",{room});
 });
 
-server.listen(3000, () => {
+app.use("/areas", areaRoutes);
+app.use("/bookings", bookingRouter);
+app.use("/timeslots", timeslotRouter);
+
+app.get("/hc", (_, response) => {
+  return response.json({ status: "OK" });
+});
+
+app.listen(3000, () => {
   console.log(`API server listening: http://localhost:3000`);
 });

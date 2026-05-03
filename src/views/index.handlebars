@@ -1,0 +1,14 @@
+<p>index</p>
+
+<section>
+{{#each rooms}}
+    <article class="room_card">
+        <header>
+            <p>{{this.title}}</p>
+        </header>
+        <footer>
+            <p>{{this.capacity}}</p>
+        </footer>
+    </article>
+    {{/each}}
+</section>
