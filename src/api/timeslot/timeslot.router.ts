@@ -1,9 +1,9 @@
+
+import { Router } from 'express';
 import TimeslotController from './timeslot.controller.js';
 
-export const timeslotRoutes = [
-    {
-        method: 'GET',
-        resource: '/timeslots',
-        handler: TimeslotController.findAll,
-    },
-] as const;
+const router = Router();
+
+router.get('/timeslots', TimeslotController.findAll);
+
+export default router;

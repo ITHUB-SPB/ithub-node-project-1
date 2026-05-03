@@ -1,8 +1,8 @@
-import express, { type Request, type Response } from 'express';
-import { engine } from 'express-handlebars';
-// import { bookingRoutes } from './booking/booking.router.js';
-import { areaRoutes } from './api/area/area.router.js'
-
+import express, { type Request, type Response } from "express";
+import { areaRoutes } from "./api/area/area.router.js";
+// import bookingRouter from "./api/booking/booking.router.js";
+import timeslotRouter from "./api/timeslot/timeslot.router.js";
+import { engine } from "express-handlebars";
 
 const app = express()
 
@@ -13,6 +13,10 @@ app.set('views', import.meta.dirname + '/views')
 app.use('/public', express.static('public'))
 
 app.use(express.json())
+
+app.use('/api/areas', areaRoutes)
+// app.use('/api', bookingRouter);       
+app.use('/api', timeslotRouter);  
 
 const rooms = [
     { id: 1, title: "A-101", capacity: '20-24' },
