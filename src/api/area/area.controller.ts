@@ -13,4 +13,20 @@ export default class AreaController {
             totalItems: areas.length,
         });
     }
+
+    static async findOne(request: Request, response: Response) {
+        const params = v.parse(schema.areaParamsSchema, request.params);
+
+        const area = await AreaService.findOne(params.id);
+
+        if (!area) {
+            return response.status(404).json({
+                message: 'Area not found',
+            });
+        }
+
+        return response.status(200).json({
+            area,
+        });
+    }
 }

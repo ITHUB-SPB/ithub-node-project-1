@@ -1,22 +1,33 @@
-import { type AreaSchema } from '../api/area/area.schema.js';
-import { type TimeslotSchema } from '../api/timeslot/timeslot.schema.js';
+import { type Generated } from 'kysely';
+
+export interface AreaTable {
+    id: Generated<number>;
+    title: string;
+}
+
+export interface TimeslotTable {
+    id: Generated<number>;
+    start: string;
+    end: string;
+}
 
 export interface UserTable {
-    id: number;
+    id: Generated<number>;
     username: string;
     createdAt: string;
 }
 
 export interface BookingTable {
-    id: number;
+    id: Generated<number>;
+    areaId: number;
     timeslotId: number;
     userId: number | null;
     createdAt: string;
 }
 
 export interface Database {
-    areas: AreaSchema;
-    timeslots: TimeslotSchema;
+    areas: AreaTable;
+    timeslots: TimeslotTable;
     users: UserTable;
     bookings: BookingTable;
 }

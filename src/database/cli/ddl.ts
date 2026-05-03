@@ -28,6 +28,7 @@ export async function createTables() {
     await sql`
         create table if not exists bookings (
             id integer primary key autoincrement,
+            areaId integer not null,
             timeslotId integer not null,
             userId integer,
             createdAt text not null

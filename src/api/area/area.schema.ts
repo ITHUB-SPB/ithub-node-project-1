@@ -5,6 +5,10 @@ const numberFromQuerySchema = v.union([
     v.number(),
 ]);
 
+export const areaParamsSchema = v.object({
+    id: v.pipe(numberFromQuerySchema, v.integer(), v.minValue(1)),
+});
+
 export const areasQuerySchema = v.object({
     limit: v.optional(
         v.pipe(
@@ -32,7 +36,13 @@ export const areasResponseSchema = v.object({
     totalItems: v.number(),
 });
 
+export const areaResponseSchema = v.object({
+    area: areaSchema,
+});
+
+export type AreaParamsSchema = v.InferOutput<typeof areaParamsSchema>;
 export type AreaSchema = v.InferOutput<typeof areaSchema>;
 export type AreasQuerySchema = v.InferOutput<typeof areasQuerySchema>;
 export type AreasSchema = v.InferOutput<typeof areasSchema>;
 export type AreasResponseSchema = v.InferOutput<typeof areasResponseSchema>;
+export type AreaResponseSchema = v.InferOutput<typeof areaResponseSchema>;

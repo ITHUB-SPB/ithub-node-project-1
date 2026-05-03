@@ -15,7 +15,7 @@ export default class TimeslotService {
         const rows = await db
             .selectFrom('timeslots')
             .selectAll()
-            .orderBy('start')
+            .orderBy('timeslots.start')
             .execute();
 
         let items = rows.map((row) => ({
