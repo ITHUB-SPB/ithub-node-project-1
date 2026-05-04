@@ -4,7 +4,6 @@ import BookingService from './booking.service.js';
 import * as schema from './booking.schema.js';
 
 export default class BookingController {
-    // GET /bookings
     static find = async (request: Request, response: Response): Promise<void> => {
         try {
             const query = v.parse(schema.bookingsQuerySchema, request.query);
@@ -27,7 +26,6 @@ export default class BookingController {
         }
     };
 
-    // POST /bookings
     static create = async (request: Request, response: Response): Promise<void> => {
         try {
             const payloadObject = v.parse(schema.newBookingInSchema, request.body);
@@ -40,7 +38,6 @@ export default class BookingController {
         }
     };
 
-    // DELETE /bookings/:id
     static delete = async (request: Request, response: Response): Promise<void> => {
         try {
             const id = v.parse(
