@@ -2,7 +2,7 @@
 
 ## (КТ8 + КТ9) Типизация работы с БД. Перенос на Express
 
-[Макет](https://www.figma.com/design/2hj0Jh6TqcsQvyiY4nSej0/Meeting-Room--Community-?node-id=0-1&p=f&t=I498qR6aAOv35sCp-0)
+[Макет](https://www.figma.com/design/2MK0srHXelMlZjnjQEuErO/Meeting-Room--Community---Copy-?node-id=0-1&p=f&t=7mFhe0cDNUKJFItV-0)
 
 _Верстать макет не нужно, он здесь на будущее_
 
