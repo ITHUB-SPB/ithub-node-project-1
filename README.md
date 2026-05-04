@@ -4,7 +4,7 @@
 
 _Максимальный балл - 8._
 
-[Макет](https://www.figma.com/design/2hj0Jh6TqcsQvyiY4nSej0/Meeting-Room--Community-?node-id=0-1&p=f&t=I498qR6aAOv35sCp-0)
+[Макет](https://www.figma.com/design/2MK0srHXelMlZjnjQEuErO/Meeting-Room--Community---Copy-?node-id=0-1&p=f&t=7mFhe0cDNUKJFItV-0)
 
 1. Разработать (сверстать) шаблон index по макету (экран Meeting Room Screen) - до 4 баллов,
 2. Разработать (сверстать) шаблон detail по макету (экран Room Detail Screen) - до 2 баллов,
