@@ -30,7 +30,6 @@ export default class BookingService {
         return v.parse(bookingSchema, result);
     }
 
-    // Список всех бронирований (1 балл)
     static async findAll(): Promise<BookingsSchema> {
         const bookings = await db.selectFrom('bookings')
             .selectAll()
