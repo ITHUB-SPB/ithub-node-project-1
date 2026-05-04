@@ -22,23 +22,29 @@ const rooms = [
 ];
 
 app.get("/", (request: Request, response: Response) => {
-  // работать ajax-запросами
+  // TODO разработать (сверстать) шаблон index по макету
+  // (экран Meeting Room Screen) - до 4 баллов
+
   response.render("index", { rooms });
 });
 
-app.get("/rooms/:roomId", (request: Request, response: Response) => {
+app.get("/details/:roomId", (request: Request, response: Response) => {
+  // TODO разработать (сверстать) шаблон detail по макету
+  // (экран Room Detail Screen) - до 2 баллов
+
   const roomId = request.params["roomId"];
   const room = rooms.find((room) => room.id === Number(roomId));
 
-  // работать классически
   response.render("detail", { room });
 });
 
 app.get("/booking/:roomId", (request: Request, response: Response) => {
+  // TODO разработать (сверстать) шаблон booking по макету
+  // (экран Booking Screen) - до 2 баллов
+
   const roomId = request.params["roomId"];
   const room = rooms.find((room) => room.id === Number(roomId));
 
-  // работать классически
   response.render("booking", { room });
 });
 
