@@ -43,8 +43,10 @@ app.get("/booking/:roomId", (request: Request, response: Response) => {
 });
 
 app.use("/api/areas", areaRoutes);
+app.use("/api/bookings", bookingRoutes);
+app.use("/api/timeslots", timeslotRoutes);
 
-app.get("/api/health", (_, response) => {
+app.get("/api", (_, response) => {
   return response.json({
     status: "OK",
   });

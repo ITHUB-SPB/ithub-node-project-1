@@ -1,98 +1,101 @@
-import connection from '../connection.js';
-import chalk from 'chalk';
+import { sql } from "kysely";
+import chalk from "chalk";
 
-export function createTables(isForce: boolean) {
-    if (isForce) {
-        connection.exec(`
-                drop table if exists users;
-                drop table if exists bookings;
-                drop table if exists timeslots;
-                drop table if exists areas;
-            `);
-        console.log(chalk.yellow('! Таблицы форсировано удалены'));
-    }
+import db from "../connection.js";
 
-    connection.exec(`create table if not exists users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username STRING UNIQUE,
-        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )`);
+export async function createTables(isForce: boolean) {
+  if (isForce) {
+    await db.schema.dropTable("bookings").execute();
+    await db.schema.dropTable("timeslots").execute();
+    await db.schema.dropTable("areas").execute();
+    console.log(chalk.yellow("! Таблицы форсировано удалены"));
+  }
 
-    connection.exec(`create table if not exists areas (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title STRING UNIQUE
-    )`);
+  await db.schema
+    .createTable("users")
+    .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
+    .addColumn("username", "text", (col) => col.unique())
+    .addColumn("createdAt", "timestamp", (col) =>
+      col.defaultTo(sql`CURRENT_TIMESTAMP`)
+    )
+    .execute();
 
-    connection.exec(`create table if not exists timeslots (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        start VARCHAR(5) NOT NULL,
-        end VARCHAR(5) NOT NULL,
-    )`);
+  await db.schema
+    .createTable("areas")
+    .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
+    .addColumn("title", "text", (col) => col.unique())
+    .execute();
 
-    connection.exec(`create table if not exists bookings (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        timeslotId INTEGER NOT NULL,
-        userId INTEGER,
-        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (timeslotId) REFERENCES timeslots(id) ON DELETE CASCADE
-        FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
-    )`);
+  await db.schema
+    .createTable("timeslots")
+    .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
+    .addColumn("start", "varchar(5)", (col) => col.notNull())
+    .addColumn("end", "varchar(5)", (col) => col.notNull())
+    .execute();
+
+  await db.schema
+    .createTable("bookings")
+    .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
+    .addColumn("timeslotId", "integer", (col) => col.notNull())
+    .addColumn("userId", "integer")
+    .addColumn("createdAt", "timestamp", (col) =>
+      col.defaultTo(sql`CURRENT_TIMESTAMP`)
+    )
+    .addForeignKeyConstraint(
+      "bookings_timeslot_id_foreign",
+      ["timeslotId"],
+      "timeslots",
+      ["id"],
+      (constraint) => constraint.onDelete("cascade")
+    )
+    .execute();
 }
 
-export function resetTables(tables: string[]) {
-    if (tables.length === 0) {
-        connection.exec(`delete from users`);
-        connection.exec(`delete from bookings`);
-        connection.exec(`delete from areas`);
-        connection.exec(`delete from timeslots`);
-        console.log(
-            chalk.green(`✔ Таблица users была сброшена`),
-            chalk.green(`\n✔ Таблица bookings была сброшена`),
-            chalk.green(`\n✔ Таблица areas была сброшена`),
-            chalk.green(`\n✔ Таблица timeslots была сброшена`),
-        );
-        return;
+export async function resetTables(tables: string[]) {
+  if (tables.length === 0) {
+    await db.deleteFrom("bookings").execute();
+    await db.deleteFrom("areas").execute();
+    await db.deleteFrom("timeslots").execute();
+
+    console.log(
+      chalk.green(`✔ Таблица bookings была сброшена`),
+      chalk.green(`\n✔ Таблица areas была сброшена`),
+      chalk.green(`\n✔ Таблица timeslots была сброшена`)
+    );
+    return;
+  }
+
+  const errors = [];
+
+  for (const table of tables) {
+    try {
+      switch (table) {
+        case "areas":
+          await db.deleteFrom("areas").execute();
+          console.log(chalk.green(`✔ Таблица areas была сброшена`));
+          break;
+        case "timeslots":
+          await db.deleteFrom("timeslots").execute();
+          console.log(chalk.green(`✔ Таблица timeslots была сброшена`));
+          break;
+        case "bookings":
+          await db.deleteFrom("bookings").execute();
+          console.log(chalk.green(`✔ Таблица bookings была сброшена`));
+          break;
+        default:
+          throw new Error(`Таблицы ${table} не существует`);
+      }
+    } catch (error) {
+      errors.push({
+        table,
+        message: (error as Error).message,
+      });
     }
+  }
 
-    const errors = [];
+  if (errors.length > 0) {
+    const message = errors.map((e) => `- ${e.table}: ${e.message}`).join("\n");
 
-    for (const table of tables) {
-        try {
-            switch (table) {
-                case 'users':
-                    connection.exec(`delete from users`);
-                    console.log(chalk.green(`✔ Таблица users была сброшена`));
-                    break;
-                case 'areas':
-                    connection.exec(`delete from areas`);
-                    console.log(chalk.green(`✔ Таблица areas была сброшена`));
-                    break;
-                case 'timeslots':
-                    connection.exec(`delete from timeslots`);
-                    console.log(chalk.green(`✔ Таблица timeslots была сброшена`));
-                    break;
-                case 'bookings':
-                    connection.exec(`delete from bookings`);
-                    console.log(
-                        chalk.green(`✔ Таблица bookings была сброшена`),
-                    );
-                    break;
-                default:
-                    throw new Error(`Таблицы ${table} не существует`);
-            }
-        } catch (error) {
-            errors.push({
-                table,
-                message: (error as Error).message,
-            });
-        }
-    }
-
-    if (errors.length > 0) {
-        const message = errors
-            .map((e) => `- ${e.table}: ${e.message}`)
-            .join('\n');
-
-        throw new Error(`\n${message}`);
-    }
+    throw new Error(`\n${message}`);
+  }
 }
