@@ -1,14 +1,12 @@
-<p>test</p>
-
 <section class="rooms">
     {{#each rooms}}
-    <article class="room_card">
-        <header>
-            <a href="/rooms/{{this.id}}">{{this.title}}</a>
-        </header>
-        <footer>
-            <p>{{this.capacity}}</p>
-        </footer>
-    </article>
+        <article class="room_card">
+            <header>
+                <a href="/details/{{this.id}}">{{this.title}}</a>
+            </header>
+            <footer>
+                <p>{{this.capacity}}</p>
+            </footer>
+        </article>
     {{/each}}
 </section>
