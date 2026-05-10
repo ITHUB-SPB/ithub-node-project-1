@@ -1,5 +1,31 @@
-<article class="room_detail">
-    <h3>{{room.title}}</h3>
-    <p>{{room.capacity}}</p>
-</article>
+<main class="container">
+    <article class="room_detail">
+        <h1>Комната {{room.title}}</h1>
 
+        <div class="room-info" style="margin: 1rem 0;">
+            <p><strong>Sirius Guest</strong></p>
+            <p>Вместимость: {{room.capacity}} человек</p>
+            <p>Наличие плазмы: <span style="color: green;">yes</span></p>
+            <p>Наличие доски: <span style="color: red;">no</span></p>
+        </div>
+
+        <div class="actions" style="display: flex; gap: 1rem; margin: 1.5rem 0;">
+            <a href="/" role="button" class="secondary">Back to Rooms</a>
+            <a href="/booking/{{room.id}}" role="button">Booking Details</a>
+        </div>
+
+        <h2>Занятые слоты</h2>
+        <ul>
+            <li>
+                <strong>React Review</strong><br>
+                Организатор: Nijin<br>
+                10:00 - 10:30 AM
+            </li>
+            <li>
+                <strong>React Review</strong><br>
+                Организатор: Nijin<br>
+                10:00 - 11:00 AM
+            </li>
+        </ul>
+    </article>
+</main>
