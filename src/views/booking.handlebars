@@ -1,5 +1,52 @@
-<article class="room_detail">
-    <h3>{{room.title}}</h3>
-    <p>{{room.capacity}}</p>
-</article>
+<main class="page page--booking">
+  <div class="booking-layout">
+    <section class="booking-left">
+      {{> brand}}
 
+      <img class="detail-image" src="{{room.detailImage}}" alt="Комната {{room.title}}" />
+
+      <section class="busy">
+        <h2>Занятые слоты</h2>
+
+        <div class="busy__list">
+          {{#each room.bookings}}
+            <article class="busy-card">
+              <h3>{{this.title}}</h3>
+              <p><strong>Организатор :</strong> {{this.organizer}}</p>
+              <p>{{this.time}}</p>
+            </article>
+          {{/each}}
+        </div>
+      </section>
+    </section>
+
+    <form class="booking-form" action="/booking/{{room.id}}" method="post">
+      <label>
+        <span>Тема</span>
+        <input type="text" name="title" required />
+      </label>
+
+      <label>
+        <span>Организатор</span>
+        <input type="text" name="organizer" required />
+      </label>
+
+      <div class="booking-form__time">
+        <label>
+          <span>Начало</span>
+          <input type="time" name="start" required />
+        </label>
+
+        <label>
+          <span>Конец</span>
+          <input type="time" name="end" required />
+        </label>
+      </div>
+
+      <div class="booking-form__actions">
+        <a class="button button--muted" href="/rooms/{{room.id}}">Back to Room</a>
+        <button class="button" type="submit">Book</button>
+      </div>
+    </form>
+  </div>
+</main>

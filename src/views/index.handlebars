@@ -1,14 +1,69 @@
-<p>test</p>
+<main class="page page--index">
+  <aside class="sidebar">
+    {{> brand}}
 
-<section class="rooms">
-    {{#each rooms}}
-    <article class="room_card">
-        <header>
-            <a href="/rooms/{{this.id}}">{{this.title}}</a>
-        </header>
-        <footer>
-            <p>{{this.capacity}}</p>
-        </footer>
-    </article>
-    {{/each}}
-</section>
+    <form class="filters" action="/" method="get">
+      <section class="filters__group">
+        <h2>Комнаты</h2>
+
+        <label><input type="checkbox" name="room" value="A-101" /> A-101</label>
+        <label><input type="checkbox" name="room" value="A-102" /> A-102</label>
+        <label><input type="checkbox" name="room" value="B-140" /> B-140</label>
+      </section>
+
+      <section class="filters__group">
+        <h2>Доступность</h2>
+
+        <label><input type="checkbox" name="device" value="tv" /> Плазма</label>
+        <label><input type="checkbox" name="device" value="board" /> Доска</label>
+      </section>
+
+      <section class="filters__group">
+        <h2>Вместимость</h2>
+        <input class="filters__small-input" type="number" name="capacity" min="1" />
+      </section>
+
+      <section class="filters__group">
+        <h2>Время</h2>
+
+        <div class="filters__time">
+          <input type="time" name="from" />
+          <input type="time" name="to" />
+        </div>
+      </section>
+
+      <div class="filters__actions">
+        <a href="/">Очистить</a>
+        <button type="submit">Применить</button>
+      </div>
+    </form>
+  </aside>
+
+  <section class="rooms-section">
+    <p class="rooms-count">Найдено комнат: {{total}}</p>
+
+    <div class="rooms-grid">
+      {{#each rooms}}
+        <article class="room-card">
+          <img class="room-card__image" src="{{this.image}}" alt="Комната {{this.title}}" />
+
+          <div class="room-card__body">
+            <h2>{{this.title}}</h2>
+
+            <p class="room-card__location">
+              <span>●</span>
+              {{this.location}}
+            </p>
+
+            <p class="room-card__capacity">
+              <strong>Max Limit :</strong>
+              {{this.capacity}}
+            </p>
+
+            <a class="button button--full" href="/rooms/{{this.id}}">More Info</a>
+          </div>
+        </article>
+      {{/each}}
+    </div>
+  </section>
+</main>

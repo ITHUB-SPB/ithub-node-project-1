@@ -1,5 +1,54 @@
-<article class="room_detail">
-    <h3>{{room.title}}</h3>
-    <p>{{room.capacity}}</p>
-</article>
+<main class="page page--detail">
+  <div class="detail-layout">
+    <section class="detail-left">
+      {{> brand}}
 
+      <img class="detail-image" src="{{room.detailImage}}" alt="Комната {{room.title}}" />
+
+      <section class="busy">
+        <h2>Занятые слоты</h2>
+
+        <div class="busy__list">
+          {{#each room.bookings}}
+            <article class="busy-card">
+              <h3>{{this.title}}</h3>
+              <p><strong>Организатор :</strong> {{this.organizer}}</p>
+              <p>{{this.time}}</p>
+            </article>
+          {{/each}}
+        </div>
+      </section>
+    </section>
+
+    <section class="detail-info">
+      <h1>Комната {{room.title}}</h1>
+
+      <div class="features">
+        <article class="feature">
+          <div class="feature__icon">≋</div>
+          <p>{{room.wifi}}</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature__icon">♟</div>
+          <p>{{room.capacity}}</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature__icon">▭</div>
+          <p>{{room.hasTv}}</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature__icon">▰</div>
+          <p>{{room.hasBoard}}</p>
+        </article>
+      </div>
+
+      <div class="detail-actions">
+        <a class="button button--muted" href="/">Back to Rooms</a>
+        <a class="button" href="/booking/{{room.id}}">Booking Details</a>
+      </div>
+    </section>
+  </div>
+</main>
