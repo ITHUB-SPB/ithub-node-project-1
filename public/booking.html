@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking</title>
+    <link rel="stylesheet" href="layout.css" />
+  </head>
+  <body>
+    <main class="page">
+      <a class="brand" href="index.html" aria-label="Meeting Mate">
+        <svg
+          width="210"
+          height="90"
+          viewBox="0 0 221 97"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <rect width="221" height="97" fill="url(#pattern0_50_73)" />
+          <defs>
+            <pattern
+              id="pattern0_50_73"
+              patternContentUnits="objectBoundingBox"
+              width="1"
+              height="1"
+            >
+              <use
+                xlink:href="#image0_50_73"
+                transform="matrix(0.00196078 0 0 0.00446735 0 -0.000343643)"
+              />
+            </pattern>
+          </defs>
+        </svg>
+      </a>
+
+      <div class="room-layout">
+        <section>
+          <div class="hero-photo" aria-label="Комната A-101"></div>
+          <h2 class="slots-title">Занятые слоты</h2>
+          <div class="slots">
+            <article class="slot-card">
+                <h3>React Review</h3>
+                <p><strong>Организатор: </strong> Алукард</p>
+                <p>8:00 -9:30 AM</p>
+              </article>
+              <article class="slot-card">
+                <h3>React Review</h3>
+                <p><strong>Организатор: </strong> Дракула</p>
+                <p>9:30 -11:00 AM</p>
+              </article>
+          </div>
+        </section>
+
+        <section class="booking-panel" aria-label="Форма бронирования">
+          <form class="booking-form" action="detail.html">
+            <div class="form-row">
+              <label for="topic">Тема</label>
+              <input id="topic" name="topic" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="organizer">Организатор</label>
+              <input id="organizer" name="organizer" type="text" />
+            </div>
+            <div class="form-row--split">
+              <div class="form-row">
+                <label for="start">Начало</label>
+                <input id="start" name="start" type="text" />
+              </div>
+              <div class="form-row">
+                <label for="end">Конец</label>
+                <input id="end" name="end" type="text" />
+              </div>
+            </div>
+            <div class="actions">
+              <a class="button button--brown" href="detail.html"
+                >Back to Room</a
+              >
+              <button class="button button--teal" type="submit">Book</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

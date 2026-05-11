@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meeting Mate - Rooms</title>
+    <link rel="stylesheet" href="layout.css" />
+  </head>
+  <body>
+    <main class="page">
+      <aside class="sidebar" aria-label="Фильтры комнат">
+        <a class="brand" href="index.html" aria-label="Meeting Mate">
+          <svg
+            width="221"
+            height="97"
+            viewBox="0 0 221 97"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+          >
+            <rect width="221" height="97" fill="url(#pattern0_50_73)" />
+            <defs>
+              <pattern
+                id="pattern0_50_73"
+                patternContentUnits="objectBoundingBox"
+                width="1"
+                height="1"
+              >
+                <use
+                  xlink:href="#image0_50_73"
+                  transform="matrix(0.00196078 0 0 0.00446735 0 -0.000343643)"
+                />
+              </pattern>
+          </svg>
+        </a>
+
+        <form class="filters">
+          <section class="filter-group">
+            <h2>Комнаты</h2>
+            <label
+              ><input type="checkbox" name="room" value="A-101" /><span
+                >A-101</span
+              ></label
+            >
+            <label
+              ><input type="checkbox" name="room" value="A-102" /><span
+                >A-102</span
+              ></label
+            >
+            <label
+              ><input type="checkbox" name="room" value="B-140" /><span
+                >B-140</span
+              ></label
+            >
+          </section>
+
+          <section class="filter-group">
+            <h2>Доступность</h2>
+            <label
+              ><input type="checkbox" name="feature" value="plasma" /><span
+                >Плазма</span
+              ></label
+            >
+            <label
+              ><input type="checkbox" name="feature" value="board" /><span
+                >Доска</span
+              ></label
+            >
+          </section>
+
+          <section class="filter-group">
+            <h2>Вместимость</h2>
+            <input
+              class="pill-input pill-input--single"
+              type="text"
+              aria-label="Вместимость"
+            />
+          </section>
+
+          <section class="filter-group">
+            <h2>Время</h2>
+            <div class="time-row">
+              <input class="pill-input" type="text" aria-label="Начало" />
+              <input class="pill-input" type="text" aria-label="Конец" />
+            </div>
+          </section>
+
+          <div class="filter-actions">
+            <button class="clear-button" type="reset">Очистить</button>
+            <button class="apply-button" type="submit">Применить</button>
+          </div>
+        </form>
+      </aside>
+
+      <section aria-label="Список комнат">
+        <p class="result-count">Найдено комнат: <strong>24</strong></p>
+        <div class="room-grid">
+          <article class="room-card">
+            <div
+              class="room-card__image"
+              aria-label="Переговорная комната"
+            ></div>
+            <h3>Austin</h3>
+            <p class="room-card__place">
+              <svg
+                width="15"
+                height="20"
+                viewBox="0 0 15 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7.39485 9.5C6.69441 9.5 6.02266 9.23661 5.52737 8.76777C5.03208 8.29893 4.75383 7.66304 4.75383 7C4.75383 6.33696 5.03208 5.70107 5.52737 5.23223C6.02266 4.76339 6.69441 4.5 7.39485 4.5C8.09529 4.5 8.76705 4.76339 9.26234 5.23223C9.75762 5.70107 10.0359 6.33696 10.0359 7C10.0359 7.3283 9.96756 7.65339 9.83484 7.95671C9.70211 8.26002 9.50758 8.53562 9.26234 8.76777C9.01709 8.99991 8.72595 9.18406 8.40553 9.3097C8.0851 9.43534 7.74168 9.5 7.39485 9.5ZM7.39485 0C5.43362 0 3.55271 0.737498 2.1659 2.05025C0.779098 3.36301 0 5.14348 0 7C0 12.25 7.39485 20 7.39485 20C7.39485 20 14.7897 12.25 14.7897 7C14.7897 5.14348 14.0106 3.36301 12.6238 2.05025C11.237 0.737498 9.35609 0 7.39485 0Z"
+                  fill="#9E5CFF"
+                />
+              </svg>
+
+              ><span>Dev Bay ,Chennai</span>
+            </p>
+            <p class="room-card__limit"><strong>Max Limit :</strong> 20-24</p>
+            <a class="more-button" href="detail.html">More Info</a>
+          </article>
+          <article class="room-card">
+            <div
+              class="room-card__image"
+              aria-label="Переговорная комната"
+            ></div>
+            <h3>Austin</h3>
+            <p class="room-card__place">
+              <svg
+                width="15"
+                height="20"
+                viewBox="0 0 15 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7.39485 9.5C6.69441 9.5 6.02266 9.23661 5.52737 8.76777C5.03208 8.29893 4.75383 7.66304 4.75383 7C4.75383 6.33696 5.03208 5.70107 5.52737 5.23223C6.02266 4.76339 6.69441 4.5 7.39485 4.5C8.09529 4.5 8.76705 4.76339 9.26234 5.23223C9.75762 5.70107 10.0359 6.33696 10.0359 7C10.0359 7.3283 9.96756 7.65339 9.83484 7.95671C9.70211 8.26002 9.50758 8.53562 9.26234 8.76777C9.01709 8.99991 8.72595 9.18406 8.40553 9.3097C8.0851 9.43534 7.74168 9.5 7.39485 9.5ZM7.39485 0C5.43362 0 3.55271 0.737498 2.1659 2.05025C0.779098 3.36301 0 5.14348 0 7C0 12.25 7.39485 20 7.39485 20C7.39485 20 14.7897 12.25 14.7897 7C14.7897 5.14348 14.0106 3.36301 12.6238 2.05025C11.237 0.737498 9.35609 0 7.39485 0Z"
+                  fill="#9E5CFF"
+                />
+              </svg>
+              ><span>Dev Bay ,Chennai</span>
+            </p>
+            <p class="room-card__limit"><strong>Max Limit :</strong> 20-24</p>
+            <a class="more-button" href="detail.html">More Info</a>
+          </article>
+         
+          <article class="room-card">
+            <div
+              class="room-card__image"
+              aria-label="Переговорная комната"
+            ></div>
+            <h3>Austin</h3>
+            <p class="room-card__place">
+              <svg
+                width="15"
+                height="20"
+                viewBox="0 0 15 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7.39485 9.5C6.69441 9.5 6.02266 9.23661 5.52737 8.76777C5.03208 8.29893 4.75383 7.66304 4.75383 7C4.75383 6.33696 5.03208 5.70107 5.52737 5.23223C6.02266 4.76339 6.69441 4.5 7.39485 4.5C8.09529 4.5 8.76705 4.76339 9.26234 5.23223C9.75762 5.70107 10.0359 6.33696 10.0359 7C10.0359 7.3283 9.96756 7.65339 9.83484 7.95671C9.70211 8.26002 9.50758 8.53562 9.26234 8.76777C9.01709 8.99991 8.72595 9.18406 8.40553 9.3097C8.0851 9.43534 7.74168 9.5 7.39485 9.5ZM7.39485 0C5.43362 0 3.55271 0.737498 2.1659 2.05025C0.779098 3.36301 0 5.14348 0 7C0 12.25 7.39485 20 7.39485 20C7.39485 20 14.7897 12.25 14.7897 7C14.7897 5.14348 14.0106 3.36301 12.6238 2.05025C11.237 0.737498 9.35609 0 7.39485 0Z"
+                  fill="#9E5CFF"
+                />
+              </svg>
+              ><span>Dev Bay ,Chennai</span>
+            </p>
+            <p class="room-card__limit"><strong>Max Limit :</strong> 20-24</p>
+            <a class="more-button" href="detail.html">More Info</a>
+          </article>
+          <article class="room-card">
+            <div
+              class="room-card__image"
+              aria-label="Переговорная комната"
+            ></div>
+            <h3>Austin</h3>
+            <p class="room-card__place">
+              <svg
+                width="15"
+                height="20"
+                viewBox="0 0 15 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7.39485 9.5C6.69441 9.5 6.02266 9.23661 5.52737 8.76777C5.03208 8.29893 4.75383 7.66304 4.75383 7C4.75383 6.33696 5.03208 5.70107 5.52737 5.23223C6.02266 4.76339 6.69441 4.5 7.39485 4.5C8.09529 4.5 8.76705 4.76339 9.26234 5.23223C9.75762 5.70107 10.0359 6.33696 10.0359 7C10.0359 7.3283 9.96756 7.65339 9.83484 7.95671C9.70211 8.26002 9.50758 8.53562 9.26234 8.76777C9.01709 8.99991 8.72595 9.18406 8.40553 9.3097C8.0851 9.43534 7.74168 9.5 7.39485 9.5ZM7.39485 0C5.43362 0 3.55271 0.737498 2.1659 2.05025C0.779098 3.36301 0 5.14348 0 7C0 12.25 7.39485 20 7.39485 20C7.39485 20 14.7897 12.25 14.7897 7C14.7897 5.14348 14.0106 3.36301 12.6238 2.05025C11.237 0.737498 9.35609 0 7.39485 0Z"
+                  fill="#9E5CFF"
+                />
+              </svg>
+              ><span>Dev Bay ,Chennai</span>
+            </p>
+            <p class="room-card__limit"><strong>Max Limit :</strong> 20-24</p>
+            <a class="more-button" href="detail.html">More Info</a>
+          </article>
+          <article class="room-card">
+            <div
+              class="room-card__image"
+              aria-label="Переговорная комната"
+            ></div>
+            <h3>Austin</h3>
+            <p class="room-card__place">
+              <svg
+                width="15"
+                height="20"
+                viewBox="0 0 15 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7.39485 9.5C6.69441 9.5 6.02266 9.23661 5.52737 8.76777C5.03208 8.29893 4.75383 7.66304 4.75383 7C4.75383 6.33696 5.03208 5.70107 5.52737 5.23223C6.02266 4.76339 6.69441 4.5 7.39485 4.5C8.09529 4.5 8.76705 4.76339 9.26234 5.23223C9.75762 5.70107 10.0359 6.33696 10.0359 7C10.0359 7.3283 9.96756 7.65339 9.83484 7.95671C9.70211 8.26002 9.50758 8.53562 9.26234 8.76777C9.01709 8.99991 8.72595 9.18406 8.40553 9.3097C8.0851 9.43534 7.74168 9.5 7.39485 9.5ZM7.39485 0C5.43362 0 3.55271 0.737498 2.1659 2.05025C0.779098 3.36301 0 5.14348 0 7C0 12.25 7.39485 20 7.39485 20C7.39485 20 14.7897 12.25 14.7897 7C14.7897 5.14348 14.0106 3.36301 12.6238 2.05025C11.237 0.737498 9.35609 0 7.39485 0Z"
+                  fill="#9E5CFF"
+                />
+              </svg>
+              ><span>Dev Bay ,Chennai</span>
+            </p>
+            <p class="room-card__limit"><strong>Max Limit :</strong> 20-24</p>
+            <a class="more-button" href="detail.html">More Info</a>
+          </article>
+          <article class="room-card">
+            <div
+              class="room-card__image"
+              aria-label="Переговорная комната"
+            ></div>
+            <h3>Austin</h3>
+            <p class="room-card__place">
+              <svg
+                width="15"
+                height="20"
+                viewBox="0 0 15 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7.39485 9.5C6.69441 9.5 6.02266 9.23661 5.52737 8.76777C5.03208 8.29893 4.75383 7.66304 4.75383 7C4.75383 6.33696 5.03208 5.70107 5.52737 5.23223C6.02266 4.76339 6.69441 4.5 7.39485 4.5C8.09529 4.5 8.76705 4.76339 9.26234 5.23223C9.75762 5.70107 10.0359 6.33696 10.0359 7C10.0359 7.3283 9.96756 7.65339 9.83484 7.95671C9.70211 8.26002 9.50758 8.53562 9.26234 8.76777C9.01709 8.99991 8.72595 9.18406 8.40553 9.3097C8.0851 9.43534 7.74168 9.5 7.39485 9.5ZM7.39485 0C5.43362 0 3.55271 0.737498 2.1659 2.05025C0.779098 3.36301 0 5.14348 0 7C0 12.25 7.39485 20 7.39485 20C7.39485 20 14.7897 12.25 14.7897 7C14.7897 5.14348 14.0106 3.36301 12.6238 2.05025C11.237 0.737498 9.35609 0 7.39485 0Z"
+                  fill="#9E5CFF"
+                />
+              </svg>
+              ><span>Dev Bay ,Chennai</span>
+            </p>
+            <p class="room-card__limit"><strong>Max Limit :</strong> 20-24</p>
+            <a class="more-button" href="detail.html">More Info</a>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
