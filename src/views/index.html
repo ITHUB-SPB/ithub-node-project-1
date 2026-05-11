@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Mate | Комнаты</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        * { box-shadow: none !important; }
+        input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        .filters-panel { background: var(--pico-card-background-color); padding: 1.25rem; border-radius: var(--pico-border-radius); margin-bottom: 1.5rem; }
+        .room-card { display: flex; flex-direction: column; height: 100%; }
+        .room-card img { width: 100%; height: 140px; object-fit: cover; border-radius: var(--pico-border-radius) var(--pico-border-radius) 0 0; background: #e9ecef; }
+        .room-card header { padding: 1rem 1rem 0; border-bottom: none; }
+        .room-card footer { margin-top: auto; padding: 1rem; border-top: none; }
+        .grid-filters { display: grid; grid-template-columns: 300px 1fr; gap: 2rem; }
+        @media (max-width: 768px) { .grid-filters { grid-template-columns: 1fr; } }
+        .filter-group { margin-bottom: 1.5rem; }
+        .filter-group legend { font-weight: 600; margin-bottom: 0.5rem; }
+        .room-count { font-size: 1.1rem; margin-bottom: 1rem; }
+        footer { margin-top: 2rem; text-align: center; font-size: 0.875rem; color: var(--pico-muted-color); border-top: 1px solid var(--pico-muted-border-color); padding-top: 1.5rem; }
+        .brand { display: flex; align-items: center; gap: 0.75rem; }
+        .brand img { height: 2.5rem; width: auto; }
+    </style>
+</head>
+<body>
+<main class="container">
+    <header style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin: 1rem 0 1.5rem;">
+        <div class="brand">
+            <img src="office.webp" alt="Meeting Mate" onerror="this.src='https://placehold.co/40x40?text=MM'">
+            <h1>Meeting Mate</h1>
+        </div>
+        <small>система бронирования</small>
+    </header>
+    <div class="grid-filters">
+        <aside class="filters-panel">
+            <h3>Фильтры</h3>
+            <fieldset class="filter-group">
+                <legend>Выберите комнаты</legend>
+                <div id="roomCheckboxes"></div>
+            </fieldset>
+            <fieldset class="filter-group">
+                <legend>Доступность</legend>
+                <label><input type="checkbox" id="filterPlasma"> Плазма</label>
+                <label><input type="checkbox" id="filterWhiteboard"> Доска</label>
+            </fieldset>
+            <fieldset class="filter-group">
+                <legend>Вместимость</legend>
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                    <input type="text" id="capacityFrom" placeholder="от" value="0">
+                    <input type="text" id="capacityTo" placeholder="до" value="100">
+                </div>
+            </fieldset>
+            <fieldset class="filter-group">
+                <legend>Время начала (свободные слоты)</legend>
+                <input type="text" id="filterTime" placeholder="ЧЧ:ММ" value="">
+            </fieldset>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <button id="resetFilters" class="secondary" type="button">Сбросить</button>
+                <button id="applyFilters" type="button">Применить</button>
+            </div>
+        </aside>
+        <div>
+            <div class="room-count" id="roomCount">Найдено комнат: <strong>0</strong></div>
+            <div id="roomsGrid" class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));"></div>
+        </div>
+    </div>
+</main>
+<footer class="container">
+    <small> Meeting Mate — бронирование переговорных комнат</small>
+</footer>
+<script>
+    const roomsData = [
+        { id: "A-101", title: "A-101", capacityMin: 20, capacityMax: 24, hasPlasma: true, hasWhiteboard: false, image: "office.webp", bookings: [ { start: "09:30", end: "10:30" }, { start: "14:00", end: "15:00" } ] },
+        { id: "A-102", title: "A-102", capacityMin: 10, capacityMax: 15, hasPlasma: false, hasWhiteboard: true, image: "office.webp", bookings: [ { start: "11:00", end: "12:00" } ] },
+        { id: "B-140", title: "B-140", capacityMin: 30, capacityMax: 35, hasPlasma: true, hasWhiteboard: true, image: "office.webp", bookings: [ { start: "10:00", end: "11:30" }, { start: "16:00", end: "17:00" } ] },
+        { id: "C-205", title: "C-205", capacityMin: 8, capacityMax: 12, hasPlasma: false, hasWhiteboard: false, image: "office.webp", bookings: [] },
+        { id: "D-312", title: "D-312", capacityMin: 40, capacityMax: 50, hasPlasma: true, hasWhiteboard: false, image: "office.webp", bookings: [ { start: "09:00", end: "10:00" } ] }
+    ];
+    function isRoomFreeAtTime(room, timeStr) {
+        if (!timeStr) return true;
+        if (!/^\d{2}:\d{2}$/.test(timeStr)) return true;
+        const [checkH, checkM] = timeStr.split(':').map(Number);
+        const checkTotal = checkH*60 + checkM;
+        for (let booking of room.bookings) {
+            const [startH, startM] = booking.start.split(':').map(Number);
+            const [endH, endM] = booking.end.split(':').map(Number);
+            const startTotal = startH*60 + startM;
+            const endTotal = endH*60 + endM;
+            if (checkTotal >= startTotal && checkTotal < endTotal) return false;
+        }
+        return true;
+    }
+    function filterAndRender() {
+        const selectedRooms = [];
+        document.querySelectorAll('.room-checkbox:checked').forEach(cb => selectedRooms.push(cb.value));
+        const filterPlasma = document.getElementById('filterPlasma').checked;
+        const filterWhiteboard = document.getElementById('filterWhiteboard').checked;
+        let capacityFrom = parseInt(document.getElementById('capacityFrom').value);
+        let capacityTo = parseInt(document.getElementById('capacityTo').value);
+        if (isNaN(capacityFrom)) capacityFrom = 0;
+        if (isNaN(capacityTo)) capacityTo = 999;
+        if (capacityFrom > capacityTo) { let tmp = capacityFrom; capacityFrom = capacityTo; capacityTo = tmp; }
+        const filterTime = document.getElementById('filterTime').value.trim();
+        let filtered = roomsData.filter(room => {
+            if (selectedRooms.length > 0 && !selectedRooms.includes(room.id)) return false;
+            if (room.capacityMax < capacityFrom || room.capacityMin > capacityTo) return false;
+            if (filterPlasma && !room.hasPlasma) return false;
+            if (filterWhiteboard && !room.hasWhiteboard) return false;
+            if (filterTime && !isRoomFreeAtTime(room, filterTime)) return false;
+            return true;
+        });
+        document.getElementById('roomCount').innerHTML = `Найдено комнат: <strong>${filtered.length}</strong>`;
+        const container = document.getElementById('roomsGrid');
+        if (filtered.length === 0) { container.innerHTML = '<article>Нет комнат, соответствующих фильтрам.</article>'; return; }
+        container.innerHTML = filtered.map(room => `
+            <article class="room-card">
+                <img src="${room.image}" alt="${room.title}" onerror="this.src='https://placehold.co/300x140?text=${room.title}'">
+                <header><h3>${room.title}</h3></header>
+                <p>Dev Bay, Chennai</p>
+                <p><strong>Вместимость:</strong> ${room.capacityMin}–${room.capacityMax} чел.</p>
+                <p><strong>Плазма:</strong> ${room.hasPlasma ? 'да' : 'нет'}</p>
+                <p><strong>Доска:</strong> ${room.hasWhiteboard ? 'да' : 'нет'}</p>
+                <footer><a href="detail.html?room=${encodeURIComponent(room.id)}" role="button" class="outline">Подробнее</a></footer>
+            </article>
+        `).join('');
+    }
+    function buildRoomCheckboxes() {
+        const container = document.getElementById('roomCheckboxes');
+        container.innerHTML = roomsData.map(room => `<label><input type="checkbox" class="room-checkbox" value="${room.id}" checked> ${room.title}</label>`).join('');
+        document.querySelectorAll('.room-checkbox').forEach(cb => cb.addEventListener('change', filterAndRender));
+    }
+    function resetFilters() {
+        document.querySelectorAll('.room-checkbox').forEach(cb => cb.checked = true);
+        document.getElementById('capacityFrom').value = '0';
+        document.getElementById('capacityTo').value = '100';
+        document.getElementById('filterPlasma').checked = false;
+        document.getElementById('filterWhiteboard').checked = false;
+        document.getElementById('filterTime').value = '';
+        filterAndRender();
+    }
+    buildRoomCheckboxes();
+    filterAndRender();
+    document.getElementById('resetFilters').addEventListener('click', resetFilters);
+    document.getElementById('applyFilters').addEventListener('click', filterAndRender);
+    document.getElementById('capacityFrom').addEventListener('change', filterAndRender);
+    document.getElementById('capacityTo').addEventListener('change', filterAndRender);
+    document.getElementById('filterPlasma').addEventListener('change', filterAndRender);
+    document.getElementById('filterWhiteboard').addEventListener('change', filterAndRender);
+    document.getElementById('filterTime').addEventListener('change', filterAndRender);
+</script>
+</body>
+</html>

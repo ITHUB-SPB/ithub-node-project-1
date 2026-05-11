@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Mate | Детали комнаты</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        * { box-shadow: none !important; }
+        .brand { display: flex; align-items: center; gap: 0.75rem; }
+        .brand img { height: 2.5rem; width: auto; }
+        .room-image-large { width: 100%; max-height: 300px; object-fit: cover; border-radius: var(--pico-border-radius); margin-bottom: 1rem; }
+        .room-info { background: var(--pico-card-sectioning-background-color); padding: 1rem 1.5rem; border-radius: var(--pico-border-radius); margin: 1rem 0; }
+        .slots-list li { margin-bottom: 0.8rem; border-bottom: 1px dashed var(--pico-muted-border-color); padding-bottom: 0.5rem; }
+        .actions { display: flex; gap: 1rem; margin: 1.5rem 0; flex-wrap: wrap; }
+        .booking-form { margin-top: 1.5rem; padding: 1.5rem; background: var(--pico-card-background-color); border-radius: var(--pico-border-radius); }
+        .hidden { display: none; }
+        footer { margin-top: 2rem; text-align: center; font-size: 0.875rem; color: var(--pico-muted-color); border-top: 1px solid var(--pico-muted-border-color); padding-top: 1.5rem; }
+    </style>
+</head>
+<body>
+<main class="container">
+    <header style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin: 1rem 0;">
+        <div class="brand">
+            <img src="office.webp" alt="Logo" onerror="this.src='https://placehold.co/40x40?text=MM'">
+            <strong style="font-size: 1.5rem;">Meeting Mate</strong>
+        </div>
+        <nav><a href="index.html">На главную</a></nav>
+    </header>
+    <article id="roomDetail">
+        <h1>Комната <span id="roomTitle">--</span></h1>
+        <img id="roomImage" class="room-image-large" src="office.webp" alt="Фото комнаты" onerror="this.src='https://placehold.co/800x300?text=Meeting+Room'">
+        
+        <div id="roomInfoBlock">
+            <div class="room-info" id="roomInfo"></div>
+            <h2>Занятые слоты (сегодня)</h2>
+            <ul id="slotsList" class="slots-list"><li>Загрузка...</li></ul>
+        </div>
+        
+        <div id="bookingFormBlock" class="booking-form hidden">
+            <h3>Новое бронирование</h3>
+            <!-- Добавлен novalidate — отключает встроенные браузерные сообщения -->
+            <form id="bookingForm" novalidate onsubmit="submitBooking(event)">
+                <div class="grid">
+                    <div>
+                        <label for="topic">Тема встречи</label>
+                        <input type="text" id="topic" name="topic" placeholder="Например: Sprint Planning">
+                    </div>
+                    <div>
+                        <label for="organizer">Организатор</label>
+                        <input type="text" id="organizer" name="organizer" placeholder="Ваше имя">
+                    </div>
+                    <div>
+                        <label for="start">Начало (ЧЧ:ММ)</label>
+                        <input type="text" id="start" name="start" placeholder="14:30">
+                    </div>
+                    <div>
+                        <label for="end">Конец (ЧЧ:ММ)</label>
+                        <input type="text" id="end" name="end" placeholder="15:30">
+                    </div>
+                </div>
+                <div class="action-buttons" style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button type="button" id="backToRoomBtn" class="secondary">Назад к комнате</button>
+                    <button type="submit">Забронировать</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="actions">
+            <a href="index.html" role="button" class="secondary">К списку комнат</a>
+            <button id="showBookingBtn" role="button">Детали бронирования</button>
+        </div>
+    </article>
+</main>
+<footer class="container">
+    <small> Meeting Mate — умное бронирование</small>
+</footer>
+<script>
+    const roomsData = {
+        "A-101": { title: "A-101", capacityMin:20, capacityMax:24, hasPlasma:true, hasWhiteboard:false,
+            bookings:[{ start:"10:00", end:"10:30", topic:"React Review", organizer:"Nijin" },
+                      { start:"14:00", end:"15:00", topic:"Product Sync", organizer:"Anna K." }] },
+        "A-102": { title: "A-102", capacityMin:10, capacityMax:15, hasPlasma:false, hasWhiteboard:true,
+            bookings:[{ start:"11:00", end:"12:00", topic:"UI Review", organizer:"Michael" }] },
+        "B-140": { title: "B-140", capacityMin:30, capacityMax:35, hasPlasma:true, hasWhiteboard:true,
+            bookings:[{ start:"10:00", end:"11:30", topic:"Scrum Meeting", organizer:"Alex" }] },
+        "C-205": { title: "C-205", capacityMin:8, capacityMax:12, hasPlasma:false, hasWhiteboard:false, bookings:[] },
+        "D-312": { title: "D-312", capacityMin:40, capacityMax:50, hasPlasma:true, hasWhiteboard:false,
+            bookings:[{ start:"09:00", end:"10:00", topic:"Standup", organizer:"Irina" }] }
+    };
+    const params = new URLSearchParams(window.location.search);
+    let roomId = params.get('room');
+    if (!roomId || !roomsData[roomId]) roomId = "A-101";
+    const room = roomsData[roomId];
+    document.getElementById('roomTitle').innerText = room.title;
+    document.getElementById('roomImage').src = "office.webp";
+    document.getElementById('roomInfo').innerHTML = `
+        <p><strong>Sirius Guest</strong> — комфортное пространство</p>
+        <p><strong>Вместимость:</strong> ${room.capacityMin}–${room.capacityMax} человек</p>
+        <p><strong>Плазма:</strong> ${room.hasPlasma ? 'да' : 'нет'}</p>
+        <p><strong>Доска:</strong> ${room.hasWhiteboard ? 'да' : 'нет'}</p>
+        <p><strong>Дополнительно:</strong> Wi-Fi, кондиционер</p>
+    `;
+    
+    function renderSlots() {
+        const slotsList = document.getElementById('slotsList');
+        if (room.bookings.length === 0) {
+            slotsList.innerHTML = '<li>Нет забронированных слотов на сегодня.</li>';
+        } else {
+            slotsList.innerHTML = room.bookings.map(b => `<li><strong>${b.topic}</strong><br>Организатор: ${b.organizer}<br>Время: ${b.start} - ${b.end}</li>`).join('');
+        }
+    }
+    renderSlots();
+    
+    const showBtn = document.getElementById('showBookingBtn');
+    const roomInfoBlock = document.getElementById('roomInfoBlock');
+    const bookingFormBlock = document.getElementById('bookingFormBlock');
+    const backBtn = document.getElementById('backToRoomBtn');
+    
+    showBtn.addEventListener('click', () => {
+        roomInfoBlock.classList.add('hidden');
+        bookingFormBlock.classList.remove('hidden');
+    });
+    backBtn.addEventListener('click', () => {
+        bookingFormBlock.classList.add('hidden');
+        roomInfoBlock.classList.remove('hidden');
+        document.getElementById('bookingForm').reset();
+    });
+    
+    // Проверка пересечения интервалов
+    function isOverlap(start1, end1, start2, end2) {
+        const [s1h, s1m] = start1.split(':').map(Number);
+        const [e1h, e1m] = end1.split(':').map(Number);
+        const [s2h, s2m] = start2.split(':').map(Number);
+        const [e2h, e2m] = end2.split(':').map(Number);
+        const startTotal1 = s1h * 60 + s1m;
+        const endTotal1 = e1h * 60 + e1m;
+        const startTotal2 = s2h * 60 + s2m;
+        const endTotal2 = e2h * 60 + e2m;
+        return (startTotal1 < endTotal2 && startTotal2 < endTotal1);
+    }
+    
+    function submitBooking(event) {
+        event.preventDefault();
+        
+        const topic = document.getElementById('topic').value.trim();
+        const organizer = document.getElementById('organizer').value.trim();
+        let start = document.getElementById('start').value.trim();
+        let end = document.getElementById('end').value.trim();
+        
+        // Молча игнорируем, если любое поле пустое
+        if (!topic || !organizer || !start || !end) return;
+        
+        const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+        if (!timeRegex.test(start) || !timeRegex.test(end)) return;
+        
+        const [startH, startM] = start.split(':').map(Number);
+        const [endH, endM] = end.split(':').map(Number);
+        const startTotal = startH * 60 + startM;
+        const endTotal = endH * 60 + endM;
+        
+        if (startTotal >= endTotal) return;
+        if (endTotal - startTotal > 120) return; // не больше 2 часов
+        
+        // Проверка пересечения с существующими бронями
+        for (let b of room.bookings) {
+            if (isOverlap(start, end, b.start, b.end)) return;
+        }
+        
+        // Всё ок — добавляем бронирование
+        room.bookings.push({ start, end, topic, organizer });
+        renderSlots();               // обновляем список слотов
+        document.getElementById('bookingForm').reset();
+        bookingFormBlock.classList.add('hidden');
+        roomInfoBlock.classList.remove('hidden');
+    }
+</script>
+</body>
+</html>
