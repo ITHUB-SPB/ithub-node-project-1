@@ -1,35 +1,4 @@
-<main class="container">
-    <h1>Бронирование комнаты {{room.title}}</h1>
-
-    <h2>Занятые слоты</h2>
-    <ul>
-        <li><strong>React Review</strong> — Организатор: Nijin, 10:00 - 10:30 AM</li>
-        <li><strong>React Review</strong> — Организатор: Nijin, 10:00 - 11:00 AM</li>
-    </ul>
-
-    <form action="#" method="post" style="margin-top: 2rem;">
-        <div class="grid">
-            <div>
-                <label for="topic">Тема</label>
-                <input type="text" id="topic" name="topic" required>
-            </div>
-            <div>
-                <label for="organizer">Организатор</label>
-                <input type="text" id="organizer" name="organizer" required>
-            </div>
-            <div>
-                <label for="start">Начало</label>
-                <input type="datetime-local" id="start" name="start" required>
-            </div>
-            <div>
-                <label for="end">Конец</label>
-                <input type="datetime-local" id="end" name="end" required>
-            </div>
-        </div>
-
-        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-            <a href="/details/{{room.id}}" class="secondary" role="button">Back to Room</a>
-            <button type="submit">Book</button>
-        </div>
-    </form>
-</main>
+<article class="room_detail">
+    <h3>{{room.title}}</h3>
+    <p>{{room.capacity}}</p>
+</article>
