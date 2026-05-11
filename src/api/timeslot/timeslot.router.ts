@@ -3,4 +3,4 @@ import TimeslotController from "./timeslot.controller.js";
 
 export const timeslotRoutes = Router();
 
-timeslotRoutes.get("/", TimeslotController.findAll);
+timeslotRoutes.get("/api/timeslots", TimeslotController.findAll);
