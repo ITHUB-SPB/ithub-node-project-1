@@ -1,0 +1,49 @@
+<main class="container">
+    <section class="filters" style="margin-bottom: 2rem;">
+        <h2>Комнаты</h2>
+        <div class="grid">
+            <fieldset>
+                <legend>Выберите комнаты</legend>
+                {{#each rooms}}
+                <label>
+                    <input type="checkbox" name="room" value="{{this.id}}"> {{this.title}}
+                </label>
+                {{/each}}
+            </fieldset>
+
+            <fieldset>
+                <legend>Доступность</legend>
+                <label><input type="checkbox"> Плазма</label>
+                <label><input type="checkbox"> Доска</label>
+            </fieldset>
+
+            <fieldset>
+                <legend>Вместимость</legend>
+                <input type="text" placeholder="от - до" style="width: 100%;">
+            </fieldset>
+
+            <div style="display: flex; gap: 0.5rem; align-items: flex-end;">
+                <button class="secondary" type="button">Очистить</button>
+                <button type="button">Применить</button>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+    <p><strong>Найдено комнат: {{rooms.length}}</strong></p>
+
+    <div class="grid">
+        {{#each rooms}}
+        <article class="room_card">
+            <header>
+                <h3>{{this.title}}</h3>
+            </header>
+            <p>Dev Bay, Chennai</p>
+            <p><strong>Max Limit:</strong> {{this.capacity}}</p>
+            <footer>
+                <a href="/details/{{this.id}}" role="button" class="outline">More Info</a>
+            </footer>
+        </article>
+        {{/each}}
+    </div>
+</main>

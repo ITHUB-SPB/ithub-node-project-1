@@ -1,11 +1,11 @@
 export class SlotValueError extends TypeError {
-    constructor(message) {
+    constructor(message: string | undefined) {
         super(`Value must be a Timeslot ${message ? message : ''}`);
     }
 }
 
 export class SlotRelationError extends RangeError {
-    constructor(start, end) {
+    constructor(start: Date, end: Date) {
         const localeStart = start.toLocaleString('ru');
         const localeEnd = end.toLocaleString('ru');
 
@@ -16,19 +16,19 @@ export class SlotRelationError extends RangeError {
 }
 
 export class Timeslot {
-    #start;
-    #end;
+    #start: Date;
+    #end: Date;
 
-    constructor(start, end) {
-        this.setStart(start);
-        this.setEnd(end);
+    constructor(start: Date, end: Date) {
+        this.#start = this.setStart(start);
+        this.#end = this.setEnd(end);
     }
 
-    #isDate(value) {
+    #isDate(value: any) {
         return value instanceof Date;
     }
 
-    static isIntersect(timeslot, otherTimeslot) {
+    static isIntersect(timeslot: any, otherTimeslot: any) {
         if (!(timeslot instanceof Timeslot)) {
             throw new SlotValueError(timeslot.toString());
         }
@@ -61,7 +61,15 @@ export class Timeslot {
         return this.#end; // либо this.getEnd()
     }
 
-    setStart(newDate) {
+    get isAM() {
+        return this.#end.getHours() < 12;
+    }
+
+    get isPM() {
+        return this.#start.getHours() >= 12;
+    }
+
+    setStart(newDate: any) {
         if (!this.#isDate(newDate)) {
             throw new TypeError('Value must be a Time');
         }
@@ -70,14 +78,14 @@ export class Timeslot {
             throw new SlotRelationError(newDate, this.#end);
         }
 
-        this.#start = newDate;
+        return newDate;
     }
 
     set start(newDate) {
         this.setStart(newDate);
     }
 
-    setEnd(newDate) {
+    setEnd(newDate: any) {
         if (!this.#isDate(newDate)) {
             throw new TypeError('Value must be a Time');
         }
@@ -86,7 +94,7 @@ export class Timeslot {
             throw new SlotRelationError(this.#start, newDate);
         }
 
-        this.#end = newDate;
+        return newDate;
     }
 
     set end(newDate) {
@@ -95,8 +103,8 @@ export class Timeslot {
 
     toMapped() {
         return {
-            start: this.#start / 1000,
-            end: this.#start / 1000,
+            start: this.#start.valueOf() / 1000,
+            end: this.#start.valueOf() / 1000,
         };
     }
 
@@ -111,12 +119,14 @@ export class Timeslot {
         return JSON.stringify(this.toMapped());
     }
 
-    static fromJSON(data) {
+    static fromJSON(data: string) {
         return this.fromMapped(JSON.parse(data));
     }
 
-    static fromMapped(data) {
-        const { start, end } = data;
+    static fromMapped({ start, end }: {
+        start: number,
+        end: number
+    }) {
         return new this(new Date(start * 1000), new Date(end * 1000));
     }
 }

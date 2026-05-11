@@ -1,0 +1,135 @@
+import { fakerRU as faker } from "@faker-js/faker";
+import connection from "../connection.js";
+import chalk from "chalk";
+
+export default function seedTables(tables: string[]) {
+  if (tables.length === 0) {
+    seedTimeslots();
+    seedAreas();
+    seedBookings();
+    return;
+  }
+
+  const errors = [];
+
+  for (const table of tables) {
+    try {
+      switch (table) {
+        case "bookings":
+          seedBookings();
+          break;
+
+        case "timeslots":
+          seedTimeslots();
+          break;
+
+        case "areas":
+          seedAreas();
+          break;
+
+        default:
+          throw new Error(`Таблицы ${table} не существует`);
+      }
+    } catch (error) {
+      errors.push({
+        table,
+        message: (error as Error).message,
+      });
+    }
+  }
+
+  if (errors.length > 0) {
+    const message = errors.map((e) => `- ${e.table}: ${e.message}`).join("\n");
+
+    throw new Error(`\n${message}`);
+  }
+}
+
+function seedAreas() {
+  const countStatement = connection.prepare("select * from areas");
+  if (countStatement.all().length > 0) {
+    throw new Error("Таблица areas уже содержит записи");
+  }
+
+  const areas = faker.helpers.multiple(
+    () => faker.number.int({ min: 1, max: 200 }),
+    {
+      count: 10,
+    }
+  );
+
+  const insertStatement = connection.prepare(
+    "insert into areas (title) values (?)"
+  );
+
+  for (const areaNumber of areas) {
+    insertStatement.run(`Помещение ${areaNumber}`);
+  }
+
+  console.log(
+    chalk.green(
+      `✔ Было добавлено ${countStatement.all().length} записей в areas`
+    )
+  );
+}
+
+function seedTimeslots() {
+  const countStatement = connection.prepare("select * from timeslots");
+
+  if (countStatement.all().length > 0) {
+    throw new Error("Таблица timeslots уже содержит записи");
+  }
+
+  const timeslots = [
+    ["10:00", "11:00"],
+    ["11:00", "12:00"],
+    ["12:00", "13:00"],
+    ["14:00", "15:00"],
+    ["15:00", "16:00"],
+    ["16:00", "18:00"],
+  ];
+
+  const insertStatement = connection.prepare(
+    "insert into timeslots (start, end) values (?, ?)"
+  );
+
+  for (const timeslot of timeslots) {
+    insertStatement.run(...timeslot);
+  }
+
+  console.log(
+    chalk.green(
+      `✔ Было добавлено ${countStatement.all().length} записей в timeslots`
+    )
+  );
+}
+
+function seedBookings() {
+  const countStatement = connection.prepare("select * from bookings");
+
+  if (countStatement.all().length > 0) {
+    throw new Error("Таблица bookings уже содержит записи");
+  }
+
+  // const userIdentificators = connection.prepare('select id from users').all()
+  // const startDates = faker.helpers.multiple(() => faker.date.past(), { count: 20 });
+  // const endDates = faker.helpers.multiple(() => faker.date.recent(), { count: 20 });
+
+  // const insertStatement = connection.prepare(
+  //     'insert into bookings (start, end, userId) values (?, ?, ?)',
+  // );
+
+  // for (const elementIx in userIdentificators) {
+  //     insertStatement.run(
+  //         startDates[elementIx]!.getTime(),
+  //         endDates[elementIx]!.getTime(),
+  //         userIdentificators[elementIx]!['id']
+  //     );
+  // }
+
+  // console.log(
+  //     chalk.green(
+  //         `✔ Было добавлено ${countStatement.all().length} записей в bookings`,
+  //     ),
+  // );
+}

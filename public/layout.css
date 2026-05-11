@@ -1,0 +1,9 @@
+.rooms {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.room_card {
+
+}

@@ -1,25 +1,37 @@
 {
-  "type": "module",
-  "scripts": {
-    "dev": "node --watch src/main.js",
-    "format": "prettier src/**/*.js --write",
-    "test": "vitest watch --reporter=dot",
-    "lint": "oxlint src --fix",
-    "db:create": "node --no-warnings src/database/cli/index.js create",
-    "db:reset": "node --no-warnings src/database/cli/index.js reset",
-    "db:seed": "node --no-warnings src/database/cli/index.js seed",
-    "db:help": "node --no-warnings src/database/cli/index.js help"
-  },
-  "devDependencies": {
-    "@faker-js/faker": "^10.2.0",
-    "oxlint": "^1.23.0",
-    "prettier": "^3.6.2",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
-  },
-  "dependencies": {
-    "chalk": "^5.6.2",
-    "ora": "^9.3.0",
-    "valibot": "^1.2.0"
-  }
+    "type": "module",
+    "scripts": {
+        "dev": "tsx --watch src/main.ts",
+        "format": "oxfmt {src,tests}/**/*.{js,ts}",
+        "test": "vitest watch --reporter=dot",
+        "test:cov": "vitest run --coverage",
+        "typecheck": "tsc --noEmit",
+        "lint": "oxlint src --fix",
+        "db:create": "tsx --no-warnings src/database/cli/index.js create",
+        "db:reset": "tsx --no-warnings src/database/cli/index.js reset",
+        "db:seed": "tsx --no-warnings src/database/cli/index.js seed",
+        "db:help": "tsx --no-warnings src/database/cli/index.js help"
+    },
+    "devDependencies": {
+        "@faker-js/faker": "^10.2.0",
+        "@tsconfig/recommended": "^1.0.13",
+        "@types/better-sqlite3": "^7.6.13",
+        "@types/express": "^5.0.6",
+        "@types/node": "^25.2.3",
+        "@vitest/coverage-v8": "^4.0.18",
+        "oxfmt": "^0.32.0",
+        "oxlint": "^1.23.0",
+        "tsx": "^4.21.0",
+        "typescript": "^5.9.3",
+        "vitest": "^4.0.17"
+    },
+    "dependencies": {
+        "better-sqlite3": "^12.9.0",
+        "chalk": "^5.6.2",
+        "express": "^5.2.1",
+        "express-handlebars": "^9.0.1",
+        "kysely": "^0.28.16",
+        "ora": "^9.3.0",
+        "valibot": "^1.2.0"
+    }
 }
