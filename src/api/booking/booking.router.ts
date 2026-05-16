@@ -1,8 +1,14 @@
-import { Router } from 'express'
-import BookingController from './booking.controller.js';
+import express, { Router } from "express";
+import BookingController from "./booking.controller.js";
+import { bookingView, bookingCreateView } from "./booking.views.js";
 
-export const bookingRoutes = Router()
+export const bookingRoutes = Router();
 
-bookingRoutes.get('/', BookingController.find)
-bookingRoutes.post('/', BookingController.create)
-bookingRoutes.delete('/:id', BookingController.delete)
+const formMiddleware = express.urlencoded({ extended: true })
+
+bookingRoutes.get("/api/bookings", BookingController.find);
+bookingRoutes.post("/api/bookings", BookingController.create);
+bookingRoutes.delete("/api/bookings/:id", BookingController.delete);
+
+bookingRoutes.get("/booking/:roomId", bookingView);
+bookingRoutes.post("/booking/:roomId", formMiddleware, bookingCreateView);

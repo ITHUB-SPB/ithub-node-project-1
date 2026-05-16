@@ -1,0 +1,24 @@
+<aside class="filters">
+    <form method="get" action="/">
+        <h4>Комнаты</h4>
+        <section class="field">
+            <input type="checkbox" name="area" id="room-1" value="1">
+            <label for="room-1" class="field__label">А-101</label>
+        </section>
+
+        <section class="field">
+            <input type="checkbox" name="area" id="room-2" value="2">
+            <label for="room-2" class="field__label">А-102</label>
+        </section>
+
+        <h4>Вместимость</h4>
+        <section class="field">
+            <input type="text" name="capacity" pattern="\d{1,3}">
+        </section>
+
+        <section class="buttons">
+            <button class="button" type="reset">Очистить</button>
+            <button class="button button--primary" type="submit">Применить</button>
+        </section>
+    </form>
+</aside>

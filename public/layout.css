@@ -1,9 +1,27 @@
+body {
+    min-height: 100dvh;
+    background-color: #FFF2F1;
+
+    padding: 103px 75px 0 60px;
+}
+
+.page {
+    display: flex;
+}
+
+.page--index {
+    flex-direction: row;
+    gap: 50px;
+}
+
+.aside {
+    width: 262px;
+    min-height: 613px;
+}
+
 .rooms {
+    width: 870px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
-}
-
-.room_card {
-
 }

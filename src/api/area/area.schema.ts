@@ -1,3 +1,4 @@
+import type { Generated } from "kysely";
 import * as v from "valibot";
 
 const paginationSchema = v.object({
@@ -58,7 +59,9 @@ export const areasResponseSchema = v.strictObject({
   }),
 });
 
-export type AreaSchema = v.InferOutput<typeof areaSchema>;
+export type AreaSchema = v.InferOutput<typeof areaSchema> & {
+  id: Generated<"id">;
+};
 export type AreasQuerySchema = v.InferOutput<typeof areasQuerySchema>;
 export type AreasSchema = v.InferOutput<typeof areasSchema>;
 export type AreasResponseSchema = v.InferOutput<typeof areasResponseSchema>;

@@ -1,12 +1,12 @@
 import { fakerRU as faker } from "@faker-js/faker";
-import connection from "../connection.js";
+import db from "../connection.js";
 import chalk from "chalk";
 
-export default function seedTables(tables: string[]) {
+export default async function seedTables(tables: string[]) {
   if (tables.length === 0) {
-    seedTimeslots();
-    seedAreas();
-    seedBookings();
+    await seedTimeslots();
+    await seedAreas();
+    await seedBookings();
     return;
   }
 
@@ -16,15 +16,15 @@ export default function seedTables(tables: string[]) {
     try {
       switch (table) {
         case "bookings":
-          seedBookings();
+          await seedBookings();
           break;
 
         case "timeslots":
-          seedTimeslots();
+          await seedTimeslots();
           break;
 
         case "areas":
-          seedAreas();
+          await seedAreas();
           break;
 
         default:
@@ -45,9 +45,10 @@ export default function seedTables(tables: string[]) {
   }
 }
 
-function seedAreas() {
-  const countStatement = connection.prepare("select * from areas");
-  if (countStatement.all().length > 0) {
+async function seedAreas() {
+  const existing = await db.selectFrom("areas").selectAll().execute();
+
+  if (existing.length > 0) {
     throw new Error("Таблица areas уже содержит записи");
   }
 
@@ -58,25 +59,24 @@ function seedAreas() {
     }
   );
 
-  const insertStatement = connection.prepare(
-    "insert into areas (title) values (?)"
-  );
-
   for (const areaNumber of areas) {
-    insertStatement.run(`Помещение ${areaNumber}`);
+    await db
+      .insertInto("areas")
+      .values({
+        title: `Помещение ${areaNumber}`,
+      })
+      .execute();
   }
 
-  console.log(
-    chalk.green(
-      `✔ Было добавлено ${countStatement.all().length} записей в areas`
-    )
-  );
+  const added = await db.selectFrom("areas").selectAll().execute();
+
+  console.log(chalk.green(`✔ Было добавлено ${added.length} записей в areas`));
 }
 
-function seedTimeslots() {
-  const countStatement = connection.prepare("select * from timeslots");
+async function seedTimeslots() {
+  const existing = await db.selectFrom("timeslots").selectAll().execute();
 
-  if (countStatement.all().length > 0) {
+  if (existing.length > 0) {
     throw new Error("Таблица timeslots уже содержит записи");
   }
 
@@ -89,25 +89,31 @@ function seedTimeslots() {
     ["16:00", "18:00"],
   ];
 
-  const insertStatement = connection.prepare(
-    "insert into timeslots (start, end) values (?, ?)"
-  );
+  for (const [start, end] of timeslots) {
+    if (!start || !end) {
+      continue;
+    }
 
-  for (const timeslot of timeslots) {
-    insertStatement.run(...timeslot);
+    await db
+      .insertInto("timeslots")
+      .values({
+        start,
+        end,
+      })
+      .execute();
   }
 
+  const added = await db.selectFrom("timeslots").selectAll().execute();
+
   console.log(
-    chalk.green(
-      `✔ Было добавлено ${countStatement.all().length} записей в timeslots`
-    )
+    chalk.green(`✔ Было добавлено ${added.length} записей в timeslots`)
   );
 }
 
-function seedBookings() {
-  const countStatement = connection.prepare("select * from bookings");
+async function seedBookings() {
+  const existing = await db.selectFrom("bookings").selectAll().execute();
 
-  if (countStatement.all().length > 0) {
+  if (existing.length > 0) {
     throw new Error("Таблица bookings уже содержит записи");
   }
 

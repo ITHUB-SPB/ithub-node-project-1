@@ -1,12 +1,19 @@
-<section class="rooms">
-    {{#each rooms}}
+<div class="page page--index">
+    <div class="aside">
+        {{> brand}}
+        {{> filters}}
+    </div>
+
+    <section class="rooms">
+        {{#each rooms}}
         <article class="room_card">
             <header>
-                <a href="/details/{{this.id}}">{{this.title}}</a>
+                <a href="/rooms/{{this.id}}">{{this.title}}</a>
             </header>
             <footer>
                 <p>{{this.capacity}}</p>
             </footer>
         </article>
-    {{/each}}
-</section>
+        {{/each}}
+    </section>
+</div>
