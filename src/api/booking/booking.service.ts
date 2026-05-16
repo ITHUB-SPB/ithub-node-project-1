@@ -43,4 +43,16 @@ export default class BookingService {
             .where("bookings.areaId", "=", roomId)
             .execute();
     }
+
+    static async findBookedTimeslotIdsByRoom(
+        roomId: number,
+    ): Promise<number[]> {
+        const rows = await db
+            .selectFrom("bookings")
+            .select(["timeslotId"])
+            .where("areaId", "=", roomId)
+            .execute();
+
+        return rows.map((r) => Number(r.timeslotId));
+    }
 }

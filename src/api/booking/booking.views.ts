@@ -6,16 +6,27 @@ import TimeslotService from "../timeslot/timeslot.service.js";
 import AreaService from "../area/area.service.js";
 import * as schema from "./booking.schema.js";
 
-export const bookingView = async (request: Request, response: Response) => {
-    const roomId = request.params["roomId"];
-
+async function getBookingPageData(roomId: number) {
     const room = await AreaService.findById(roomId);
     const timeslots = await TimeslotService.findAll();
 
-    response.render("booking", {
+    const bookedIds = await BookingService.findBookedTimeslotIdsByRoom(roomId);
+
+    const availableTimeslots = timeslots.filter(
+        (t) => !bookedIds.includes(Number(t.id)),
+    );
+
+    return {
         room,
-        timeslots,
-    });
+        timeslots: availableTimeslots,
+    };
+}
+
+export const bookingView = async (request: Request, response: Response) => {
+    const roomId = Number(request.params["roomId"]);
+    const data = await getBookingPageData(roomId);
+
+    response.render("booking", data);
 };
 
 export const bookingCreateView = async (
@@ -28,26 +39,22 @@ export const bookingCreateView = async (
         const newBooking = v.parse(schema.newBookingInSchema, request.body);
 
         await BookingService.create({
-            areaId: Number(roomId),
+            areaId: roomId,
             timeslotId: newBooking.timeslotId,
             createdAt: Math.floor(Date.now() / 1000),
         });
 
-        const room = await AreaService.findById(roomId);
-        const timeslots = await TimeslotService.findAll();
+        const data = await getBookingPageData(roomId);
 
-        return response.render("booking", {
-            room,
-            timeslots,
+        response.render("booking", {
+            ...data,
             success: "Бронирование успешно создано",
         });
     } catch (error) {
-        const room = await AreaService.findById(roomId);
-        const timeslots = await TimeslotService.findAll();
+        const data = await getBookingPageData(roomId);
 
         response.render("booking", {
-            room,
-            timeslots,
+            ...data,
             error: "Ошибка бронирования",
         });
     }
