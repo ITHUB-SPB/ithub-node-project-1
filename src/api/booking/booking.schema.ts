@@ -44,8 +44,8 @@ export const bookingDeleteSchema = v.object({
 
 export const bookingSchema = v.object({
     id: v.pipe(v.number(), v.integer(), v.minValue(1)),
-    start: v.pipe(v.number(), v.integer()),
-    end: v.pipe(v.number(), v.integer()),
+    areaId: v.pipe(v.number(), v.integer(), v.minValue(1)),
+    timeslotId: v.pipe(v.number(), v.integer(), v.minValue(1)),
     createdAt: v.pipe(v.number(), v.integer()),
 });
 

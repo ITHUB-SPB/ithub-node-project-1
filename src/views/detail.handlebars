@@ -1,6 +1,38 @@
 <div class="page page--detail">
-    <article class="room_detail">
-        <h3>{{room.title}}</h3>
-        <p>{{room.capacity}}</p>
-    </article>
+    <aside class="detail-aside">
+        {{> brand}}
+
+        <img src="/public/images/room.jpg" alt="room" class="detail-image">
+
+        <h4 class="detail-title">Занятые слоты</h4>
+
+        {{#if bookings.length}}
+            <ul class="slots">
+                {{#each bookings}}
+                    <li class="slot">
+                        {{this.start}} - {{this.end}}
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <p class="slots-empty">Нет бронирований</p>
+        {{/if}}
+    </aside>
+
+    <section class="room_detail">
+        <h2 class="room-title">{{room.title}}</h2>
+
+        <p class="room-capacity">Вместимость: {{room.capacity}}</p>
+
+        <p class="room-feautures">
+            {{#if room.wifi}}Wi-Fi{{/if}}
+            {{#if room.board}}Доска{{/if}}
+            {{#if room.plasma}}Плазма{{/if}}
+        </p>
+
+        <div class="detail-actions">
+            <a href="/" class="button">Вернуться</a>
+            <a href="/booking/{{room.id}}" class="button button--primary">Забронировать</a>
+        </div>
+    </section>
 </div>

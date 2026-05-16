@@ -28,6 +28,7 @@ export const bookingCreateView = async (
         const newBooking = v.parse(schema.newBookingInSchema, request.body);
 
         await BookingService.create({
+            areaId: Number(roomId),
             timeslotId: newBooking.timeslotId,
             createdAt: Math.floor(Date.now() / 1000),
         });

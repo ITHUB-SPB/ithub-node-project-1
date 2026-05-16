@@ -41,10 +41,18 @@ export async function createTables(isForce: boolean) {
     await db.schema
         .createTable("bookings")
         .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
+        .addColumn("areaId", "integer", (col) => col.notNull())
         .addColumn("timeslotId", "integer", (col) => col.notNull())
         .addColumn("userId", "integer")
         .addColumn("createdAt", "timestamp", (col) =>
             col.defaultTo(sql`CURRENT_TIMESTAMP`),
+        )
+        .addForeignKeyConstraint(
+            "bookings_area_id_foreign",
+            ["areaId"],
+            "areas",
+            ["id"],
+            (constraint) => constraint.onDelete("cascade"),
         )
         .addForeignKeyConstraint(
             "bookings_timeslot_id_foreign",
