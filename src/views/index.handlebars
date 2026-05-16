@@ -8,10 +8,16 @@
         {{#each rooms}}
         <article class="room_card">
             <header>
-                <a href="/rooms/{{this.id}}">{{this.title}}</a>
+                <a href="/details/{{this.id}}">{{this.title}}</a>
             </header>
             <footer>
-                <p>{{this.capacity}}</p>
+                <p>Вместимость: {{this.capacity}}</p>
+
+                <p>
+                    {{#if this.wifi}}Wi-Fi{{/if}}
+                    {{#if this.board}}Доска{{/if}}
+                    {{#if this.plasma}}Плазма{{/if}}
+                </p>
             </footer>
         </article>
         {{/each}}

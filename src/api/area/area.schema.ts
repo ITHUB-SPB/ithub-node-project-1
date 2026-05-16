@@ -44,7 +44,7 @@ export const areasQuerySchema = v.object({
     ...filterSchema.entries,
 });
 
-const areaSchema = v.object({
+export const areaSchema = v.object({
     id: v.pipe(v.number(), v.integer(), v.minValue(1)),
     title: v.pipe(v.string(), v.nonEmpty()),
     capacity: v.number(),

@@ -1,33 +1,45 @@
 import * as v from "valibot";
 import db from "../../database/connection.js";
 import {
-  areasSchema,
-  type AreasSchema,
-  type AreasQuerySchema,
+    areasSchema,
+    areaSchema,
+    type AreasSchema,
+    type AreasQuerySchema,
 } from "./area.schema.js";
 
 export default class AreaService {
-  static async findAll(queryParams: AreasQuerySchema): Promise<AreasSchema> {
-    let statement = db.selectFrom("areas").selectAll().orderBy("areas.title");
+    static async findAll(queryParams: AreasQuerySchema): Promise<AreasSchema> {
+        let statement = db
+            .selectFrom("areas")
+            .selectAll()
+            .orderBy("areas.title");
 
-    if (queryParams.limit) {
-      const offset = queryParams.offset || 0;
-      statement = statement.limit(queryParams.limit).offset(offset);
+        if (queryParams.limit) {
+            statement = statement
+                .limit(queryParams.limit)
+                .offset(queryParams.offset || 0);
+        }
+
+        if (queryParams.filter?.length) {
+            statement = statement.where("areas.id", "in", queryParams.filter);
+        }
+
+        const areas = await statement.execute();
+
+        return v.parse(areasSchema, areas);
     }
 
-    if (queryParams.filter?.length) {
-      statement = statement.where("areas.id", "in", queryParams.filter);
+    static async findById(id: number | string) {
+        const room = await db
+            .selectFrom("areas")
+            .selectAll()
+            .where("id", "=", Number(id))
+            .executeTakeFirst();
 
-      if (queryParams.filter) {
-        // TODO перенести это действие в валибот
-        const ids = queryParams.filter.split(",").map(Number);
-        statement = statement.where("areas.id", "in", ids);
-      }
+        if (!room) {
+            throw new Error("Комната не найдена");
+        }
 
-      // const statement = connection.prepare('select * from areas order by title')
-      const areas = await statement.execute();
-
-      return v.parse(areasSchema, areas);
+        return v.parse(areaSchema, room);
     }
-  }
 }
