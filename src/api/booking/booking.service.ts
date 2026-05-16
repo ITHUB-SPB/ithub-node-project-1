@@ -37,6 +37,8 @@ export default class BookingService {
                 "bookings.id",
                 "bookings.timeslotId",
                 "bookings.areaId",
+                "bookings.title",
+                "bookings.username",
                 "timeslots.start",
                 "timeslots.end",
             ])

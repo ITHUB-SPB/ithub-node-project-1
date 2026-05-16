@@ -43,7 +43,8 @@ export async function createTables(isForce: boolean) {
         .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
         .addColumn("areaId", "integer", (col) => col.notNull())
         .addColumn("timeslotId", "integer", (col) => col.notNull())
-        .addColumn("userId", "integer")
+        .addColumn("title", "text", (col) => col.notNull())
+        .addColumn("username", "text", (col) => col.notNull())
         .addColumn("createdAt", "timestamp", (col) =>
             col.defaultTo(sql`CURRENT_TIMESTAMP`),
         )

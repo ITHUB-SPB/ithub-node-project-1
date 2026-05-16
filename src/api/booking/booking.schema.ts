@@ -2,6 +2,8 @@ import type { Generated } from "kysely";
 import * as v from "valibot";
 
 export const newBookingInSchema = v.object({
+    title: v.pipe(v.string(), v.nonEmpty()),
+    username: v.pipe(v.string(), v.nonEmpty()),
     timeslotId: v.pipe(
         v.transform((value) => Number(value)),
         v.number(),
@@ -46,6 +48,8 @@ export const bookingSchema = v.object({
     id: v.pipe(v.number(), v.integer(), v.minValue(1)),
     areaId: v.pipe(v.number(), v.integer(), v.minValue(1)),
     timeslotId: v.pipe(v.number(), v.integer(), v.minValue(1)),
+    title: v.pipe(v.string(), v.nonEmpty()),
+    username: v.pipe(v.string(), v.nonEmpty()),
     createdAt: v.pipe(v.number(), v.integer()),
 });
 

@@ -41,6 +41,8 @@ export const bookingCreateView = async (
         await BookingService.create({
             areaId: roomId,
             timeslotId: newBooking.timeslotId,
+            title: newBooking.title,
+            username: newBooking.username,
             createdAt: Math.floor(Date.now() / 1000),
         });
 

@@ -15,6 +15,12 @@
         {{/if}}
 
         <form method="post" action="/booking/{{room.id}}">
+            <label for="title">Название мероприятия</label>
+            <input type="text" name="title" required minlength="2" placeholder="Стендапчик">
+
+            <label for="username">Организатор</label>
+            <input type="text" name="username" required minlength="2" placeholder="Ваше имя">
+
             <label>Слот</label>
             <select name="timeslotId" required>
                 {{#each timeslots}}
