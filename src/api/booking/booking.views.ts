@@ -16,18 +16,20 @@ async function getBookingPageData(roomId: number) {
         (t) => !bookedIds.includes(Number(t.id)),
     );
 
+    const bookings = await BookingService.findByRoomId(roomId);
+
     return {
         room,
         timeslots: availableTimeslots,
+        bookings,
     };
 }
 
 export const bookingView = async (request: Request, response: Response) => {
     const roomId = Number(request.params["roomId"]);
     const data = await getBookingPageData(roomId);
-    const bookings = await BookingService.findByRoomId(roomId);
 
-    response.render("booking", { data, bookings });
+    response.render("booking", data);
 };
 
 export const bookingCreateView = async (
