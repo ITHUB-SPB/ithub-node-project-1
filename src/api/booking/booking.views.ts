@@ -25,8 +25,9 @@ async function getBookingPageData(roomId: number) {
 export const bookingView = async (request: Request, response: Response) => {
     const roomId = Number(request.params["roomId"]);
     const data = await getBookingPageData(roomId);
+    const bookings = await BookingService.findByRoomId(roomId);
 
-    response.render("booking", data);
+    response.render("booking", { data, bookings });
 };
 
 export const bookingCreateView = async (

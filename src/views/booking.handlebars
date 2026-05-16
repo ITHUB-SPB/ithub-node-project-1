@@ -1,6 +1,22 @@
 <div class="page page--booking">
     <div class="aside">
         {{> brand}}
+
+        <h4 class="detail-title">Занятые слоты</h4>
+
+        {{#if bookings.length}}
+            <ul class="slots">
+                {{#each bookings}}
+                    <li class="slot">
+                        {{this.start}} - {{this.end}}
+                        {{this.title}}
+                        {{this.username}}
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <p class="slots-empty">Нет бронирований</p>
+        {{/if}}
     </div>
 
     <section class="booking">
