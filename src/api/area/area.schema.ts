@@ -59,9 +59,16 @@ const filterSchema = v.object({
     ),
 });
 
+const amenitiesSchema = v.object({
+    wifi: v.optional(v.literal("1")),
+    board: v.optional(v.literal("1")),
+    plasma: v.optional(v.literal("1")),
+});
+
 export const areasQuerySchema = v.object({
     ...paginationSchema.entries,
     ...filterSchema.entries,
+    ...amenitiesSchema.entries,
 });
 
 export const areaSchema = v.object({

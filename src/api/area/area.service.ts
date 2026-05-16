@@ -32,6 +32,18 @@ export default class AreaService {
             );
         }
 
+        if (queryParams.wifi === "1") {
+            statement = statement.where("areas.wifi", "=", 1);
+        }
+
+        if (queryParams.board === "1") {
+            statement = statement.where("areas.board", "=", 1);
+        }
+
+        if (queryParams.plasma === "1") {
+            statement = statement.where("areas.plasma", "=", 1);
+        }
+
         const areas = await statement.execute();
 
         return v.parse(areasSchema, areas);

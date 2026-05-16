@@ -1,6 +1,6 @@
 <aside class="filters">
     <form action="/" method="get">
-        <h4>Комнаты</h4>
+        <h4 class="filters-title">Комнаты</h4>
 
         {{#each roomsFilter}}
             <section class="field">
@@ -9,12 +9,51 @@
                     name="filter"
                     id="room-{{this.id}}"
                     value="{{this.id}}"
+                    class="filters-checkbox"
                 />
-                <label for="room-{{this.id}}">{{this.title}}</label>
+                <label
+                    for="room-{{this.id}}"
+                    class="rooms-label"
+                >{{this.title}}</label>
             </section>
         {{/each}}
 
-        <h4>Вместимость</h4>
+        <h4 class="filters-title">Доступность</h4>
+
+        <section class="field">
+            <input
+                type="checkbox"
+                name="wifi"
+                value="1"
+                id="wifi"
+                class="filters-checkbox"
+            />
+            <label for="wifi" class="rooms-label">Wi-Fi</label>
+        </section>
+
+        <section class="field">
+            <input
+                type="checkbox"
+                name="board"
+                value="1"
+                id="board"
+                class="filters-checkbox"
+            />
+            <label for="board" class="rooms-label">Доска</label>
+        </section>
+
+        <section class="field">
+            <input
+                type="checkbox"
+                name="plasma"
+                value="1"
+                id="plasma"
+                class="filters-checkbox"
+            />
+            <label for="plasma" class="rooms-label">Плазма</label>
+        </section>
+
+        <h4 class="filters-title">Вместимость</h4>
 
         <input
             type="number"
@@ -22,11 +61,12 @@
             min="1"
             placeholder="Минимум мест"
             value="{{query.capacity}}"
+            class="filters-capacity"
         />
 
         <section class="buttons">
-            <button type="reset">Очистить</button>
-            <button type="submit">Применить</button>
+            <button type="reset" class="button-reset">Очистить</button>
+            <button type="submit" class="button-submit">Применить</button>
         </section>
     </form>
 </aside>
