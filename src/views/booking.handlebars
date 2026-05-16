@@ -1,7 +1,28 @@
 <div class="page page--booking">
-    <article class="room_detail">
-        <h3>{{room.title}}</h3>
-        <p>{{room.capacity}}</p>
-    </article>
-</div>
+    <div class="aside">
+        {{> brand}}
+    </div>
 
+    <section class="booking">
+        <h2>Создание бронирования</h2>
+
+        {{#if success}}
+            <div class="alert alert--success">{{success}}</div>
+        {{/if}}
+        
+        {{#if error}}
+            <div class="alert alert--error">{{error}}</div>
+        {{/if}}
+
+        <form method="post" action="/booking/{{room.id}}">
+            <label>Слот</label>
+            <select name="timeslotId" required>
+                {{#each timeslots}}
+                    <option value="{{this.id}}">{{this.start}} - {{this.end}}</option>
+                {{/each}}
+            </select>
+
+            <button type="submit">Забронировать</button>
+        </form>
+    </section>
+</div>

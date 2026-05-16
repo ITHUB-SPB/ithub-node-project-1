@@ -20,7 +20,10 @@ export default class BookingService {
         // return await db.selectFrom('bookings').selectAll().execute()
     }
 
-    static async create(payload: any) {
+    static async create(payload: {
+        timeslotId: number;
+        createdAt: number;
+    }) {
         return await db.insertInto('bookings').values(payload).returningAll().executeTakeFirst()
     }
 
