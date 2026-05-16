@@ -1,6 +1,151 @@
-<div class="page page--detail">
-    <article class="room_detail">
-        <h3>{{room.title}}</h3>
-        <p>{{room.capacity}}</p>
-    </article>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/public/layout.css" />
+    <title>{{room.title}}</title>
+  </head>
+  <body>
+    <img src="/public/images/logo.png" alt="" class="name" />
+    <div class="big-room-card">
+      <div class="detailed">
+        <img class="detail-room-image" alt="img" />
+        <div class="room-name">{{room.title}}</div>
+
+<div class="icon {{#unless room.hasWifi}}inactive{{/unless}}" id="wifi">
+  <svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+    <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+    <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+    <line x1="12" y1="20" x2="12" y2="20" />
+  </svg>
 </div>
+
+<div class="icon" id="chairs">
+  <span class="capacity-value">{{room.capacity}}</span>
+</div>
+
+<div class="icon {{#unless room.hasPlasma}}inactive{{/unless}}" id="tv">
+  <svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <rect x="2" y="7" width="20" height="15" rx="2" ry="2" />
+    <polyline points="17 2 12 7 7 2" />
+  </svg>
+</div>
+
+<div class="icon {{#unless room.hasBoard}}inactive{{/unless}}" id="idk_man_and_square">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+</svg>
+</div>
+
+<a href="/" class="btn-link" id="back-to-rooms">back to Rooms</a>
+<button class="btn-link" id="booking_details">booking details</button>
+      </div>
+
+      <div class="booking_menu" style="display: none;">
+        <img
+          class="detail-room-image"
+          src="/public/images/room-default.png"
+          alt="img"
+        />
+        <form id="book_form" action="/details/{{room.id}}" method="POST" onsubmit="return validateBookingForm()">
+          <input type="text" name="theme" class="theme" placeholder="тема" required/>
+
+          <input type="text" name="name" class="organiser" placeholder="организатор" required />
+
+          <select id="time_select"name="timeslotId" class="timeslot" required>
+            <option value="">выбрать время</option>
+            {{#each room.timeslots}}
+              <option value="{{this.id}}">{{this.start}} - {{this.end}}</option>
+            {{/each}}
+          </select>
+
+          <button type="button" class="btn-link" id="back_to_room_button">back to room</button>
+          <button type="submit" class="btn-link" id="book_button">book</button>
+        </form>
+        
+      </div>
+    </div>
+
+    <div class="slots">
+      {{#each room.bookings}}
+        <div class="reviev">
+          <h2>{{this.theme}}</h2>
+          <p><b>организатор</b> : {{this.name}}</p>
+          <p>{{this.start}} - {{this.end}}</p>
+        </div>
+      {{/each}}
+    </div>
+
+    <script>
+  const bookingMenu = document.querySelector(".booking_menu");
+  const detailed = document.querySelector(".detailed");
+  const bookingDetailsBtn = document.getElementById("booking_details");
+  const backToRoomBtn = document.getElementById("back_to_room_button");
+  const bookBtn = document.getElementById("book_button");
+
+  if (bookingDetailsBtn) {
+    bookingDetailsBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      detailed.style.display = "none";
+      bookingMenu.style.display = "grid";
+      loadAvailableSlots();
+    });
+  }
+
+  if (backToRoomBtn) {
+    backToRoomBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      detailed.style.display = "grid";
+      bookingMenu.style.display = "none";
+    });
+  }
+
+
+  function validateBookingForm() {
+  const name = document.querySelector('.organiser').value.trim();
+  const timeslotId = document.querySelector('.timeslot').value;
+  
+  if (name === '') {
+    alert('Введите имя организатора');
+    return false;
+  }
+
+  
+  if (!timeslotId) {
+    alert('Выбирите время');
+    return false;
+  }
+  
+  return true;
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+const error = urlParams.get('error');
+const success = urlParams.get('success');
+
+if (error) {
+  alert(error);
+  window.history.replaceState({}, document.title, window.location.pathname);
+}
+
+if (success) {
+  alert(success);
+  window.history.replaceState({}, document.title, window.location.pathname);
+}
+
+async function loadAvailableSlots() {
+  const response = await fetch(`/api/slots_available_to_book?areaId={{room.id}}`);
+  const slots = await response.json();
+  
+  const select = document.getElementById('time_select');
+  select.innerHTML = '<option value="">выбрать время</option>';
+  
+  slots.forEach(slot => {
+    select.innerHTML += `<option value="${slot.id}">${slot.start} - ${slot.end}</option>`;
+  });
+}
+</script>
+  </body>
+</html>

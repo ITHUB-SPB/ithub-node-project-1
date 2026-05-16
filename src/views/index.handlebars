@@ -1,19 +1,87 @@
-<div class="page page--index">
-    <div class="aside">
-        {{> brand}}
-        {{> filters}}
-    </div>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meeting Rooms</title>
+    <link rel="stylesheet" href="/public/layout.css" />
+  </head>
+  <body>
+    <img src="/public/images/logo.png" alt="Logo" class="name" />
 
-    <section class="rooms">
-        {{#each rooms}}
-        <article class="room_card">
-            <header>
-                <a href="/rooms/{{this.id}}">{{this.title}}</a>
-            </header>
-            <footer>
-                <p>{{this.capacity}}</p>
-            </footer>
-        </article>
-        {{/each}}
-    </section>
-</div>
+    <form id="index_form" onsubmit="return false" >
+      {{!-- <p>Комнаты</p>
+      <input type="checkbox" class="room" name="rooms" value="A-101" />A-101
+      <input type="checkbox" class="room" name="rooms" value="A-102" />A-102
+      <input type="checkbox" class="room" name="rooms" value="B-140" />B-140 --}}
+
+      <p>доступность</p>
+      <input type="checkbox" class="acces" name="bonus" value="plasma" />
+      Плазма
+      <input type="checkbox" class="acces" name="bonus" value="board" />
+      Доска
+      <input type="checkbox" class="acces" name="bonus" value="wifi" />
+      Wi-Fi
+
+      <p>Вместимость</p>
+      <input
+        type="text"
+        class="amount"
+        name="capacity"
+        placeholder="кол-во мест"
+      />
+
+      <p class="timep">Время</p>
+<select name="timeslotId" class="timeslot">
+  <option value="">любое время</option>
+  {{#each timeslots}}
+    <option value="{{this.id}}">{{this.start}} - {{this.end}}</option>
+  {{/each}}
+</select>
+
+      <button type="reset">Очистить всё</button>
+      <button type="submit">Применить</button>
+    </form>
+
+    <div class="rooms">
+      {{#each rooms}}
+        <div class="room-card">
+          <img src="/public/images/room-default.png" alt="room image" />
+          <h3>{{this.title}}</h3>
+          <p>Place: Campus</p>
+          <p>Limit: {{this.capacity}}</p>
+          <a href="/details/{{this.id}}" class="btn-link">more info</a>
+        </div>
+      {{else}}
+
+      {{/each}}
+    </div>
+    <script>
+  const form = document.getElementById('index_form');
+  const roomsContainer = document.querySelector('.rooms');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(form);
+    const params = new URLSearchParams(formData);
+    
+    const response = await fetch(`/api/filter_rooms?${params.toString()}`);
+    const rooms = await response.json();
+    
+    roomsContainer.innerHTML = '';
+    
+    rooms.forEach(room => {
+      roomsContainer.innerHTML += `
+        <div class="room-card">
+          <img src="/public/images/room-default.png" alt="room image" />
+          <h3>${room.title}</h3>
+          <p>Place: Campus</p>
+          <p>Limit: ${room.capacity}</p>
+          <a href="/details/${room.id}" class="btn-link">more info</a>
+        </div>
+      `;
+    });
+  });
+</script>
+  </body>
+</html>

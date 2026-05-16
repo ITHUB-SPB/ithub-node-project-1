@@ -10,8 +10,8 @@ const paginationSchema = v.object({
       ]),
       v.integer(),
       v.minValue(1),
-      v.maxValue(50)
-    )
+      v.maxValue(50),
+    ),
   ),
   offset: v.optional(
     v.pipe(
@@ -20,8 +20,8 @@ const paginationSchema = v.object({
         v.number(),
       ]),
       v.integer(),
-      v.minValue(1)
-    )
+      v.minValue(1),
+    ),
   ),
 });
 
@@ -33,9 +33,9 @@ const filterSchema = v.object({
         value
           .split(",")
           .map((v) => Number(v))
-          .filter((n) => Number.isInteger(n) && n > 0)
-      )
-    )
+          .filter((n) => Number.isInteger(n) && n > 0),
+      ),
+    ),
   ),
 });
 
@@ -47,6 +47,10 @@ export const areasQuerySchema = v.object({
 const areaSchema = v.object({
   id: v.pipe(v.number(), v.integer(), v.minValue(1)),
   title: v.pipe(v.string(), v.nonEmpty()),
+  hasPlasma: v.boolean(),
+  hasBoard: v.boolean(),
+  hasWifi: v.boolean(),
+  capacity: v.string()
 });
 
 export const areasSchema = v.array(areaSchema);
@@ -61,6 +65,10 @@ export const areasResponseSchema = v.strictObject({
 
 export type AreaSchema = v.InferOutput<typeof areaSchema> & {
   id: Generated<"id">;
+  hasPlasma: boolean;
+  hasBoard: boolean;
+  hasWifi: boolean;
+  capacity: string;
 };
 export type AreasQuerySchema = v.InferOutput<typeof areasQuerySchema>;
 export type AreasSchema = v.InferOutput<typeof areasSchema>;

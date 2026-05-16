@@ -1,27 +1,281 @@
 body {
-    min-height: 100dvh;
-    background-color: #FFF2F1;
-
-    padding: 103px 75px 0 60px;
+  margin: 10px;
+  padding: 5%;
+  gap: 50px;
+  background-color: #fdf5f5;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
 }
 
 .page {
-    display: flex;
+  display: flex;
 }
 
 .page--index {
-    flex-direction: row;
-    gap: 50px;
+  flex-direction: row;
+  gap: 50px;
 }
 
 .aside {
-    width: 262px;
-    min-height: 613px;
+  width: 262px;
+  min-height: 613px;
 }
 
 .rooms {
-    width: 870px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
+  grid-column: 2 / span 1;
+  grid-row: 1 / span 4;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.name {
+  justify-self: start;
+  align-self: center;
+  width: 60%;
+
+  border-radius: 10px;
+
+  grid-column: 1 / span 1;
+  grid-row: 1 / span 1;
+}
+
+#index_form {
+  border-radius: 10px;
+  background-color: #d5cccc;
+  grid-column: 1 / span 1;
+  grid-row: 2 / span 4;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  padding: 20px 60px;
+  box-sizing: border-box;
+  align-self: start;
+
+}
+form p {
+  color: #536d6e;
+  font-weight: bold;
+  font-family: sans-serif;
+  margin-bottom: 10px;
+}
+form input[type="checkbox"] {
+  grid-column: 1 / 2;
+}
+form input[type="text"] {
+  border-radius: 30px;
+  border: none;
+  margin: 10px;
+}
+
+form button {
+  border-radius: 30px;
+  border: none;
+  margin: 10px;
+}
+form button[type="submit"] {
+  color: #536d6e;
+}
+form button {
+  cursor: pointer;
+  background-color: #d5cccc;
+}
+form .timep {
+
+}
+
+.room-card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 200px;
+  height: 350px;
+  border-radius: 10px;
+  background-color: rgba(83, 109, 110, 0.4);
+  color: #536d6e;
+  overflow: hidden;
+}
+
+.room-card img {
+  border-radius: 10px;
+  max-width: 100%;
+}
+
+.btn-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: rgba(83, 109, 110, 0.5);
+  min-width: 70%;
+  min-height: 8%;
+  text-decoration: none;
+  color: #536d6e;
+  border-radius: 7px;
+  grid-column: span 2;
+}
+
+/*детали*/
+.big-room-card {
+  padding: 20px;
+  min-width: 100%;
+  height: 100%;
+  grid-row: 2/-1;
+  grid-column: 1/-1;
+}
+.detailed {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px;
+}
+.booking_menu {
+  display: none;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.icon {
+  justify-self: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  background-color: rgba(83, 109, 110, 0.5);
+}
+
+#back-to-rooms,
+#back_to_room_button {
+  border: none;
+  justify-self: center;
+  width: max-content;
+  color: white;
+  background-color: rgba(116, 104, 79, 0.7);
+}
+
+#booking_details,
+#book_button {
+  border: none;
+  justify-self: center;
+  cursor: pointer;
+  width: max-content;
+  color: white;
+  background-color: rgba(66, 102, 84, 0.7);
+}
+
+.detail-room-image {
+  justify-self: start;
+  grid-column: 1 / 5;
+  grid-row: 1 / -1;
+  width: 100%;
+  height: 100%;
+}
+.room-name {
+  align-self: center;
+  justify-self: center;
+  grid-column: span 4;
+}
+.theme {
+  width: 90%;
+  height: 50%;
+  align-self: center;
+  justify-self: center;
+  grid-column: span 4;
+}
+.organiser {
+  width: 90%;
+  height: 50%;
+  justify-self: center;
+  grid-column: 5/9;
+}
+.start_time,
+.end_time {
+  width: 90%;
+  height: 50%;
+  justify-self: center;
+  grid-column: span 2;
+}
+.start_time {
+  justify-self: end;
+}
+.end_time {
+  justify-self: start;
+}
+#book_button {
+  justify-self: center;
+  grid-column: 7/9;
+  width: max-content;
+  padding: 10px 20px;
+}
+#back_to_room_button {
+  justify-self: center;
+  grid-column: 5/7;
+  width: max-content;
+  padding: 10px 20px;
+}
+
+#detail-name {
+  grid-column: 1/-1;
+}
+
+.slots {
+  display: flex;
+  grid-column: 1/-1;
+}
+
+#book_form input {
+  padding: 10px;
+  font-size: large;
+  color: #536d6e;
+  outline: none;
+  border: none;
+  background-color: rgba(83, 109, 110, 0.2);
+  border-bottom: solid #536d6e 5px;
+}
+
+.slots h1 {
+  grid-column: 1/-1;
+}
+
+.reviev {
+  margin: 30px;
+  width: 200px;
+  height: 200px;
+  box-shadow: -5px 5px 10px rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  background-color: white;
+  color: #536d6e;
+  border-radius: 10px;
+}
+
+.icon.inactive {
+  color: rgba(83, 109, 110, 0.5);
+  background-color: rgba(83, 109, 110, 0.2);
+  opacity: 1;
+}
+
+#book_form{
+  display: flex;
+  flex-direction: column;
+  gap: 30px ;
+  align-items: center;
+  grid-column: 5/-1 ;
+  grid-row: 1/-1;
+}
+
+#time_select{
+  width: 90%;
+  background-color: -5px 5px 10px rgba(0, 0, 0, 0.5);
+border: none;
 }

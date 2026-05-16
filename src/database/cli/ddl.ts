@@ -16,7 +16,7 @@ export async function createTables(isForce: boolean) {
     .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
     .addColumn("username", "text", (col) => col.unique())
     .addColumn("createdAt", "timestamp", (col) =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`)
+      col.defaultTo(sql`CURRENT_TIMESTAMP`),
     )
     .execute();
 
@@ -24,6 +24,10 @@ export async function createTables(isForce: boolean) {
     .createTable("areas")
     .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
     .addColumn("title", "text", (col) => col.unique())
+    .addColumn("hasPlasma", "integer", (col) => col.defaultTo(0))
+    .addColumn("hasBoard", "integer", (col) => col.defaultTo(0))
+    .addColumn("hasWifi", "integer", (col) => col.defaultTo(0))
+    .addColumn("capacity", "text", (col) => col.defaultTo(""))
     .execute();
 
   await db.schema
@@ -37,16 +41,26 @@ export async function createTables(isForce: boolean) {
     .createTable("bookings")
     .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
     .addColumn("timeslotId", "integer", (col) => col.notNull())
+    .addColumn("areaId", "integer", (col) => col.notNull())
     .addColumn("userId", "integer")
+    .addColumn("name", "text", (col) => col.notNull())
+    .addColumn("theme", "text")
     .addColumn("createdAt", "timestamp", (col) =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`)
+      col.defaultTo(sql`CURRENT_TIMESTAMP`),
     )
     .addForeignKeyConstraint(
       "bookings_timeslot_id_foreign",
       ["timeslotId"],
       "timeslots",
       ["id"],
-      (constraint) => constraint.onDelete("cascade")
+      (constraint) => constraint.onDelete("cascade"),
+    )
+    .addForeignKeyConstraint(
+      "bookings_area_id_foreign",
+      ["areaId"],
+      "areas",
+      ["id"],
+      (constraint) => constraint.onDelete("cascade"),
     )
     .execute();
 }
@@ -60,7 +74,7 @@ export async function resetTables(tables: string[]) {
     console.log(
       chalk.green(`✔ Таблица bookings была сброшена`),
       chalk.green(`\n✔ Таблица areas была сброшена`),
-      chalk.green(`\n✔ Таблица timeslots была сброшена`)
+      chalk.green(`\n✔ Таблица timeslots была сброшена`),
     );
     return;
   }
