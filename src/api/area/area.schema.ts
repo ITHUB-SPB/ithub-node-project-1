@@ -27,14 +27,34 @@ const paginationSchema = v.object({
 
 const filterSchema = v.object({
     filter: v.optional(
-        v.pipe(
-            v.string(),
-            v.transform((value) =>
-                value
-                    .split(",")
-                    .map((v) => Number(v))
-                    .filter((n) => Number.isInteger(n) && n > 0),
+        v.union([
+            v.pipe(
+                v.string(),
+                v.transform((value) => [Number(value)]),
             ),
+            v.pipe(
+                v.array(v.string()),
+                v.transform((values) =>
+                    values
+                        .map(Number)
+                        .filter((n) => Number.isInteger(n) && n > 0),
+                ),
+            ),
+        ]),
+    ),
+
+    capacity: v.optional(
+        v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((value) => {
+                if (value === "" || value === null) {
+                    return 1;
+                }
+
+                return Number.isFinite(Number(value)) ? Number(value) : 1;
+            }),
+            v.number(),
+            v.minValue(1),
         ),
     ),
 });

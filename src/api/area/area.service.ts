@@ -24,6 +24,14 @@ export default class AreaService {
             statement = statement.where("areas.id", "in", queryParams.filter);
         }
 
+        if (queryParams.capacity) {
+            statement = statement.where(
+                "areas.capacity",
+                ">=",
+                queryParams.capacity,
+            );
+        }
+
         const areas = await statement.execute();
 
         return v.parse(areasSchema, areas);

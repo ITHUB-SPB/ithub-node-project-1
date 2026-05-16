@@ -10,7 +10,7 @@ export const areasListView = async (request: Request, response: Response) => {
   const roomsFilter = await AreaService.findAll({});
   const roomsList = await AreaService.findAll(queryParams);
 
-  response.render("index", { roomsFilter, rooms: roomsList });
+  response.render("index", { roomsFilter, rooms: roomsList, query: queryParams });
 };
 
 export const areaDetailView = async (request: Request, response: Response) => {
