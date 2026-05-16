@@ -7,22 +7,28 @@
         }}
     </div>
 
-    <section class="rooms">
-        {{#each rooms}}
-        <article class="room_card">
-            <header>
-                <a href="/details/{{this.id}}">{{this.title}}</a>
-            </header>
-            <footer>
-                <p>Вместимость: {{this.capacity}}</p>
+    <section class="rooms-block">
+        <h3 class="rooms-counter">
+            Найдено комнат: {{totalRooms}}
+        </h3>
 
-                <p>
-                    {{#if this.wifi}}Wi-Fi{{/if}}
-                    {{#if this.board}}Доска{{/if}}
-                    {{#if this.plasma}}Плазма{{/if}}
-                </p>
-            </footer>
-        </article>
-        {{/each}}
+        <div class="rooms">
+            {{#each rooms}}
+                <article class="room_card">
+                    <img src="/public/images/room.jpg" alt="room">
+                    <h4 class="card-title">{{this.title}}</h4>
+                    <p><i class="fa-solid fa-location-dot"></i> Где-то там, Санкт-Петербург</p>
+                    <p><b>Вместимость</b>: {{this.capacity}}</p>
+                    <p class="icons">
+                        {{#if this.wifi}}<i class="fa-solid fa-wifi"></i>{{/if}}
+                        {{#if this.board}}<i class="fa-solid fa-chalkboard"></i>{{/if}}
+                        {{#if this.plasma}}<i class="fa-solid fa-tv"></i>{{/if}}
+                    </p>
+                    <div class="button">
+                        <a href="/details/{{this.id}}" class="more-info">Подробнее</a>
+                    </div>
+                </article>
+            {{/each}}
+        </div>
     </section>
 </div>

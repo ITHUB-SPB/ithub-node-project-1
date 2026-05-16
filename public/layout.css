@@ -12,6 +12,7 @@ body {
 .page--index {
     flex-direction: row;
     gap: 50px;
+    justify-content: center;
 }
 
 .page--detail {
@@ -28,9 +29,9 @@ body {
 }
 
 .rooms {
-    width: 870px;
+    width: 1200px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 24px;
 }
 
@@ -119,6 +120,7 @@ body {
 .filters {
     background-color: #e9d9d9;
     padding: 20px 32px;
+    border-radius: 30px;
 }
 
 .filters-title {
@@ -163,4 +165,56 @@ body {
 
 .button-submit {
     padding: 2px 3px;
+}
+
+.rooms-counter {
+    font-size: 16px;
+    color: #000;
+    font-weight: 500;
+}
+
+.room_card {
+    background-color: #d9d9d9;
+    display: inline-block;
+    border-radius: 25px;
+}
+
+.room_card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+}
+
+.card-title {
+    color: #4e7776;
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+
+.room_card p {
+    margin: 10px 0 5px 0;
+    color: #4e7776;
+}
+
+.icons {
+    height: 50px;
+}
+
+.button {
+    text-align: center;
+}
+
+.more-info {
+    background-color: #007a50;
+    color: #fff;
+    padding: 10px 50px;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 20px;
+    margin: 0 auto;
+}
+
+.more-info:hover {
+    background-color: #00895a;
 }

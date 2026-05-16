@@ -15,6 +15,7 @@ export const areasListView = async (request: Request, response: Response) => {
         roomsFilter,
         rooms: roomsList,
         query: queryParams,
+        totalRooms: roomsList.length,
     });
 };
 
