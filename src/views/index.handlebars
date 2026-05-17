@@ -1,19 +1,27 @@
-<div class="page page--index">
-    <div class="aside">
+<main class="page">
+    <aside class="sidebar" aria-label="Фильтры комнат">
         {{> brand}}
         {{> filters}}
-    </div>
+    </aside>
 
-    <section class="rooms">
+    <section aria-label="Список комнат">
+        <p class="result-count">Найдено комнат: <strong>{{roomsCount}}</strong></p>
+        <div class="room-grid">
         {{#each rooms}}
-        <article class="room_card">
-            <header>
-                <a href="/rooms/{{this.id}}">{{this.title}}</a>
-            </header>
-            <footer>
-                <p>{{this.capacity}}</p>
-            </footer>
+        <article class="room-card">
+            <div class="room-card__image" aria-label="Переговорная комната"></div>
+            <h3>{{this.title}}</h3>
+            <p class="room-card__place">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 22s7-7.1 7-13A7 7 0 1 0 5 9c0 5.9 7 13 7 13Z" />
+                    <circle cx="12" cy="9" r="2.4" />
+                </svg>
+                <span>Dev Bay ,Chennai</span>
+            </p>
+            <p class="room-card__limit"><strong>Max Limit :</strong> {{this.capacity}}</p>
+            <a class="more-button" href="/rooms/{{this.id}}">More Info</a>
         </article>
         {{/each}}
+        </div>
     </section>
-</div>
+</main>

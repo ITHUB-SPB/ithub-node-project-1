@@ -1,4 +1,4 @@
-import express, { type Request, type Response } from "express";
+import express from "express";
 import { engine } from "express-handlebars";
 
 import { areaRoutes } from "./api/area/area.router.js";

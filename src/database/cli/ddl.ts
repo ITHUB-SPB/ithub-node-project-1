@@ -13,6 +13,7 @@ export async function createTables(isForce: boolean) {
 
   await db.schema
     .createTable("users")
+    .ifNotExists()
     .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
     .addColumn("username", "text", (col) => col.unique())
     .addColumn("createdAt", "timestamp", (col) =>
@@ -22,12 +23,18 @@ export async function createTables(isForce: boolean) {
 
   await db.schema
     .createTable("areas")
+    .ifNotExists()
     .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
     .addColumn("title", "text", (col) => col.unique())
+    .addColumn("capacity", "integer", (col) => col.notNull())
+    .addColumn("hasPlasma", "integer", (col) => col.notNull().defaultTo(0))
+    .addColumn("hasBoard", "integer", (col) => col.notNull().defaultTo(0))
+    .addColumn("hasWifi", "integer", (col) => col.notNull().defaultTo(0))
     .execute();
 
   await db.schema
     .createTable("timeslots")
+    .ifNotExists()
     .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
     .addColumn("start", "varchar(5)", (col) => col.notNull())
     .addColumn("end", "varchar(5)", (col) => col.notNull())
@@ -35,19 +42,12 @@ export async function createTables(isForce: boolean) {
 
   await db.schema
     .createTable("bookings")
+    .ifNotExists()
     .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
-    .addColumn("timeslotId", "integer", (col) => col.notNull())
-    .addColumn("userId", "integer")
-    .addColumn("createdAt", "timestamp", (col) =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`)
-    )
-    .addForeignKeyConstraint(
-      "bookings_timeslot_id_foreign",
-      ["timeslotId"],
-      "timeslots",
-      ["id"],
-      (constraint) => constraint.onDelete("cascade")
-    )
+    .addColumn("areaId", "integer", (col) => col.notNull())
+    .addColumn("start", "integer", (col) => col.notNull())
+    .addColumn("end", "integer", (col) => col.notNull())
+    .addColumn("createdAt", "integer", (col) => col.notNull())
     .execute();
 }
 

@@ -1,9 +1,22 @@
 import type { Generated } from "kysely";
 import * as v from "valibot";
 
+const timestampSchema = v.pipe(
+  v.union([v.pipe(v.string(), v.transform(Number), v.number()), v.number()]),
+  v.integer(),
+  v.minValue(1)
+);
+
 export const newBookingInSchema = v.object({
-  start: v.pipe(v.number(), v.integer()),
-  end: v.pipe(v.number(), v.integer()),
+  start: timestampSchema,
+  end: timestampSchema,
+  areaId: v.optional(
+    v.pipe(
+      v.union([v.pipe(v.string(), v.transform(Number), v.number()), v.number()]),
+      v.integer(),
+      v.minValue(1)
+    )
+  ),
 });
 
 export const newBookingOutSchema = v.union([
@@ -13,13 +26,16 @@ export const newBookingOutSchema = v.union([
       booking: v.object({
         start: v.pipe(v.number(), v.integer()),
         end: v.pipe(v.number(), v.integer()),
+        areaId: v.pipe(v.number(), v.integer()),
         createdAt: v.pipe(v.number(), v.integer()),
       }),
     }),
   }),
   v.object({
     statusCode: v.literal(400),
-    data: v.object({}), // TODO
+    data: v.object({
+      error: v.string(),
+    }),
   }),
 ]);
 
@@ -40,11 +56,12 @@ export const bookingDeleteSchema = v.object({
 
 export const bookingSchema = v.object({
   id: v.pipe(v.number(), v.integer(), v.minValue(1)),
+  areaId: v.pipe(v.number(), v.integer(), v.minValue(1)),
   start: v.pipe(v.number(), v.integer()),
   end: v.pipe(v.number(), v.integer()),
   createdAt: v.pipe(v.number(), v.integer()),
 });
 
 export type BookingSchema = v.InferOutput<typeof bookingSchema> & {
-  id: Generated<"id">;
+  id: Generated<number>;
 };

@@ -1,7 +1,50 @@
-<div class="page page--booking">
-    <article class="room_detail">
-        <h3>{{room.title}}</h3>
-        <p>{{room.capacity}}</p>
-    </article>
-</div>
+<main class="page">
+    {{> brand}}
 
+    <div class="room-layout">
+        <section>
+            <div class="hero-photo" aria-label="Комната {{room.title}}"></div>
+            <h2 class="slots-title">Занятые слоты</h2>
+            <div class="slots">
+                {{#each slots}}
+                <article class="slot-card">
+                    <h3>{{this.title}}</h3>
+                    <p><strong>Организатор :</strong> {{this.organizer}}</p>
+                    <p>{{this.period}}</p>
+                </article>
+                {{/each}}
+            </div>
+        </section>
+
+        <section class="booking-panel" aria-label="Форма бронирования">
+            {{#if error}}
+            <p class="booking-error">{{error}}</p>
+            {{/if}}
+
+            <form class="booking-form" method="post" action="/booking/{{room.id}}">
+                <div class="form-row">
+                    <label for="topic">Тема</label>
+                    <input id="topic" name="topic" type="text" value="{{form.topic}}">
+                </div>
+                <div class="form-row">
+                    <label for="organizer">Организатор</label>
+                    <input id="organizer" name="organizer" type="text" value="{{form.organizer}}">
+                </div>
+                <div class="form-row--split">
+                    <div class="form-row">
+                        <label for="start">Начало</label>
+                        <input id="start" name="start" type="text" value="{{form.start}}" pattern="^\d{2}:\d{2}$" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="end">Конец</label>
+                        <input id="end" name="end" type="text" value="{{form.end}}" pattern="^\d{2}:\d{2}$" required>
+                    </div>
+                </div>
+                <div class="actions">
+                    <a class="button button--brown" href="/rooms/{{room.id}}">Back to Room</a>
+                    <button class="button button--teal" type="submit">Book</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</main>

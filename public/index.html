@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meeting Mate - Rooms</title>
+    <link rel="stylesheet" href="layout.css" />
+  </head>
+  <body>
+    <main class="page">
+      <aside class="sidebar" aria-label="Фильтры комнат">
+        <a class="brand" href="index.html" aria-label="Meeting Mate">
+          <svg
+            class="brand__mark"
+            viewBox="0 0 96 96"
+            role="img"
+            aria-label="Meeting Mate logo"
+          >
+            <path
+              d="M26 62c-3-8-6-15-8-24-1-4-6-5-8-1-1 2-1 5 0 9l7 26 15 9 5-14-11-5Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M29 7h37c4 0 7 3 7 7v52c0 4-3 7-7 7H29c-4 0-7-3-7-7V14c0-4 3-7 7-7Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+            />
+            <path
+              d="M43 15h10M37 28h5v5h-5zM47 28h5v5h-5zM57 28h5v5h-5zM37 38h5v5h-5zM52 38h5v5h-5zM62 38h5v5h-5zM37 48h5v5h-5zM47 48h5v5h-5zM57 48h5v5h-5z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <path
+              d="M83 16v9h-9M84 46h8v8h-8zM76 37h7M87 34v7M77 56h5v5h-5zM88 61h4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.6"
+              stroke-linecap="round"
+            />
+          </svg>
+          <span class="brand__text"><span>Meeting</span><span>Mate</span></span>
+        </a>
+
+        <form class="filters" id="roomFilters">
+          <section class="filter-group">
+            <h2>Комнаты</h2>
+            <label
+              ><input type="checkbox" name="room" value="A-101" /><span
+                >A-101</span
+              ></label
+            >
+            <label
+              ><input type="checkbox" name="room" value="A-102" /><span
+                >A-102</span
+              ></label
+            >
+            <label
+              ><input type="checkbox" name="room" value="B-101" /><span
+                >B-101</span
+              ></label
+            >
+            <label
+              ><input type="checkbox" name="room" value="B-102" /><span
+                >B-102</span
+              ></label
+            >
+            <label
+              ><input type="checkbox" name="room" value="C-101" /><span
+                >C-101</span
+              ></label
+            >
+            <label
+              ><input type="checkbox" name="room" value="D-101" /><span
+                >D-101</span
+              ></label
+            >
+          </section>
+
+          <section class="filter-group">
+            <h2>Доступность</h2>
+            <label
+              ><input type="checkbox" name="feature" value="plasma" /><span
+                >Плазма</span
+              ></label
+            >
+            <label
+              ><input type="checkbox" name="feature" value="board" /><span
+                >Доска</span
+              ></label
+            >
+            <label
+              ><input type="checkbox" name="feature" value="wifi" /><span
+                >Wi-Fi</span
+              ></label
+            >
+          </section>
+
+          <section class="filter-group">
+            <h2>Вместимость</h2>
+            <input
+              class="pill-input pill-input--single"
+              type="text"
+              name="capacity"
+              aria-label="Вместимость"
+            />
+          </section>
+
+          <section class="filter-group">
+            <h2>Время</h2>
+            <div class="time-row">
+              <input class="pill-input" type="text" aria-label="Начало" />
+              <input class="pill-input" type="text" aria-label="Конец" />
+            </div>
+          </section>
+
+          <div class="filter-actions">
+            <button class="clear-button" type="reset">Очистить</button>
+            <button class="apply-button" type="submit">Применить</button>
+          </div>
+        </form>
+      </aside>
+
+      <section aria-label="Список комнат">
+        <p class="result-count">Найдено комнат: <strong id="roomsCount">6</strong></p>
+        <div class="room-grid" id="roomGrid">
+          <article class="room-card" data-room="A-101" data-capacity="24" data-features="plasma wifi">
+            <div
+              class="room-card__image"
+              aria-label="Переговорная комната"
+            ></div>
+            <h3>A-101</h3>
+            <p class="room-card__place">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 22s7-7.1 7-13A7 7 0 1 0 5 9c0 5.9 7 13 7 13Z" />
+                <circle cx="12" cy="9" r="2.4" /></svg
+              ><span>Dev Bay ,Chennai</span>
+            </p>
+            <p class="room-card__limit"><strong>Max Limit :</strong> 24</p>
+            <a class="more-button" href="detail.html">More Info</a>
+          </article>
+          <article class="room-card" data-room="A-102" data-capacity="18" data-features="board wifi">
+            <div
+              class="room-card__image"
+              aria-label="Переговорная комната"
+            ></div>
+            <h3>A-102</h3>
+            <p class="room-card__place">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 22s7-7.1 7-13A7 7 0 1 0 5 9c0 5.9 7 13 7 13Z" />
+                <circle cx="12" cy="9" r="2.4" /></svg
+              ><span>Dev Bay ,Chennai</span>
+            </p>
+            <p class="room-card__limit"><strong>Max Limit :</strong> 18</p>
+            <a class="more-button" href="detail.html">More Info</a>
+          </article>
+          <article class="room-card" data-room="B-101" data-capacity="12" data-features="plasma board">
+            <div
+              class="room-card__image"
+              aria-label="Переговорная комната"
+            ></div>
+            <h3>B-101</h3>
+            <p class="room-card__place">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 22s7-7.1 7-13A7 7 0 1 0 5 9c0 5.9 7 13 7 13Z" />
+                <circle cx="12" cy="9" r="2.4" /></svg
+              ><span>Dev Bay ,Chennai</span>
+            </p>
+            <p class="room-card__limit"><strong>Max Limit :</strong> 12</p>
+            <a class="more-button" href="detail.html">More Info</a>
+          </article>
+          <article class="room-card" data-room="B-102" data-capacity="10" data-features="wifi">
+            <div
+              class="room-card__image"
+              aria-label="Переговорная комната"
+            ></div>
+            <h3>B-102</h3>
+            <p class="room-card__place">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 22s7-7.1 7-13A7 7 0 1 0 5 9c0 5.9 7 13 7 13Z" />
+                <circle cx="12" cy="9" r="2.4" /></svg
+              ><span>Dev Bay ,Chennai</span>
+            </p>
+            <p class="room-card__limit"><strong>Max Limit :</strong> 10</p>
+            <a class="more-button" href="detail.html">More Info</a>
+          </article>
+          <article class="room-card" data-room="C-101" data-capacity="16" data-features="plasma board wifi">
+            <div
+              class="room-card__image"
+              aria-label="Переговорная комната"
+            ></div>
+            <h3>C-101</h3>
+            <p class="room-card__place">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 22s7-7.1 7-13A7 7 0 1 0 5 9c0 5.9 7 13 7 13Z" />
+                <circle cx="12" cy="9" r="2.4" /></svg
+              ><span>Dev Bay ,Chennai</span>
+            </p>
+            <p class="room-card__limit"><strong>Max Limit :</strong> 16</p>
+            <a class="more-button" href="detail.html">More Info</a>
+          </article>
+          <article class="room-card" data-room="D-101" data-capacity="8" data-features="board">
+            <div
+              class="room-card__image"
+              aria-label="Переговорная комната"
+            ></div>
+            <h3>D-101</h3>
+            <p class="room-card__place">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 22s7-7.1 7-13A7 7 0 1 0 5 9c0 5.9 7 13 7 13Z" />
+                <circle cx="12" cy="9" r="2.4" /></svg
+              ><span>Dev Bay ,Chennai</span>
+            </p>
+            <p class="room-card__limit"><strong>Max Limit :</strong> 8</p>
+            <a class="more-button" href="detail.html">More Info</a>
+          </article>
+        </div>
+      </section>
+    </main>
+    <script>
+      const filtersForm = document.getElementById("roomFilters");
+      const roomGrid = document.getElementById("roomGrid");
+      const roomsCount = document.getElementById("roomsCount");
+
+      if (filtersForm && roomGrid && roomsCount) {
+        const cards = Array.from(roomGrid.querySelectorAll(".room-card"));
+
+        const applyFilters = () => {
+          const formData = new FormData(filtersForm);
+          const selectedRooms = formData.getAll("room");
+          const selectedFeatures = formData.getAll("feature");
+          const capacityValue = String(formData.get("capacity") || "").trim();
+          const minCapacity = capacityValue ? Number(capacityValue) : null;
+
+          let visibleCount = 0;
+
+          cards.forEach((card) => {
+            const roomName = card.dataset.room || "";
+            const capacity = Number(card.dataset.capacity || "0");
+            const features = (card.dataset.features || "").split(" ").filter(Boolean);
+
+            const matchesRoom =
+              selectedRooms.length === 0 || selectedRooms.includes(roomName);
+            const matchesCapacity =
+              minCapacity === null || (!Number.isNaN(minCapacity) && capacity >= minCapacity);
+            const matchesFeatures =
+              selectedFeatures.length === 0 ||
+              selectedFeatures.every((feature) => features.includes(feature));
+
+            const isVisible = matchesRoom && matchesCapacity && matchesFeatures;
+            card.hidden = !isVisible;
+
+            if (isVisible) {
+              visibleCount += 1;
+            }
+          });
+
+          roomsCount.textContent = String(visibleCount);
+        };
+
+        filtersForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+          applyFilters();
+        });
+
+        filtersForm.addEventListener("change", applyFilters);
+        filtersForm.addEventListener("input", applyFilters);
+
+        filtersForm.addEventListener("reset", () => {
+          requestAnimationFrame(applyFilters);
+        });
+
+        applyFilters();
+      }
+    </script>
+  </body>
+</html>

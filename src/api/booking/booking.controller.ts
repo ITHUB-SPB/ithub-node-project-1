@@ -6,7 +6,7 @@ import BookingService from './booking.service.js'
 import * as schema from './booking.schema.js';
 
 export default class BookingController {
-    static async find(request: Request, response: Response): Promise<Response> {
+    static async find(_request: Request, response: Response): Promise<Response> {
         const bookings = await BookingService.findAll()
 
         const data = {
@@ -27,6 +27,7 @@ export default class BookingController {
 
             const createdBooking = await BookingService.create({
                 ...slot.toMapped(),
+                areaId: payload.areaId ?? 1,
                 createdAt: Math.floor(Date.now() / 1000)
             })
 

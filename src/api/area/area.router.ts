@@ -7,5 +7,6 @@ export const areaRoutes = Router({ mergeParams: true });
 
 areaRoutes.get("/api/areas", AreaController.findAll);
 
+areaRoutes.get("/rooms/:roomId", areaDetailView);
 areaRoutes.get("/details/:roomId", areaDetailView);
 areaRoutes.get("/", areasListView);

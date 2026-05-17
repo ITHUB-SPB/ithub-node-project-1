@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meeting Mate - Room Detail</title>
+    <link rel="stylesheet" href="layout.css" />
+  </head>
+  <body>
+    <main class="page">
+      <a class="brand" href="index.html" aria-label="Meeting Mate">
+        <svg
+          class="brand__mark"
+          viewBox="0 0 96 96"
+          role="img"
+          aria-label="Meeting Mate logo"
+        >
+          <path
+            d="M26 62c-3-8-6-15-8-24-1-4-6-5-8-1-1 2-1 5 0 9l7 26 15 9 5-14-11-5Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M29 7h37c4 0 7 3 7 7v52c0 4-3 7-7 7H29c-4 0-7-3-7-7V14c0-4 3-7 7-7Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+          />
+          <path
+            d="M43 15h10M37 28h5v5h-5zM47 28h5v5h-5zM57 28h5v5h-5zM37 38h5v5h-5zM52 38h5v5h-5zM62 38h5v5h-5zM37 48h5v5h-5zM47 48h5v5h-5zM57 48h5v5h-5z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          />
+          <path
+            d="M83 16v9h-9M84 46h8v8h-8zM76 37h7M87 34v7M77 56h5v5h-5zM88 61h4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.6"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span class="brand__text"><span>Meeting</span><span>Mate</span></span>
+      </a>
+
+      <div class="room-layout">
+        <section>
+          <div class="hero-photo" aria-label="Комната A-101"></div>
+          <h2 class="slots-title">Занятые слоты</h2>
+          <div class="slots">
+            <article class="slot-card">
+              <h3>React Review</h3>
+              <p><strong>Организатор :</strong> Nijin</p>
+              <p>10:00 -10:30 AM</p>
+            </article>
+            <article class="slot-card">
+              <h3>React Review</h3>
+              <p><strong>Организатор :</strong> Nijin</p>
+              <p>10:00 -10:30 AM</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="room-info" aria-label="Информация о комнате">
+          <h1>Комната A-101</h1>
+          <div class="feature-grid">
+            <div class="feature">
+              <div class="feature__icon">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 18.5a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8Zm-4.2-4.1 1.7 1.7a3.6 3.6 0 0 1 5 0l1.7-1.7a6 6 0 0 0-8.4 0Zm-3.4-3.3 1.7 1.7a8.4 8.4 0 0 1 11.8 0l1.7-1.7a10.8 10.8 0 0 0-15.2 0Zm-3.3-3.3 1.7 1.7a13.1 13.1 0 0 1 18.4 0l1.7-1.7a15.5 15.5 0 0 0-21.8 0Z"
+                  />
+                </svg>
+              </div>
+              <span>Sirius<br />Guest</span>
+            </div>
+            <div class="feature">
+              <div class="feature__icon">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M8 4a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-2a3 3 0 0 1-3-3V4Zm-4 7h2a5 5 0 0 0 4 4.9V18H7v2h10v-2h-3v-2.1a5 5 0 0 0 4-4.9h2a7 7 0 0 1-6 6.9V18h-4v-.1A7 7 0 0 1 4 11Z"
+                  />
+                </svg>
+              </div>
+              <span>20-23</span>
+            </div>
+            <div class="feature">
+              <div class="feature__icon">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7v2h4v2H7v-2h4v-2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm0 2v10h16V6H4Z"
+                  />
+                </svg>
+              </div>
+              <span>yes</span>
+            </div>
+            <div class="feature">
+              <div class="feature__icon">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M16 3h6v18h-6v-2h4V5h-4V3ZM3 7a2 2 0 1 1 4 0 2 2 0 0 1-4 0Zm1 4h5a3 3 0 0 1 3 3v6h-2v-6a1 1 0 0 0-1-1H8v7H6v-5H4v5H2v-7a2 2 0 0 1 2-2Zm10-2h4v2h-4V9Zm-1 4h5v2h-5v-2Z"
+                  />
+                </svg>
+              </div>
+              <span>No</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <a class="button button--brown" href="index.html">Back to Rooms</a>
+            <a class="button button--teal" href="booking.html"
+              >Booking Details</a
+            >
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

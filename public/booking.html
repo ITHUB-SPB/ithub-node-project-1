@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meeting Mate - Booking</title>
+    <link rel="stylesheet" href="layout.css" />
+    <style>
+      :root {
+        --page-bg: #fdeeee;
+        --teal: #547f7b;
+        --teal-dark: #49736f;
+        --brown: #9b8777;
+        --field: #ece5e5;
+        --text: #101010;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        color: var(--text);
+        background: var(--page-bg);
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .page {
+        width: min(1440px, calc(100% - 160px));
+        margin: 0 auto;
+        padding: 150px 0 96px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        width: fit-content;
+        margin-bottom: 128px;
+        color: var(--teal);
+        text-decoration: none;
+      }
+
+      .brand__mark {
+        width: 96px;
+        height: 96px;
+        flex: 0 0 auto;
+      }
+
+      .brand__text {
+        display: grid;
+        gap: 24px;
+        font-size: 48px;
+        font-weight: 400;
+        line-height: 0.95;
+      }
+
+      .room-layout {
+        display: grid;
+        grid-template-columns: minmax(480px, 723px) minmax(380px, 1fr);
+        gap: 92px;
+        align-items: start;
+      }
+
+      .hero-photo {
+        width: 100%;
+        aspect-ratio: 723 / 534;
+        background-color: #c8c9c9;
+        background-image:
+          linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.08),
+            rgba(0, 0, 0, 0.1)
+          ),
+          url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80");
+        background-position: center;
+        background-size: cover;
+      }
+
+      .slots-title {
+        margin: 73px 0 45px;
+        font-size: 30px;
+        line-height: 1;
+      }
+
+      .slots {
+        display: flex;
+        gap: 32px;
+        padding-left: 40px;
+      }
+
+      .slot-card {
+        width: 305px;
+        min-height: 142px;
+        padding: 26px 40px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 7px 7px rgba(0, 0, 0, 0.22);
+        color: var(--teal);
+      }
+
+      .slot-card h3 {
+        margin: 0 0 8px;
+        font-size: 30px;
+        line-height: 1;
+      }
+
+      .slot-card p {
+        margin: 0 0 7px;
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .slot-card strong {
+        font-size: 20px;
+      }
+
+      .booking-panel {
+        padding-top: 8px;
+      }
+
+      .booking-form {
+        width: min(100%, 470px);
+      }
+
+      .form-row {
+        margin-bottom: 56px;
+      }
+
+      .form-row label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--teal);
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .form-row input {
+        width: 100%;
+        height: 74px;
+        border: 0;
+        border-bottom: 3px solid var(--teal);
+        background: var(--field);
+        color: var(--text);
+        font:
+          24px Arial,
+          Helvetica,
+          sans-serif;
+        padding: 0 18px;
+      }
+
+      .form-row--split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 70px;
+        margin-bottom: 56px;
+      }
+
+      .form-row--split .form-row {
+        margin: 0;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: flex-start;
+        gap: 16px;
+      }
+
+      .button {
+        display: inline-grid;
+        place-items: center;
+        min-height: 66px;
+        padding: 0 27px;
+        border: 0;
+        border-radius: 6px;
+        color: #fff;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .button--teal {
+        background: var(--teal);
+      }
+      .button--brown {
+        background: var(--brown);
+      }
+      .button--teal:hover,
+      .button--teal:focus-visible {
+        background: var(--teal-dark);
+      }
+
+      button:focus-visible,
+      a:focus-visible,
+      input:focus-visible {
+        outline: 3px solid rgba(84, 127, 123, 0.45);
+        outline-offset: 3px;
+      }
+
+      @media (max-width: 1300px) {
+        .page {
+          width: min(1120px, calc(100% - 48px));
+          padding-top: 80px;
+        }
+
+        .brand__text {
+          font-size: 38px;
+        }
+        .brand__mark {
+          width: 76px;
+          height: 76px;
+        }
+
+        .room-layout {
+          grid-template-columns: minmax(420px, 1.25fr) minmax(360px, 0.75fr);
+          gap: 44px;
+        }
+
+        .button {
+          min-height: 58px;
+          font-size: 24px;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .page {
+          width: min(560px, calc(100% - 32px));
+          padding: 32px 0 48px;
+        }
+
+        .brand {
+          margin-bottom: 32px;
+        }
+        .room-layout {
+          display: block;
+        }
+        .booking-panel {
+          padding-top: 44px;
+        }
+        .slots {
+          flex-direction: column;
+          padding-left: 0;
+        }
+        .slot-card {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .brand__text {
+          font-size: 34px;
+          gap: 14px;
+        }
+        .form-row--split,
+        .actions {
+          display: flex;
+          flex-wrap: wrap;
+        }
+        .booking-form {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <a class="brand" href="index.html" aria-label="Meeting Mate">
+        <svg
+          class="brand__mark"
+          viewBox="0 0 96 96"
+          role="img"
+          aria-label="Meeting Mate logo"
+        >
+          <path
+            d="M26 62c-3-8-6-15-8-24-1-4-6-5-8-1-1 2-1 5 0 9l7 26 15 9 5-14-11-5Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M29 7h37c4 0 7 3 7 7v52c0 4-3 7-7 7H29c-4 0-7-3-7-7V14c0-4 3-7 7-7Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+          />
+          <path
+            d="M43 15h10M37 28h5v5h-5zM47 28h5v5h-5zM57 28h5v5h-5zM37 38h5v5h-5zM52 38h5v5h-5zM62 38h5v5h-5zM37 48h5v5h-5zM47 48h5v5h-5zM57 48h5v5h-5z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          />
+          <path
+            d="M83 16v9h-9M84 46h8v8h-8zM76 37h7M87 34v7M77 56h5v5h-5zM88 61h4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.6"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span class="brand__text"><span>Meeting</span><span>Mate</span></span>
+      </a>
+
+      <div class="room-layout">
+        <section>
+          <div class="hero-photo" aria-label="Комната A-101"></div>
+          <h2 class="slots-title">Занятые слоты</h2>
+          <div class="slots">
+            <article class="slot-card">
+              <h3>React Review</h3>
+              <p><strong>Организатор :</strong> Nijin</p>
+              <p>10:00 -10:30 AM</p>
+            </article>
+            <article class="slot-card">
+              <h3>React Review</h3>
+              <p><strong>Организатор :</strong> Nijin</p>
+              <p>10:00 -10:30 AM</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="booking-panel" aria-label="Форма бронирования">
+          <form class="booking-form" action="detail.html">
+            <div class="form-row">
+              <label for="topic">Тема</label>
+              <input id="topic" name="topic" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="organizer">Организатор</label>
+              <input id="organizer" name="organizer" type="text" />
+            </div>
+            <div class="form-row--split">
+              <div class="form-row">
+                <label for="start">Начало</label>
+                <input id="start" name="start" type="text" />
+              </div>
+              <div class="form-row">
+                <label for="end">Конец</label>
+                <input id="end" name="end" type="text" />
+              </div>
+            </div>
+            <div class="actions">
+              <a class="button button--brown" href="detail.html"
+                >Back to Room</a
+              >
+              <button class="button button--teal" type="submit">Book</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

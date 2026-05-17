@@ -14,7 +14,7 @@ export const timeslotsQuerySchema = v.object({
 });
 
 export type TimeslotSchema = v.InferOutput<typeof timeslotSchema> & {
-  id: Generated<"id">;
+  id: Generated<number>;
 };
 export type TimeslotsSchema = v.InferOutput<typeof timeslotsSchema>;
 export type TimeslotsQuerySchema = v.InferOutput<typeof timeslotsQuerySchema>;
