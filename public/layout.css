@@ -382,3 +382,71 @@ input {
 .booking-form__actions .button {
   min-width: 136px;
 }
+.empty-result {
+  padding: 30px;
+  border-radius: 10px;
+  background: #d8d8d8;
+  color: #5b7f7c;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.booking-form__title {
+  margin: 0 0 24px;
+  color: #5b7f7c;
+  font-size: 28px;
+}
+
+.form-errors {
+  margin-bottom: 24px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  background: #ffd7d7;
+  color: #8b1e1e;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.form-errors p {
+  margin: 6px 0;
+}
+
+.form-errors--hidden {
+  display: none;
+}
+
+.available-slots {
+  margin: 10px 0 32px;
+}
+
+.available-slots h2 {
+  margin: 0 0 8px;
+  color: #5b7f7c;
+  font-size: 24px;
+}
+
+.available-slots__hint {
+  margin: 0 0 14px;
+  color: #5b7f7c;
+  font-size: 14px;
+}
+
+.available-slots__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.slot-button {
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 6px;
+  color: #ffffff;
+  background: #5b7f7c;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.slot-button:hover {
+  opacity: 0.85;
+}

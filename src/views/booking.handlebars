@@ -20,28 +20,65 @@
       </section>
     </section>
 
-    <form class="booking-form" action="/booking/{{room.id}}" method="post">
+    <form class="booking-form" action="/booking/{{room.id}}" method="post" id="bookingForm">
+      <h1 class="booking-form__title">Бронирование {{room.title}}</h1>
+
+      <div id="clientErrors" class="form-errors form-errors--hidden"></div>
+
+      {{#if errors}}
+        <div class="form-errors">
+          {{#each errors}}
+            <p>{{this}}</p>
+          {{/each}}
+        </div>
+      {{/if}}
+
       <label>
         <span>Тема</span>
-        <input type="text" name="title" required />
+        <input
+          type="text"
+          name="title"
+          minlength="2"
+          required
+          value="{{form.title}}"
+        />
       </label>
 
       <label>
         <span>Организатор</span>
-        <input type="text" name="organizer" required />
+        <input
+          type="text"
+          name="organizer"
+          minlength="2"
+          required
+          value="{{form.organizer}}"
+        />
       </label>
 
       <div class="booking-form__time">
         <label>
           <span>Начало</span>
-          <input type="time" name="start" required />
+          <input type="time" name="start" required value="{{form.start}}" />
         </label>
 
         <label>
           <span>Конец</span>
-          <input type="time" name="end" required />
+          <input type="time" name="end" required value="{{form.end}}" />
         </label>
       </div>
+
+      <section class="available-slots">
+        <h2>Свободные слоты</h2>
+        <p class="available-slots__hint">Нажми на слот, чтобы подставить время в форму.</p>
+
+        <div
+          class="available-slots__list"
+          id="availableSlots"
+          data-room-id="{{room.id}}"
+        >
+          Загрузка слотов...
+        </div>
+      </section>
 
       <div class="booking-form__actions">
         <a class="button button--muted" href="/rooms/{{room.id}}">Back to Room</a>
@@ -50,3 +87,5 @@
     </form>
   </div>
 </main>
+
+<script src="/public/booking.js"></script>

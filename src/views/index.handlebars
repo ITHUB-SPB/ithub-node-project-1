@@ -6,29 +6,64 @@
       <section class="filters__group">
         <h2>Комнаты</h2>
 
-        <label><input type="checkbox" name="room" value="A-101" /> A-101</label>
-        <label><input type="checkbox" name="room" value="A-102" /> A-102</label>
-        <label><input type="checkbox" name="room" value="B-140" /> B-140</label>
+        <label>
+          <input type="checkbox" name="room" value="A-101" {{checked "A-101" filters.room}} />
+          A-101
+        </label>
+
+        <label>
+          <input type="checkbox" name="room" value="A-102" {{checked "A-102" filters.room}} />
+          A-102
+        </label>
+
+        <label>
+          <input type="checkbox" name="room" value="B-140" {{checked "B-140" filters.room}} />
+          B-140
+        </label>
+
+        <label>
+          <input type="checkbox" name="room" value="C-205" {{checked "C-205" filters.room}} />
+          C-205
+        </label>
       </section>
 
       <section class="filters__group">
         <h2>Доступность</h2>
 
-        <label><input type="checkbox" name="device" value="tv" /> Плазма</label>
-        <label><input type="checkbox" name="device" value="board" /> Доска</label>
+        <label>
+          <input type="checkbox" name="device" value="tv" {{checked "tv" filters.device}} />
+          Плазма
+        </label>
+
+        <label>
+          <input type="checkbox" name="device" value="board" {{checked "board" filters.device}} />
+          Доска
+        </label>
+
+        <label>
+          <input type="checkbox" name="device" value="wifi" {{checked "wifi" filters.device}} />
+          Wi-Fi
+        </label>
       </section>
 
       <section class="filters__group">
         <h2>Вместимость</h2>
-        <input class="filters__small-input" type="number" name="capacity" min="1" />
+        <input
+          class="filters__small-input"
+          type="number"
+          name="capacity"
+          min="1"
+          value="{{filters.capacity}}"
+          placeholder="10"
+        />
       </section>
 
       <section class="filters__group">
         <h2>Время</h2>
 
         <div class="filters__time">
-          <input type="time" name="from" />
-          <input type="time" name="to" />
+          <input type="time" name="from" value="{{filters.from}}" />
+          <input type="time" name="to" value="{{filters.to}}" />
         </div>
       </section>
 
@@ -42,28 +77,34 @@
   <section class="rooms-section">
     <p class="rooms-count">Найдено комнат: {{total}}</p>
 
-    <div class="rooms-grid">
-      {{#each rooms}}
-        <article class="room-card">
-          <img class="room-card__image" src="{{this.image}}" alt="Комната {{this.title}}" />
+    {{#if hasRooms}}
+      <div class="rooms-grid">
+        {{#each rooms}}
+          <article class="room-card">
+            <img class="room-card__image" src="{{this.image}}" alt="Комната {{this.title}}" />
 
-          <div class="room-card__body">
-            <h2>{{this.title}}</h2>
+            <div class="room-card__body">
+              <h2>{{this.title}}</h2>
 
-            <p class="room-card__location">
-              <span>●</span>
-              {{this.location}}
-            </p>
+              <p class="room-card__location">
+                <span>●</span>
+                {{this.location}}
+              </p>
 
-            <p class="room-card__capacity">
-              <strong>Max Limit :</strong>
-              {{this.capacity}}
-            </p>
+              <p class="room-card__capacity">
+                <strong>Max Limit :</strong>
+                {{this.capacity}}
+              </p>
 
-            <a class="button button--full" href="/rooms/{{this.id}}">More Info</a>
-          </div>
-        </article>
-      {{/each}}
-    </div>
+              <a class="button button--full" href="/rooms/{{this.id}}">More Info</a>
+            </div>
+          </article>
+        {{/each}}
+      </div>
+    {{else}}
+      <div class="empty-result">
+        Комнаты по выбранным фильтрам не найдены.
+      </div>
+    {{/if}}
   </section>
 </main>
