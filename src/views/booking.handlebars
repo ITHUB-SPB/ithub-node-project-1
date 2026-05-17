@@ -1,4 +1,97 @@
-<article class="room_detail">
-    <h3>{{room.title}}</h3>
-    <p>{{room.capacity}}</p>
-</article>
+<main class="page">
+  <div class="room-layout">
+    <section>
+      <div class="hero-photo"></div>
+      <h2 class="slots-title">Занятые слоты</h2>
+      <div class="slots" id="bookedSlots">
+        {{#each room.bookings}}
+        <div class="slot-card">{{this.start}} - {{this.end}}</div>
+        {{/each}}
+      </div>
+    </section>
+
+    <section class="booking-panel">
+      <form id="bookingForm" class="booking-form">
+        <div class="form-row">
+          <label for="roomName">Комната</label>
+          <input id="roomName" type="text" value="{{room.title}}" disabled />
+          <input type="hidden" id="roomId" value="{{room.id}}" />
+        </div>
+
+        <div class="form-row">
+          <label for="timeslot">Временной слот</label>
+          <select id="timeslot" required>
+            <option value="">Загрузка слотов...</option>
+          </select>
+        </div>
+
+        <div id="errorMessage" class="error-message" style="color: red; display: none;"></div>
+
+        <div class="actions">
+          <a class="button button--brown" href="/details/{{room.id}}">Back to Room</a>
+          <button class="button button--teal" type="submit">Book</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</main>
+
+<script>
+  const roomId = document.getElementById('roomId').value;
+  const timeslotSelect = document.getElementById('timeslot');
+  const errorDiv = document.getElementById('errorMessage');
+  const form = document.getElementById('bookingForm');
+
+  async function loadFreeSlots() {
+    try {
+      const response = await fetch(`/api/timeslots/free/${roomId}`);
+      const slots = await response.json();
+      
+      timeslotSelect.innerHTML = '<option value="">Выберите слот</option>';
+      slots.forEach(slot => {
+        const option = document.createElement('option');
+        option.value = slot.id;
+        option.textContent = `${slot.start} - ${slot.end}`;
+        timeslotSelect.appendChild(option);
+      });
+    } catch (error) {
+      timeslotSelect.innerHTML = '<option value="">Ошибка загрузки слотов</option>';
+    }
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorDiv.style.display = 'none';
+
+    const timeslotId = timeslotSelect.value;
+    if (!timeslotId) {
+      errorDiv.textContent = 'Пожалуйста, выберите временной слот';
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          roomId: Number(roomId),
+          timeslotId: Number(timeslotId)
+        })
+      });
+
+      if (response.ok) {
+        window.location.href = `/details/${roomId}`;
+      } else {
+        const error = await response.json();
+        errorDiv.textContent = error.error || 'Ошибка при бронировании';
+        errorDiv.style.display = 'block';
+      }
+    } catch (err) {
+      errorDiv.textContent = 'Произошла ошибка при отправке запроса';
+      errorDiv.style.display = 'block';
+    }
+  });
+
+  loadFreeSlots();
+</script>

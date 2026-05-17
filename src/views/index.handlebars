@@ -1,14 +1,74 @@
-<p>test</p>
+<main class="page">
+  <aside class="sidebar">
+    <form class="filters" method="GET" action="/">
+      <section class="filter-group">
+        <h2>Комнаты</h2>
+        {{#each allRoomsForFilter}}
+        <label>
+          <input 
+            type="checkbox" 
+            name="filter" 
+            value="{{this.id}}" 
+            {{#if (includes this.id ../filters.filter)}}checked{{/if}} 
+          />
+          <span>{{this.title}}</span>
+        </label>
+        {{/each}}
+      </section>
 
-<section class="rooms">
-    {{#each rooms}}
-    <article class="room_card">
-        <header>
-            <a href="/rooms/{{this.id}}">{{this.title}}</a>
-        </header>
-        <footer>
-            <p>{{this.capacity}}</p>
-        </footer>
-    </article>
-    {{/each}}
-</section>
+      <section class="filter-group">
+        <h2>Удобства</h2>
+        <label>
+          <input type="checkbox" name="amenities" value="plasma" {{#if (includes "plasma" filters.amenities)}}checked{{/if}} />
+          <span>Плазма</span>
+        </label>
+        <label>
+          <input type="checkbox" name="amenities" value="board" {{#if (includes "board" filters.amenities)}}checked{{/if}} />
+          <span>Доска</span>
+        </label>
+        <label>
+          <input type="checkbox" name="amenities" value="wifi" {{#if (includes "wifi" filters.amenities)}}checked{{/if}} />
+          <span>Wi-Fi</span>
+        </label>
+      </section>
+
+      <section class="filter-group">
+        <h2>Вместимость (от)</h2>
+        <input 
+          class="pill-input pill-input--single" 
+          type="number" 
+          name="capacity" 
+          value="{{filters.capacity}}" 
+          placeholder="Например: 10"
+        />
+      </section>
+
+      <div class="filter-actions">
+        <button class="clear-button" type="reset">Очистить</button>
+        <button class="apply-button" type="submit">Применить</button>
+      </div>
+    </form>
+  </aside>
+
+  <section>
+    <p class="result-count">Найдено комнат: <strong>{{rooms.length}}</strong></p>
+    <div class="room-grid">
+      {{#each rooms}}
+      <article class="room-card">
+        <div class="room-card__image"></div>
+        <h3>{{this.title}}</h3>
+        <p class="room-card__limit"><strong>Max Limit :</strong> {{this.capacity}}</p>
+        <div class="room-card__amenities">
+          {{#each this.amenities}}
+          <span class="amenity-badge">{{this.label}}</span>
+          {{/each}}
+        </div>
+        <a class="more-button" href="/details/{{this.id}}">More Info</a>
+      </article>
+      {{else}}
+      <p>Комнат не найдено</p>
+      {{/each}}
+    </div>
+  </section>
+</main>
+

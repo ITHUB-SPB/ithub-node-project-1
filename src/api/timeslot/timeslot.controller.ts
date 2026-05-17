@@ -10,18 +10,17 @@ export default class TimeslotController {
   ): Promise<Response> {
     try {
       const query = v.parse(schema.timeslotsQuerySchema, request.query);
-
       const slots = await TimeslotService.findAll(query.period);
-
-      return response.status(200).json({
-        slots,
-      });
+      return response.status(200).json({ slots });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-
-      return response.status(400).json({
-        error: message,
-      });
+      return response.status(400).json({ error: message });
     }
+  }
+
+  static async getFreeSlots(request: Request, response: Response) {
+    const roomId = Number(request.params["roomId"]);
+    const freeSlots = await TimeslotService.findFreeByRoom(roomId);
+    return response.json(freeSlots);
   }
 }

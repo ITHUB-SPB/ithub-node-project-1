@@ -1,30 +1,33 @@
 import db from "../../database/connection.js";
 
 export default class BookingService {
-    static async findAll(params?: {
-        limit?: number,
-        offset?: number,
-    }) {
-        let query = db.selectFrom('bookings').selectAll()
+  static async findAll() {
+    return await db.selectFrom("bookings").selectAll().execute();
+  }
 
-        if (params?.limit !== undefined) {
-            query = query.limit(params.limit)
-        }
+  static async create(payload: { roomId: number; timeslotId: number }) {
+    const existing = await db
+      .selectFrom("bookings")
+      .where("roomId", "=", payload.roomId)
+      .where("timeslotId", "=", payload.timeslotId)
+      .executeTakeFirst();
 
-        if (params?.offset !== undefined) {
-            query = query.offset(params.offset)
-        }
-
-        return await query.execute()
-
-        // return await db.selectFrom('bookings').selectAll().execute()
+    if (existing) {
+      throw new Error("Этот временной слот уже занят для выбранной комнаты");
     }
 
-    static async create(payload: any) {
-        return await db.insertInto('bookings').values(payload).returningAll().executeTakeFirst()
-    }
+    return await db
+      .insertInto("bookings")
+      .values({
+        roomId: payload.roomId,
+        timeslotId: payload.timeslotId,
+        createdAt: Math.floor(Date.now() / 1000),
+      })
+      .returningAll()
+      .executeTakeFirst();
+  }
 
-    static async delete(id: number) {
-        await db.deleteFrom('bookings').where('id', '=', id).execute()
-    }
+  static async delete(id: number) {
+    await db.deleteFrom("bookings").where("id", "=", id).execute();
+  }
 }

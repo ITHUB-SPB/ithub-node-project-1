@@ -1,4 +1,47 @@
-<article class="room_detail">
-    <h3>{{room.title}}</h3>
-    <p>{{room.capacity}}</p>
-</article>
+<main class="page">
+  <div class="room-layout">
+    <section>
+      <div class="hero-photo"></div>
+      <h2 class="slots-title">Занятые слоты</h2>
+      <div class="slots">
+        {{#each room.bookings}}
+        <article class="slot-card">
+          <h3>{{this.start}} - {{this.end}}</h3>
+          <p><strong>Организатор:</strong> Не указан</p>
+        </article>
+        {{else}}
+        <p>Нет активных бронирований</p>
+        {{/each}}
+      </div>
+    </section>
+
+    <section class="room-info">
+      <h1>Комната {{room.title}}</h1>
+      <div class="feature-grid">
+        {{#each room.amenities}}
+        <div class="feature">
+          <div class="feature__icon">
+            <svg width="30" height="30" viewBox="0 0 35 30" fill="none">
+              <use href="#amenity-{{this.name}}" />
+            </svg>
+          </div>
+          <span>{{this.label}}</span>
+        </div>
+        {{/each}}
+        <div class="feature">
+          <div class="feature__icon">
+            <svg width="35" height="37" viewBox="0 0 35 37" fill="none">
+              <use href="#capacity-icon" />
+            </svg>
+          </div>
+          <span>Вместимость: до {{room.capacity}} чел.</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="button button--brown" href="/">Back to Rooms</a>
+        <a class="button button--teal" href="/booking/{{room.id}}">Booking Details</a>
+      </div>
+    </section>
+  </div>
+</main>

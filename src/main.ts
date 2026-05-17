@@ -1,64 +1,57 @@
-import express, { type Request, type Response } from "express";
-import { engine } from "express-handlebars";
 
-import { areaRoutes } from "./api/area/area.router.js";
-import { bookingRoutes } from "./api/booking/booking.router.js";
-import { timeslotRoutes } from "./api/timeslot/timeslot.router.js";
+import AreaService from "./api/area/area.service.js";
+import TimeslotService from "./api/timeslot/timeslot.service.js";
 
-const app = express();
+app.get("/", async (request: Request, response: Response) => {
+  const capacity = request.query.capacity as string | undefined;
+  const amenities = request.query.amenities as string | undefined;
+  const filter = request.query.filter as string | undefined;
 
-app.engine("handlebars", engine());
-app.set("view engine", "handlebars");
-app.set("views", import.meta.dirname + "/views");
+  const rooms = await AreaService.findAll({
+    capacity: capacity ? Number(capacity) : undefined,
+    amenities: amenities?.split(","),
+    filter: filter?.split(",").map(Number),
+  });
 
-app.use("/public", express.static("public"));
+  const allRoomsForFilter = await AreaService.findAllForFilter();
 
-app.use(express.json());
-
-const rooms = [
-  { id: 1, title: "A-101", capacity: "20-24" },
-  { id: 2, title: "A-102", capacity: "10-14" },
-  { id: 3, title: "B-200", capacity: "5-10" },
-];
-
-app.get("/", (request: Request, response: Response) => {
-  // TODO разработать (сверстать) шаблон index по макету
-  // (экран Meeting Room Screen) - до 4 баллов
-
-  response.render("index", { rooms });
+  response.render("index", {
+    rooms,
+    allRoomsForFilter,
+    filters: { capacity, amenities: amenities?.split(",") || [] },
+  });
 });
 
-app.get("/details/:roomId", (request: Request, response: Response) => {
-  // TODO разработать (сверстать) шаблон detail по макету
-  // (экран Room Detail Screen) - до 2 баллов
+app.get("/details/:roomId", async (request: Request, response: Response) => {
+  const roomId = Number(request.params["roomId"]);
+  const room = await AreaService.findById(roomId);
 
-  const roomId = request.params["roomId"];
-  const room = rooms.find((room) => room.id === Number(roomId));
+  if (!room) {
+    return response.status(404).send("Комната не найдена");
+  }
 
   response.render("detail", { room });
 });
 
-app.get("/booking/:roomId", (request: Request, response: Response) => {
-  // TODO разработать (сверстать) шаблон booking по макету
-  // (экран Booking Screen) - до 2 баллов
-
-  const roomId = request.params["roomId"];
-  const room = rooms.find((room) => room.id === Number(roomId));
+app.get("/booking/:roomId", async (request: Request, response: Response) => {
+  const roomId = Number(request.params["roomId"]);
+  const room = await AreaService.findById(roomId);
+  
+  if (!room) {
+    return response.status(404).send("Комната не найдена");
+  }
 
   response.render("booking", { room });
 });
 
-app.use("/api/areas", areaRoutes);
-app.use("/api/bookings", bookingRoutes);
-app.use("/api/timeslots", timeslotRoutes);
-
-app.get("/api", (_, response) => {
-  return response.json({
-    status: "OK",
-  });
-});
-
-app.listen(3000, () => {
-  console.log(`App listening: http://localhost:3000/`);
-  console.log(`API listening: http://localhost:3000/api/`);
-});
+app.engine(
+  "handlebars",
+  engine({
+    helpers: {
+      includes: (value: string, array: string[] | undefined) => {
+        if (!array) return false;
+        return array.includes(String(value));
+      },
+    },
+  })
+);

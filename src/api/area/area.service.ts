@@ -1,33 +1,69 @@
-import * as v from "valibot";
 import db from "../../database/connection.js";
-import {
-  areasSchema,
-  type AreasSchema,
-  type AreasQuerySchema,
-} from "./area.schema.js";
+import { type AreasQuerySchema } from "./area.schema.js";
 
 export default class AreaService {
-  static async findAll(queryParams: AreasQuerySchema): Promise<AreasSchema> {
-    let statement = db.selectFrom("areas").selectAll().orderBy("areas.title");
+  static async findAll(queryParams: AreasQuerySchema) {
+    let query = db.selectFrom("areas").selectAll();
 
-    if (queryParams.limit) {
-      const offset = queryParams.offset || 0;
-      statement = statement.limit(queryParams.limit).offset(offset);
+    if (queryParams.capacity) {
+      query = query.where("capacity", ">=", queryParams.capacity);
     }
 
     if (queryParams.filter?.length) {
-      statement = statement.where("areas.id", "in", queryParams.filter);
-
-      if (queryParams.filter) {
-        // TODO перенести это действие в валибот
-        const ids = queryParams.filter.split(",").map(Number);
-        statement = statement.where("areas.id", "in", ids);
-      }
-
-      // const statement = connection.prepare('select * from areas order by title')
-      const areas = await statement.execute();
-
-      return v.parse(areasSchema, areas);
+      query = query.where("id", "in", queryParams.filter);
     }
+
+    const areas = await query.orderBy("title").execute();
+
+    const areasWithAmenities = await Promise.all(
+      areas.map(async (area) => {
+        const amenities = await db
+          .selectFrom("amenities")
+          .innerJoin("room_amenities", "amenities.id", "room_amenities.amenity_id")
+          .where("room_amenities.room_id", "=", area.id)
+          .select(["amenities.name", "amenities.label"])
+          .execute();
+
+        if (queryParams.amenities?.length) {
+          const amenityNames = amenities.map(a => a.name);
+          const hasAllAmenities = queryParams.amenities.every(a => amenityNames.includes(a));
+          if (!hasAllAmenities) return null;
+        }
+
+        return { ...area, amenities };
+      })
+    );
+
+    return areasWithAmenities.filter(Boolean);
+  }
+
+  static async findById(id: number) {
+    const area = await db
+      .selectFrom("areas")
+      .where("id", "=", id)
+      .selectAll()
+      .executeTakeFirst();
+
+    if (!area) return null;
+
+    const amenities = await db
+      .selectFrom("amenities")
+      .innerJoin("room_amenities", "amenities.id", "room_amenities.amenity_id")
+      .where("room_amenities.room_id", "=", id)
+      .select(["amenities.name", "amenities.label"])
+      .execute();
+
+    const bookings = await db
+      .selectFrom("bookings")
+      .innerJoin("timeslots", "bookings.timeslotId", "timeslots.id")
+      .where("bookings.roomId", "=", id)
+      .select(["timeslots.start", "timeslots.end"])
+      .execute();
+
+    return { ...area, amenities, bookings };
+  }
+
+  static async findAllForFilter() {
+    return await db.selectFrom("areas").select(["id", "title"]).orderBy("title").execute();
   }
 }

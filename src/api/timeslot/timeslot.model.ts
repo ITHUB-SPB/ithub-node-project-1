@@ -102,11 +102,11 @@ export class Timeslot {
     }
 
     toMapped() {
-        return {
-            start: this.#start.valueOf() / 1000,
-            end: this.#start.valueOf() / 1000,
-        };
-    }
+    return {
+        start: this.#start.valueOf() / 1000,
+        end: this.#end.valueOf() / 1000,
+    };
+}
 
     toString() {
         return {
