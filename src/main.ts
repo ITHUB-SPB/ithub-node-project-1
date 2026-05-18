@@ -1,31 +1,24 @@
-import express, { type Request, type Response } from "express";
-import { engine } from "express-handlebars";
-
-import { areaRoutes } from "./api/area/area.router.js";
+import express from "express";
+import { areaRouter } from "./api/area/area.router.js";
 import { bookingRoutes } from "./api/booking/booking.router.js";
 import { timeslotRoutes } from "./api/timeslot/timeslot.router.js";
 
-const app = express();
+const server = express();
+server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
 
-app.engine("handlebars", engine());
-app.set("view engine", "handlebars");
-app.set("views", import.meta.dirname + "/views");
+server.use("/api/areas", areaRouter);
+server.use("/api/bookings", bookingRoutes);
+server.use("/api/timeslots", timeslotRoutes);
 
-app.use("/public", express.static("public"));
-
-app.use(express.json());
-
-app.use(areaRoutes);
-app.use(bookingRoutes);
-app.use(timeslotRoutes);
-
-app.get("/api", (_, response) =>
-  response.json({
-    status: "OK",
-  })
-);
-
-app.listen(3000, () => {
-  console.log(`App listening: http://localhost:3000/`);
-  console.log(`API listening: http://localhost:3000/api/`);
+server.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
 });
+
+const SERVER_PORT = process.env.PORT || 4000;
+
+server.listen(SERVER_PORT, () => {
+  console.log(`Сервер запущен на http://localhost:${SERVER_PORT}`);
+});
+
+export default server;

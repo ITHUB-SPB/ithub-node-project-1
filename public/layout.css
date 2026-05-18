@@ -1,27 +1,20 @@
-body {
-    min-height: 100dvh;
-    background-color: #FFF2F1;
-
-    padding: 103px 75px 0 60px;
-}
-
-.page {
-    display: flex;
-}
-
-.page--index {
-    flex-direction: row;
-    gap: 50px;
-}
-
-.aside {
-    width: 262px;
-    min-height: 613px;
-}
-
-.rooms {
-    width: 870px;
+.rooms-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-}
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  
+  .room-card {
+    transition: transform 0.2s ease;
+  }
+  
+  .room-card:hover {
+    transform: translateY(-4px);
+  }
+  
+  .booking-item {
+    border-left: 3px solid var(--pico-primary);
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+  }

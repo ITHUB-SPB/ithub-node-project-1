@@ -1,67 +1,38 @@
-import type { Generated } from "kysely";
 import * as v from "valibot";
 
 const paginationSchema = v.object({
   limit: v.optional(
     v.pipe(
-      v.union([
-        v.pipe(v.string(), v.transform(Number), v.number()),
-        v.number(),
-      ]),
+      v.union([v.pipe(v.string(), v.transform(Number), v.number()), v.number()]),
       v.integer(),
       v.minValue(1),
-      v.maxValue(50)
+      v.maxValue(100)
     )
   ),
   offset: v.optional(
     v.pipe(
-      v.union([
-        v.pipe(v.string(), v.transform(Number), v.number()),
-        v.number(),
-      ]),
+      v.union([v.pipe(v.string(), v.transform(Number), v.number()), v.number()]),
       v.integer(),
-      v.minValue(1)
+      v.minValue(0)
     )
   ),
 });
 
-const filterSchema = v.object({
-  filter: v.optional(
-    v.pipe(
-      v.string(),
-      v.transform((value) =>
-        value
-          .split(",")
-          .map((v) => Number(v))
-          .filter((n) => Number.isInteger(n) && n > 0)
-      )
-    )
-  ),
+const searchSchema = v.object({
+  search: v.optional(v.string()),
 });
 
 export const areasQuerySchema = v.object({
   ...paginationSchema.entries,
-  ...filterSchema.entries,
+  ...searchSchema.entries,
 });
 
-const areaSchema = v.object({
+export const areaItemSchema = v.object({
   id: v.pipe(v.number(), v.integer(), v.minValue(1)),
   title: v.pipe(v.string(), v.nonEmpty()),
 });
 
-export const areasSchema = v.array(areaSchema);
+export const areasListSchema = v.array(areaItemSchema);
 
-export const areasResponseSchema = v.strictObject({
-  statusCode: v.literal(200),
-  data: v.object({
-    areas: areasSchema,
-    totalItems: v.number(),
-  }),
-});
-
-export type AreaSchema = v.InferOutput<typeof areaSchema> & {
-  id: Generated<"id">;
-};
-export type AreasQuerySchema = v.InferOutput<typeof areasQuerySchema>;
-export type AreasSchema = v.InferOutput<typeof areasSchema>;
-export type AreasResponseSchema = v.InferOutput<typeof areasResponseSchema>;
+export type AreaItem = v.InferOutput<typeof areaItemSchema>;
+export type AreasQuery = v.InferOutput<typeof areasQuerySchema>;

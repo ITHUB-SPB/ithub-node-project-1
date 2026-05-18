@@ -1,9 +1,9 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "tabWidth": 4,
-  "semi": true,
-  "singleQuote": true,
-  "printWidth": 80,
-  "experimentalSortPackageJson": false,
-  "ignorePatterns": []
+  "tabWidth": 2,
+  "semi": false,
+  "singleQuote": false,
+  "printWidth": 100,
+  "experimentalSortPackageJson": true,
+  "ignorePatterns": ["dist", "coverage"]
 }

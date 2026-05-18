@@ -1,33 +1,42 @@
 import * as v from "valibot";
 import db from "../../database/connection.js";
-import {
-  areasSchema,
-  type AreasSchema,
-  type AreasQuerySchema,
-} from "./area.schema.js";
+import { areaItemSchema, type AreaItem, type AreasQuery } from "./area.schema.js";
 
 export default class AreaService {
-  static async findAll(queryParams: AreasQuerySchema): Promise<AreasSchema> {
-    let statement = db.selectFrom("areas").selectAll().orderBy("areas.title");
+  static async getAll(query: AreasQuery): Promise<{ items: AreaItem[]; totalCount: number }> {
+    let statement = db.selectFrom("areas").selectAll().orderBy("title");
 
-    if (queryParams.limit) {
-      const offset = queryParams.offset || 0;
-      statement = statement.limit(queryParams.limit).offset(offset);
+    if (query.search) {
+      statement = statement.where("title", "like", `%${query.search}%`);
     }
 
-    if (queryParams.filter?.length) {
-      statement = statement.where("areas.id", "in", queryParams.filter);
+    const countResult = await statement
+      .select((eb) => eb.fn.countAll().as("count"))
+      .executeTakeFirst();
 
-      if (queryParams.filter) {
-        // TODO перенести это действие в валибот
-        const ids = queryParams.filter.split(",").map(Number);
-        statement = statement.where("areas.id", "in", ids);
-      }
-
-      // const statement = connection.prepare('select * from areas order by title')
-      const areas = await statement.execute();
-
-      return v.parse(areasSchema, areas);
+    if (query.limit) {
+      const offset = query.offset ?? 0;
+      statement = statement.limit(query.limit).offset(offset);
     }
+
+    const areas = await statement.execute();
+    const validatedAreas = v.parse(areasListSchema, areas);
+
+    return {
+      items: validatedAreas,
+      totalCount: Number(countResult?.count) ?? 0,
+    };
+  }
+
+  static async getById(id: number): Promise<AreaItem | null> {
+    const area = await db
+      .selectFrom("areas")
+      .selectAll()
+      .where("id", "=", id)
+      .executeTakeFirst();
+
+    if (!area) return null;
+
+    return v.parse(areaItemSchema, area);
   }
 }

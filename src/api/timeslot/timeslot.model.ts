@@ -1,132 +1,104 @@
-export class SlotValueError extends TypeError {
-    constructor(message: string | undefined) {
-        super(`Value must be a Timeslot ${message ? message : ''}`);
+export class InvalidSlotError extends TypeError {
+    constructor(value: unknown) {
+      super(`Значение должно быть экземпляром Timeslot, получено: ${typeof value}`);
     }
-}
-
-export class SlotRelationError extends RangeError {
+  }
+  
+  export class TimeRelationError extends RangeError {
     constructor(start: Date, end: Date) {
-        const localeStart = start.toLocaleString('ru');
-        const localeEnd = end.toLocaleString('ru');
-
-        super(
-            `Value of start (${localeStart}) must be less than end (${localeEnd})`,
-        );
+      const formattedStart = start.toLocaleTimeString("ru");
+      const formattedEnd = end.toLocaleTimeString("ru");
+      super(`Время начала (${formattedStart}) должно быть меньше времени окончания (${formattedEnd})`);
     }
-}
-
-export class Timeslot {
-    #start: Date;
-    #end: Date;
-
+  }
+  
+  export class Timeslot {
+    #startTime: Date;
+    #endTime: Date;
+  
     constructor(start: Date, end: Date) {
-        this.#start = this.setStart(start);
-        this.#end = this.setEnd(end);
+      this.#startTime = this.validateAndSetStart(start);
+      this.#endTime = this.validateAndSetEnd(end);
     }
-
-    #isDate(value: any) {
-        return value instanceof Date;
+  
+    private isValidDate(value: unknown): value is Date {
+      return value instanceof Date && !isNaN(value.getTime());
     }
-
-    static isIntersect(timeslot: any, otherTimeslot: any) {
-        if (!(timeslot instanceof Timeslot)) {
-            throw new SlotValueError(timeslot.toString());
-        }
-
-        if (!(otherTimeslot instanceof Timeslot)) {
-            throw new SlotValueError(otherTimeslot.toString());
-        }
-
-        return (
-            (otherTimeslot.start > timeslot.start &&
-                otherTimeslot.end < timeslot.end) ||
-            (otherTimeslot.start < timeslot.start &&
-                otherTimeslot.end > timeslot.start)
-        );
+  
+    static isOverlap(slotA: Timeslot, slotB: Timeslot): boolean {
+      if (!(slotA instanceof Timeslot)) throw new InvalidSlotError(slotA);
+      if (!(slotB instanceof Timeslot)) throw new InvalidSlotError(slotB);
+  
+      return slotA.startTime < slotB.endTime && slotB.startTime < slotA.endTime;
     }
-
-    getStart() {
-        return this.#start;
+  
+    get startTime(): Date {
+      return this.#startTime;
     }
-
-    get start() {
-        return this.#start;
+  
+    get endTime(): Date {
+      return this.#endTime;
     }
-
-    getEnd() {
-        return this.#end;
+  
+    get isMorning(): boolean {
+      return this.#endTime.getHours() <= 12;
     }
-
-    get end() {
-        return this.#end; // либо this.getEnd()
+  
+    get isAfternoon(): boolean {
+      return this.#startTime.getHours() >= 12;
     }
-
-    get isAM() {
-        return this.#end.getHours() < 12;
+  
+    private validateAndSetStart(date: Date): Date {
+      if (!this.isValidDate(date)) {
+        throw new TypeError("Значение должно быть корректной датой");
+      }
+      if (this.#endTime && date >= this.#endTime) {
+        throw new TimeRelationError(date, this.#endTime);
+      }
+      return date;
     }
-
-    get isPM() {
-        return this.#start.getHours() >= 12;
+  
+    private validateAndSetEnd(date: Date): Date {
+      if (!this.isValidDate(date)) {
+        throw new TypeError("Значение должно быть корректной датой");
+      }
+      if (date <= this.#startTime) {
+        throw new TimeRelationError(this.#startTime, date);
+      }
+      return date;
     }
-
-    setStart(newDate: any) {
-        if (!this.#isDate(newDate)) {
-            throw new TypeError('Value must be a Time');
-        }
-
-        if (this.#end && newDate >= this.#end) {
-            throw new SlotRelationError(newDate, this.#end);
-        }
-
-        return newDate;
+  
+    set startTime(date: Date) {
+      this.#startTime = this.validateAndSetStart(date);
     }
-
-    set start(newDate) {
-        this.setStart(newDate);
+  
+    set endTime(date: Date) {
+      this.#endTime = this.validateAndSetEnd(date);
     }
-
-    setEnd(newDate: any) {
-        if (!this.#isDate(newDate)) {
-            throw new TypeError('Value must be a Time');
-        }
-
-        if (newDate <= this.#start) {
-            throw new SlotRelationError(this.#start, newDate);
-        }
-
-        return newDate;
+  
+    toSerialized(): { start: number; end: number } {
+      return {
+        start: Math.floor(this.#startTime.valueOf() / 1000),
+        end: Math.floor(this.#endTime.valueOf() / 1000),
+      };
     }
-
-    set end(newDate) {
-        this.setEnd(newDate);
+  
+    toFormatted(): { start: string; end: string } {
+      return {
+        start: this.#startTime.toLocaleString("ru"),
+        end: this.#endTime.toLocaleString("ru"),
+      };
     }
-
-    toMapped() {
-        return {
-            start: this.#start.valueOf() / 1000,
-            end: this.#start.valueOf() / 1000,
-        };
+  
+    toJSON(): string {
+      return JSON.stringify(this.toSerialized());
     }
-
-    toString() {
-        return {
-            start: this.#start.toLocaleString('ru'),
-            end: this.#end.toLocaleString('ru'),
-        };
+  
+    static fromJSON(json: string): Timeslot {
+      return this.fromSerialized(JSON.parse(json));
     }
-
-    toJSON() {
-        return JSON.stringify(this.toMapped());
+  
+    static fromSerialized({ start, end }: { start: number; end: number }): Timeslot {
+      return new Timeslot(new Date(start * 1000), new Date(end * 1000));
     }
-
-    static fromJSON(data: string) {
-        return this.fromMapped(JSON.parse(data));
-    }
-
-    static fromMapped({ start, end }: {
-        start: number,
-        end: number
-    }) {
-        return new this(new Date(start * 1000), new Date(end * 1000));
-    }
-}
+  }

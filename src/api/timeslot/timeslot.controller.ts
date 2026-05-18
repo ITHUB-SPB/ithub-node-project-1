@@ -1,27 +1,26 @@
 import { type Request, type Response } from "express";
-import TimeslotService from "./timeslot.service.js";
 import * as v from "valibot";
+import TimeslotService from "./timeslot.service.js";
 import * as schema from "./timeslot.schema.js";
 
 export default class TimeslotController {
-  static async findAll(
-    request: Request,
-    response: Response
-  ): Promise<Response> {
+  static async getAll(request: Request, response: Response): Promise<void> {
     try {
-      const query = v.parse(schema.timeslotsQuerySchema, request.query);
+      const filters = v.parse(schema.timeslotFiltersSchema, request.query);
 
-      const slots = await TimeslotService.findAll(query.period);
+      let timeslots;
+      if (filters.startTime || filters.endTime) {
+        timeslots = await TimeslotService.filterByTimeRange(filters);
+      } else {
+        timeslots = await TimeslotService.getAll();
+      }
 
-      return response.status(200).json({
-        slots,
+      response.status(200).json({
+        slots: timeslots,
+        count: timeslots.length,
       });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-
-      return response.status(400).json({
-        error: message,
-      });
+    } catch (error: any) {
+      response.status(400).json({ error: error.message || "Ошибка запроса" });
     }
   }
 }

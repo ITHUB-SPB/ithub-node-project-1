@@ -1,20 +1,19 @@
-import type { Generated } from "kysely";
 import * as v from "valibot";
 
-export const timeslotSchema = v.object({
-  id: v.number(),
-  start: v.string(),
-  end: v.string(),
+export const timeslotItemSchema = v.object({
+  id: v.pipe(v.number(), v.integer(), v.minValue(1)),
+  start: v.pipe(v.string(), v.nonEmpty()),
+  end: v.pipe(v.string(), v.nonEmpty()),
 });
 
-export const timeslotsSchema = v.array(timeslotSchema);
+export const timeslotListSchema = v.array(timeslotItemSchema);
 
-export const timeslotsQuerySchema = v.object({
-  period: v.optional(v.picklist(["AM", "PM"])),
+export const timeslotFiltersSchema = v.object({
+  startTime: v.optional(v.pipe(v.string(), v.nonEmpty())),
+  endTime: v.optional(v.pipe(v.string(), v.nonEmpty())),
+  period: v.optional(v.picklist(["am", "pm"])),
 });
 
-export type TimeslotSchema = v.InferOutput<typeof timeslotSchema> & {
-  id: Generated<"id">;
-};
-export type TimeslotsSchema = v.InferOutput<typeof timeslotsSchema>;
-export type TimeslotsQuerySchema = v.InferOutput<typeof timeslotsQuerySchema>;
+export type TimeslotItem = v.InferOutput<typeof timeslotItemSchema>;
+export type TimeslotList = v.InferOutput<typeof timeslotListSchema>;
+export type TimeslotFilters = v.InferOutput<typeof timeslotFiltersSchema>;

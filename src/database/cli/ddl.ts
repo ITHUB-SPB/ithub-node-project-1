@@ -1,101 +1,95 @@
-import { sql } from "kysely";
+import connection from "../connection.js";
 import chalk from "chalk";
 
-import db from "../connection.js";
-
-export async function createTables(isForce: boolean) {
-  if (isForce) {
-    await db.schema.dropTable("bookings").execute();
-    await db.schema.dropTable("timeslots").execute();
-    await db.schema.dropTable("areas").execute();
-    console.log(chalk.yellow("! Таблицы форсировано удалены"));
+export function initTables(forceMode: boolean): void {
+  if (forceMode) {
+    connection.exec(`
+      DROP TABLE IF EXISTS users;
+      DROP TABLE IF EXISTS bookings;
+      DROP TABLE IF EXISTS timeslots;
+      DROP TABLE IF EXISTS areas;
+    `);
+    console.log(chalk.yellow("Существующие таблицы были удалены"));
   }
 
-  await db.schema
-    .createTable("users")
-    .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
-    .addColumn("username", "text", (col) => col.unique())
-    .addColumn("createdAt", "timestamp", (col) =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`)
+  connection.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT UNIQUE NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
-    .execute();
+  `);
 
-  await db.schema
-    .createTable("areas")
-    .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
-    .addColumn("title", "text", (col) => col.unique())
-    .execute();
-
-  await db.schema
-    .createTable("timeslots")
-    .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
-    .addColumn("start", "varchar(5)", (col) => col.notNull())
-    .addColumn("end", "varchar(5)", (col) => col.notNull())
-    .execute();
-
-  await db.schema
-    .createTable("bookings")
-    .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
-    .addColumn("timeslotId", "integer", (col) => col.notNull())
-    .addColumn("userId", "integer")
-    .addColumn("createdAt", "timestamp", (col) =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`)
+  connection.exec(`
+    CREATE TABLE IF NOT EXISTS areas (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT UNIQUE NOT NULL
     )
-    .addForeignKeyConstraint(
-      "bookings_timeslot_id_foreign",
-      ["timeslotId"],
-      "timeslots",
-      ["id"],
-      (constraint) => constraint.onDelete("cascade")
+  `);
+
+  connection.exec(`
+    CREATE TABLE IF NOT EXISTS timeslots (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      start_time VARCHAR(5) NOT NULL,
+      end_time VARCHAR(5) NOT NULL
     )
-    .execute();
+  `);
+
+  connection.exec(`
+    CREATE TABLE IF NOT EXISTS bookings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      slot_id INTEGER NOT NULL,
+      user_id INTEGER,
+      booked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (slot_id) REFERENCES timeslots(id) ON DELETE CASCADE,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+    )
+  `);
 }
 
-export async function resetTables(tables: string[]) {
-  if (tables.length === 0) {
-    await db.deleteFrom("bookings").execute();
-    await db.deleteFrom("areas").execute();
-    await db.deleteFrom("timeslots").execute();
-
+export function truncateTables(targetTables: string[]): void {
+  if (targetTables.length === 0) {
+    connection.exec("DELETE FROM users");
+    connection.exec("DELETE FROM bookings");
+    connection.exec("DELETE FROM areas");
+    connection.exec("DELETE FROM timeslots");
     console.log(
-      chalk.green(`✔ Таблица bookings была сброшена`),
-      chalk.green(`\n✔ Таблица areas была сброшена`),
-      chalk.green(`\n✔ Таблица timeslots была сброшена`)
+      chalk.green("Все таблицы были очищены")
     );
     return;
   }
 
-  const errors = [];
+  const failures = [];
 
-  for (const table of tables) {
+  for (const table of targetTables) {
     try {
       switch (table) {
+        case "users":
+          connection.exec("DELETE FROM users");
+          console.log(chalk.green(`Таблица users очищена`));
+          break;
         case "areas":
-          await db.deleteFrom("areas").execute();
-          console.log(chalk.green(`✔ Таблица areas была сброшена`));
+          connection.exec("DELETE FROM areas");
+          console.log(chalk.green(`Таблица areas очищена`));
           break;
         case "timeslots":
-          await db.deleteFrom("timeslots").execute();
-          console.log(chalk.green(`✔ Таблица timeslots была сброшена`));
+          connection.exec("DELETE FROM timeslots");
+          console.log(chalk.green(`Таблица timeslots очищена`));
           break;
         case "bookings":
-          await db.deleteFrom("bookings").execute();
-          console.log(chalk.green(`✔ Таблица bookings была сброшена`));
+          connection.exec("DELETE FROM bookings");
+          console.log(chalk.green(`Таблица bookings очищена`));
           break;
         default:
-          throw new Error(`Таблицы ${table} не существует`);
+          throw new Error(`Таблица "${table}" не существует`);
       }
     } catch (error) {
-      errors.push({
-        table,
-        message: (error as Error).message,
-      });
+      failures.push({ table, message: (error as Error).message });
     }
   }
 
-  if (errors.length > 0) {
-    const message = errors.map((e) => `- ${e.table}: ${e.message}`).join("\n");
-
-    throw new Error(`\n${message}`);
+  if (failures.length > 0) {
+    const errorMessage = failures.map((e) => `- ${e.table}: ${e.message}`).join("\n");
+    throw new Error(`Ошибки при очистке:\n${errorMessage}`);
   }
 }

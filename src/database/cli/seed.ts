@@ -1,12 +1,13 @@
 import { fakerRU as faker } from "@faker-js/faker";
-import db from "../connection.js";
+import connection from "../connection.js";
 import chalk from "chalk";
 
-export default async function seedTables(tables: string[]) {
+export default function fillTables(tables: string[]): void {
   if (tables.length === 0) {
-    await seedTimeslots();
-    await seedAreas();
-    await seedBookings();
+    fillUsers();
+    fillTimeslots();
+    fillAreas();
+    fillBookings();
     return;
   }
 
@@ -15,127 +16,122 @@ export default async function seedTables(tables: string[]) {
   for (const table of tables) {
     try {
       switch (table) {
+        case "users":
+          fillUsers();
+          break;
         case "bookings":
-          await seedBookings();
+          fillBookings();
           break;
-
         case "timeslots":
-          await seedTimeslots();
+          fillTimeslots();
           break;
-
         case "areas":
-          await seedAreas();
+          fillAreas();
           break;
-
         default:
-          throw new Error(`Таблицы ${table} не существует`);
+          throw new Error(`Таблица "${table}" не существует`);
       }
     } catch (error) {
-      errors.push({
-        table,
-        message: (error as Error).message,
-      });
+      errors.push({ table, message: (error as Error).message });
     }
   }
 
   if (errors.length > 0) {
-    const message = errors.map((e) => `- ${e.table}: ${e.message}`).join("\n");
-
-    throw new Error(`\n${message}`);
+    const errorMessage = errors.map((e) => `- ${e.table}: ${e.message}`).join("\n");
+    throw new Error(`Ошибки при заполнении:\n${errorMessage}`);
   }
 }
 
-async function seedAreas() {
-  const existing = await db.selectFrom("areas").selectAll().execute();
-
-  if (existing.length > 0) {
-    throw new Error("Таблица areas уже содержит записи");
+function fillUsers(): void {
+  const checkStmt = connection.prepare("SELECT COUNT(*) as count FROM users");
+  if (checkStmt.get().count > 0) {
+    throw new Error("Таблица users уже содержит данные");
   }
 
-  const areas = faker.helpers.multiple(
-    () => faker.number.int({ min: 1, max: 200 }),
-    {
-      count: 10,
-    }
-  );
+  const usernames = faker.helpers.multiple(() => faker.internet.username(), { count: 15 });
 
-  for (const areaNumber of areas) {
-    await db
-      .insertInto("areas")
-      .values({
-        title: `Помещение ${areaNumber}`,
-      })
-      .execute();
+  const insertStmt = connection.prepare("INSERT INTO users (username) VALUES (?)");
+
+  for (const name of usernames) {
+    insertStmt.run(name);
   }
 
-  const added = await db.selectFrom("areas").selectAll().execute();
-
-  console.log(chalk.green(`✔ Было добавлено ${added.length} записей в areas`));
+  const finalCount = checkStmt.get().count;
+  console.log(chalk.green(`Добавлено ${finalCount} записей в таблицу users`));
 }
 
-async function seedTimeslots() {
-  const existing = await db.selectFrom("timeslots").selectAll().execute();
-
-  if (existing.length > 0) {
-    throw new Error("Таблица timeslots уже содержит записи");
+function fillAreas(): void {
+  const checkStmt = connection.prepare("SELECT COUNT(*) as count FROM areas");
+  if (checkStmt.get().count > 0) {
+    throw new Error("Таблица areas уже содержит данные");
   }
 
-  const timeslots = [
+  const areaNumbers = faker.helpers.multiple(() => faker.number.int({ min: 1, max: 300 }), {
+    count: 12,
+  });
+
+  const insertStmt = connection.prepare("INSERT INTO areas (title) VALUES (?)");
+
+  for (const num of areaNumbers) {
+    insertStmt.run(`Конференц-зал ${num}`);
+  }
+
+  const finalCount = checkStmt.get().count;
+  console.log(chalk.green(`Добавлено ${finalCount} записей в таблицу areas`));
+}
+
+function fillTimeslots(): void {
+  const checkStmt = connection.prepare("SELECT COUNT(*) as count FROM timeslots");
+  if (checkStmt.get().count > 0) {
+    throw new Error("Таблица timeslots уже содержит данные");
+  }
+
+  const slotsData = [
+    ["09:00", "10:00"],
     ["10:00", "11:00"],
     ["11:00", "12:00"],
-    ["12:00", "13:00"],
+    ["13:00", "14:00"],
     ["14:00", "15:00"],
     ["15:00", "16:00"],
-    ["16:00", "18:00"],
+    ["16:00", "17:00"],
+    ["17:00", "18:00"],
   ];
 
-  for (const [start, end] of timeslots) {
-    if (!start || !end) {
-      continue;
-    }
+  const insertStmt = connection.prepare("INSERT INTO timeslots (start_time, end_time) VALUES (?, ?)");
 
-    await db
-      .insertInto("timeslots")
-      .values({
-        start,
-        end,
-      })
-      .execute();
+  for (const slot of slotsData) {
+    insertStmt.run(slot[0], slot[1]);
   }
 
-  const added = await db.selectFrom("timeslots").selectAll().execute();
-
-  console.log(
-    chalk.green(`✔ Было добавлено ${added.length} записей в timeslots`)
-  );
+  const finalCount = checkStmt.get().count;
+  console.log(chalk.green(`Добавлено ${finalCount} записей в таблицу timeslots`));
 }
 
-async function seedBookings() {
-  const existing = await db.selectFrom("bookings").selectAll().execute();
-
-  if (existing.length > 0) {
-    throw new Error("Таблица bookings уже содержит записи");
+function fillBookings(): void {
+  const checkStmt = connection.prepare("SELECT COUNT(*) as count FROM bookings");
+  if (checkStmt.get().count > 0) {
+    throw new Error("Таблица bookings уже содержит данные");
   }
 
-  // const userIdentificators = connection.prepare('select id from users').all()
-  // const startDates = faker.helpers.multiple(() => faker.date.past(), { count: 20 });
-  // const endDates = faker.helpers.multiple(() => faker.date.recent(), { count: 20 });
+  const users = connection.prepare("SELECT id FROM users").all() as { id: number }[];
+  const slots = connection.prepare("SELECT id FROM timeslots").all() as { id: number }[];
 
-  // const insertStatement = connection.prepare(
-  //     'insert into bookings (start, end, userId) values (?, ?, ?)',
-  // );
+  if (users.length === 0 || slots.length === 0) {
+    throw new Error("Невозможно создать бронирования: отсутствуют пользователи или временные слоты");
+  }
 
-  // for (const elementIx in userIdentificators) {
-  //     insertStatement.run(
-  //         startDates[elementIx]!.getTime(),
-  //         endDates[elementIx]!.getTime(),
-  //         userIdentificators[elementIx]!['id']
-  //     );
-  // }
+  const insertStmt = connection.prepare(
+    "INSERT INTO bookings (slot_id, user_id, booked_at) VALUES (?, ?, ?)"
+  );
 
-  // console.log(
-  //     chalk.green(
-  //         `✔ Было добавлено ${countStatement.all().length} записей в bookings`,
-  //     ),
-  // );
+  for (let i = 0; i < 25; i++) {
+    const randomUser = users[Math.floor(Math.random() * users.length)];
+    const randomSlot = slots[Math.floor(Math.random() * slots.length)];
+    const randomDate = faker.date.recent({ days: 30 });
+
+    insertStmt.run(randomSlot.id, randomUser.id, randomDate.toISOString());
+  }
+
+  const finalCount = checkStmt.get().count;
+  console.log(chalk.green(`Добавлено ${finalCount} записей в таблицу bookings`));
 }

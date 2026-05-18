@@ -1,61 +1,55 @@
-import * as v from 'valibot';
+import * as v from "valibot";
 
-export const resourceSchema = v.picklist(
-    ['/areas', '/bookings'],
-    'Неизвестный ресурс',
+export const validResources = v.picklist(
+  ["/areas", "/bookings", "/timeslots"],
+  "Недопустимый ресурс"
 );
 
-export const methodSchema = v.picklist(
-    ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    'Неподдерживаемый метод',
+export const httpMethods = v.picklist(
+  ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  "Неподдерживаемый HTTP метод"
 );
 
-export const pathParamsSchema = v.nullable(
-    v.object({
-        id: v.union([
-            v.pipe(v.number(), v.integer()),
-            v.pipe(v.string(), v.transform(Number), v.number(), v.integer()),
-        ]),
-    }),
+export const routeParams = v.nullable(
+  v.object({
+    id: v.union([
+      v.pipe(v.number(), v.integer()),
+      v.pipe(v.string(), v.transform(Number), v.number(), v.integer()),
+    ]),
+  })
 );
 
-const paginationSchema = v.object({
-    limit: v.optional(
-        v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(50)),
-    ),
-    offset: v.optional(v.pipe(v.number(), v.integer(), v.minValue(0))),
+const paginationShape = v.object({
+  limit: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(50))),
+  offset: v.optional(v.pipe(v.number(), v.integer(), v.minValue(0))),
 });
 
-const filterSchema = v.object({
-    filter: v.optional(v.string()),
+const filterShape = v.object({
+  filter: v.optional(v.string()),
+  search: v.optional(v.string()),
 });
 
-const sortingSchema = v.object({
-    sort: v.optional(v.string()),
+const sortShape = v.object({
+  sortBy: v.optional(v.string()),
+  order: v.optional(v.picklist(["asc", "desc"])),
 });
 
-export const queryParamsSchema = v.object({
-    ...paginationSchema.entries,
-    ...filterSchema.entries,
-    ...sortingSchema.entries,
+export const queryParamsShape = v.object({
+  ...paginationShape.entries,
+  ...filterShape.entries,
+  ...sortShape.entries,
 });
 
-export const paramsSchema = v.object({
-    pathParams: pathParamsSchema,
-    queryParams: queryParamsSchema,
+export const parsedRequestSchema = v.object({
+  resource: validResources,
+  method: httpMethods,
+  params: v.object({
+    path: routeParams,
+    query: queryParamsShape,
+  }),
+  body: v.nullable(v.looseObject({})),
 });
 
-export const parserOutputSchema = v.object({
-    resource: resourceSchema,
-    method: methodSchema,
-    params: paramsSchema,
-    payload: v.nullable(v.looseObject({})),
-});
-
-export type Resource = v.InferOutput<typeof resourceSchema>;
-
-export type Method = v.InferOutput<typeof methodSchema>;
-
-export type Params = v.InferOutput<typeof paramsSchema>;
-
-export type ParserOutput = Promise<v.InferOutput<typeof parserOutputSchema>>;
+export type HttpMethod = v.InferOutput<typeof httpMethods>;
+export type ValidResource = v.InferOutput<typeof validResources>;
+export type ParsedRequest = v.InferOutput<typeof parsedRequestSchema>;

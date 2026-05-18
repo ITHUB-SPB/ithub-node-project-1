@@ -1,67 +1,53 @@
-import chalk from 'chalk';
-import ora from 'ora';
+import chalk from "chalk";
+import ora from "ora";
 
-import { createTables, resetTables } from './ddl.js';
-import seedTables from './seed.js';
-import help from './help.js';
+import { initTables, truncateTables } from "./ddl.js";
+import fillTables from "./seed.js";
+import showHelp from "./help.js";
 
-const spinner = ora('Загрузка...').start();
-spinner.spinner = 'binary';
+const activitySpinner = ora("Выполнение операции...").start();
+activitySpinner.spinner = "dots12";
 
-export default function cli() {
-    const command = process.argv[2];
+export default function runCli(): void {
+  const cmd = process.argv[2];
 
-    if (command === 'create') {
-        try {
-            createTables(
-                process.argv.includes('--force') || process.argv.includes('-F'),
-            );
-
-            spinner.succeed(
-                chalk.green('Таблицы созданы (или уже присутствовали)'),
-            );
-        } catch (error) {
-            spinner.fail(
-                chalk.red(`Ошибка при создании таблиц: ${(error as Error).message}`),
-            );
-        }
-    } else if (command === 'reset') {
-        const tablesToReset = process.argv.slice(3);
-
-        try {
-            resetTables(tablesToReset);
-            spinner.stop();
-        } catch (error) {
-            spinner.fail(
-                chalk.red(`Ошибка при сбросе таблиц: ${(error as Error).message}`),
-            );
-        }
-    } else if (command === 'seed') {
-        const tablesToSeed = process.argv.slice(3);
-
-        try {
-            seedTables(tablesToSeed);
-            spinner.stop();
-        } catch (error) {
-            spinner.fail(
-                chalk.red(`Ошибка при наполнении таблиц: ${(error as Error).message}`),
-            );
-        }
-    } else if (command === 'help') {
-        const helpCommand = process.argv[3] || 'general';
-        try {
-            help(helpCommand);
-            spinner.stop();
-        } catch (error) {
-            spinner.fail(chalk.red(`Ошибка при вызове help: ${(error as Error).message}`));
-        }
-    } else {
-        spinner.fail(
-            chalk.red('Команда не существует. Запросите help для информации'),
-        );
+  if (cmd === "create") {
+    try {
+      const forceFlag = process.argv.includes("--force") || process.argv.includes("-f");
+      initTables(forceFlag);
+      activitySpinner.succeed(chalk.green("Таблицы успешно созданы"));
+    } catch (error) {
+      activitySpinner.fail(chalk.red(`Ошибка создания таблиц: ${(error as Error).message}`));
     }
+  } else if (cmd === "reset") {
+    const tablesToReset = process.argv.slice(3);
+    try {
+      truncateTables(tablesToReset);
+      activitySpinner.stop();
+    } catch (error) {
+      activitySpinner.fail(chalk.red(`Ошибка очистки таблиц: ${(error as Error).message}`));
+    }
+  } else if (cmd === "seed") {
+    const tablesToFill = process.argv.slice(3);
+    try {
+      fillTables(tablesToFill);
+      activitySpinner.stop();
+    } catch (error) {
+      activitySpinner.fail(chalk.red(`Ошибка заполнения таблиц: ${(error as Error).message}`));
+    }
+  } else if (cmd === "help") {
+    const helpTarget = process.argv[3] || "general";
+    try {
+      showHelp(helpTarget);
+      activitySpinner.stop();
+    } catch (error) {
+      activitySpinner.fail(chalk.red(`Ошибка отображения справки: ${(error as Error).message}`));
+    }
+  } else {
+    activitySpinner.fail(chalk.red(`Неизвестная команда: "${cmd}". Используйте "npm run db:help" для списка команд`));
+  }
 }
 
 setTimeout(() => {
-    cli();
-}, 1500);
+  runCli();
+}, 1000);

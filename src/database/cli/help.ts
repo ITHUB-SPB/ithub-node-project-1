@@ -1,94 +1,85 @@
-import chalk from 'chalk';
+import chalk from "chalk";
 
-const lightGray = chalk.hex('#C0C0C0');
-const lightBlue = chalk.hex('#B0E0E6');
-const pinkItalic = chalk.hex('#FFC0CB').italic;
-const gray = chalk.hex('#696969');
-const yellowItalic = chalk.yellow.italic;
-const green = chalk.green;
+const dimGray = chalk.hex("#A9A9A9");
+const skyBlue = chalk.hex("#87CEEB");
+const coralItalic = chalk.hex("#FF7F50").italic;
+const darkGray = chalk.hex("#555555");
+const amberItalic = chalk.yellow.italic;
+const limeGreen = chalk.green;
 
-export default function help(command: any) {
-    switch (command) {
-        case 'general':
-            console.log(
-                lightGray.bold(' Справка по командам:\n'),
-
-                lightBlue('Команда\t\tПараметры\t\t\tОписание\n'),
-
-                pinkItalic('db:help\t'),
-                gray('{create || reset || seed}\t'),
-                'Вывести справку по командам\n',
-
-                pinkItalic('db:create\t'),
-                gray('{-- --force || -- -F}\t\t'),
-                'Создание таблиц\n',
-
-                pinkItalic('db:reset\t'),
-                gray('{users || bookings}\t\t'),
-                'Сброс таблиц\n',
-
-                pinkItalic('db:seed\t'),
-                gray('{users || bookings}\t\t'),
-                'Наполнение таблиц фейковыми данными\n',
-            );
-            break;
-        case 'create':
-            console.log(
-                ' Использование:',
-                pinkItalic('db:create {flag}\n'),
-                gray('Команда создает таблицы в базе данных.\n\n'),
-
-                'Флаги (по желанию):\n',
-                yellowItalic('-- -F, -- --force'),
-                lightGray(
-                    '  Создать таблицу, удалив ранее существующие таблицы\n\n',
-                ),
-
-                'Примеры использования:\n',
-                green('  db:create\n'),
-                green('  db:create -- -F\n'),
-                green('  db:create -- --force\n'),
-            );
-            break;
-        case 'reset':
-            console.log(
-                ' Использование:',
-                pinkItalic('db:reset {args}\n'),
-                gray('Команда сбрасывает таблицу в базе данных.\n'),
-                gray('Аргументы перечисляются через пробел.\n\n'),
-
-                'Аргументы (по желанию):\n',
-                yellowItalic('users'),
-                lightGray('     Сбросить таблицу users\n'),
-                yellowItalic('bookings'),
-                lightGray('  Сбросить таблицу bookings\n\n'),
-
-                'Примеры использования:\n',
-                green('  db:reset\n'),
-                green('  db:reset users\n'),
-                green('  db:reset bookings users\n'),
-            );
-            break;
-        case 'seed':
-            console.log(
-                ' Использование:',
-                pinkItalic('db:seed {args}\n'),
-                gray('Команда наполняет таблицу фейковыми данными.\n'),
-                gray('Аргументы перечисляются через пробел.\n\n'),
-
-                'Аргументы (по желанию):\n',
-                yellowItalic('users'),
-                lightGray('     Наполнить таблицу users\n'),
-                yellowItalic('bookings'),
-                lightGray('  Наполнить таблицу bookings\n\n'),
-
-                'Примеры использования:\n',
-                green('  db:seed\n'),
-                green('  db:seed users\n'),
-                green('  db:seed bookings users\n'),
-            );
-            break;
-        default:
-            throw new Error('Такой команды не существует.');
-    }
+export default function showHelp(commandName: string): void {
+  switch (commandName) {
+    case "general":
+      console.log(
+        dimGray.bold(" Доступные команды:\n"),
+        skyBlue("Команда\t\tАргументы\t\t\tОписание\n"),
+        coralItalic("db:help\t"),
+        darkGray("{create || reset || seed}\t"),
+        "Показать справку по командам\n",
+        coralItalic("db:create\t"),
+        darkGray("{--force || -f}\t\t"),
+        "Создание структуры БД\n",
+        coralItalic("db:reset\t"),
+        darkGray("{users || bookings}\t\t"),
+        "Очистка данных из таблиц\n",
+        coralItalic("db:seed\t"),
+        darkGray("{users || bookings}\t\t"),
+        "Заполнение таблиц тестовыми данными\n"
+      );
+      break;
+    case "create":
+      console.log(
+        " Использование:",
+        coralItalic("db:create [флаги]\n"),
+        darkGray("Создаёт все необходимые таблицы в базе данных.\n\n"),
+        "Флаги (опционально):\n",
+        amberItalic("--force, -f"),
+        dimGray("  Принудительно удалить существующие таблицы перед созданием\n\n"),
+        "Примеры:\n",
+        limeGreen("  npm run db:create\n"),
+        limeGreen("  npm run db:create --force\n"),
+        limeGreen("  npm run db:create -f\n")
+      );
+      break;
+    case "reset":
+      console.log(
+        " Использование:",
+        coralItalic("db:reset [таблицы...]\n"),
+        darkGray("Очищает указанные таблицы (удаляет все записи).\n"),
+        darkGray("Если таблицы не указаны — очищаются все.\n\n"),
+        "Доступные таблицы:\n",
+        amberItalic("users"),
+        dimGray("     Очистить таблицу пользователей\n"),
+        amberItalic("bookings"),
+        dimGray("  Очистить таблицу бронирований\n"),
+        amberItalic("areas"),
+        dimGray("     Очистить таблицу помещений\n"),
+        amberItalic("timeslots"),
+        dimGray("  Очистить таблицу временных слотов\n\n"),
+        "Примеры:\n",
+        limeGreen("  npm run db:reset\n"),
+        limeGreen("  npm run db:reset users\n"),
+        limeGreen("  npm run db:reset bookings users\n")
+      );
+      break;
+    case "seed":
+      console.log(
+        " Использование:",
+        coralItalic("db:seed [таблицы...]\n"),
+        darkGray("Заполняет указанные таблицы сгенерированными данными.\n"),
+        darkGray("Если таблицы не указаны — наполняются все.\n\n"),
+        "Доступные таблицы:\n",
+        amberItalic("users"),
+        dimGray("     Сгенерировать пользователей\n"),
+        amberItalic("bookings"),
+        dimGray("  Сгенерировать бронирования\n\n"),
+        "Примеры:\n",
+        limeGreen("  npm run db:seed\n"),
+        limeGreen("  npm run db:seed users\n"),
+        limeGreen("  npm run db:seed bookings users\n")
+      );
+      break;
+    default:
+      throw new Error(`Неизвестная команда: ${commandName}`);
+  }
 }
