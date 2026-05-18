@@ -27,3 +27,11 @@ export const areasQuerySchema = v.object({
     )
   ),
 });
+
+export const areasResponseSchema = v.object({
+  statusCode: v.literal(200),
+  data: v.object({
+    areas: v.array(v.any()),
+    totalItems: v.number(),
+  }),
+});

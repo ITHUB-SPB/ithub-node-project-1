@@ -1,5 +1,5 @@
 import { Kysely, SqliteDialect } from 'kysely';
-import SQLite from 'better-sqlite3'
+import SQLite from 'better-sqlite3';
 import type { Database } from './interface.js';
 
 const isTestingEnv = process.env['VITEST'];
@@ -10,8 +10,9 @@ const connection = isTestingEnv
 
 const dialect = new SqliteDialect({
     database: connection
-})
+});
 
-const db = new Kysely<Database>({ dialect })
+const db = new Kysely<Database>({ dialect });
 
 export default db;
+export { connection };

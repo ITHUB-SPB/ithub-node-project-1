@@ -1,28 +1,52 @@
 <main class="page">
+  <a class="brand" href="/" aria-label="Meeting Mate">
+    <svg width="210" height="90" viewBox="0 0 221 97" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <rect width="221" height="97" fill="url(#pattern0_50_73)" />
+      <defs>
+        <pattern id="pattern0_50_73" patternContentUnits="objectBoundingBox" width="1" height="1">
+          <use xlink:href="#image0_50_73" transform="matrix(0.00196078 0 0 0.00446735 0 -0.000343643)" />
+        </pattern>
+      </defs>
+    </svg>
+  </a>
+
   <div class="room-layout">
     <section>
-      <div class="hero-photo"></div>
+      <div class="hero-photo" aria-label="Комната {{room.title}}"></div>
       <h2 class="slots-title">Занятые слоты</h2>
       <div class="slots" id="bookedSlots">
         {{#each room.bookings}}
-        <div class="slot-card">{{this.start}} - {{this.end}}</div>
+        <article class="slot-card">
+          <h3>{{this.start}} - {{this.end}}</h3>
+          <p><strong>Организатор: </strong> Не указан</p>
+        </article>
+        {{else}}
+        <p>Нет активных бронирований</p>
         {{/each}}
       </div>
     </section>
 
-    <section class="booking-panel">
+    <section class="booking-panel" aria-label="Форма бронирования">
       <form id="bookingForm" class="booking-form">
         <div class="form-row">
-          <label for="roomName">Комната</label>
-          <input id="roomName" type="text" value="{{room.title}}" disabled />
-          <input type="hidden" id="roomId" value="{{room.id}}" />
+          <label for="topic">Тема</label>
+          <input id="topic" name="topic" type="text" />
         </div>
-
         <div class="form-row">
-          <label for="timeslot">Временной слот</label>
-          <select id="timeslot" required>
-            <option value="">Загрузка слотов...</option>
-          </select>
+          <label for="organizer">Организатор</label>
+          <input id="organizer" name="organizer" type="text" />
+        </div>
+        <div class="form-row--split">
+          <div class="form-row">
+            <label for="start">Начало</label>
+            <select id="timeslot" name="timeslotId" required>
+              <option value="">Загрузка слотов...</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="end">Конец</label>
+            <input id="end" name="end" type="text" disabled placeholder="Выбирается автоматически" />
+          </div>
         </div>
 
         <div id="errorMessage" class="error-message" style="color: red; display: none;"></div>
@@ -37,8 +61,9 @@
 </main>
 
 <script>
-  const roomId = document.getElementById('roomId').value;
+  const roomId = {{room.id}};
   const timeslotSelect = document.getElementById('timeslot');
+  const endInput = document.getElementById('end');
   const errorDiv = document.getElementById('errorMessage');
   const form = document.getElementById('bookingForm');
 
@@ -52,6 +77,8 @@
         const option = document.createElement('option');
         option.value = slot.id;
         option.textContent = `${slot.start} - ${slot.end}`;
+        option.dataset.start = slot.start;
+        option.dataset.end = slot.end;
         timeslotSelect.appendChild(option);
       });
     } catch (error) {
@@ -59,13 +86,37 @@
     }
   }
 
+  timeslotSelect.addEventListener('change', () => {
+    const selectedOption = timeslotSelect.options[timeslotSelect.selectedIndex];
+    if (selectedOption && selectedOption.dataset.end) {
+      endInput.value = selectedOption.dataset.end;
+    } else {
+      endInput.value = '';
+    }
+  });
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     errorDiv.style.display = 'none';
 
+    const topic = document.getElementById('topic').value;
+    const organizer = document.getElementById('organizer').value;
     const timeslotId = timeslotSelect.value;
+
     if (!timeslotId) {
       errorDiv.textContent = 'Пожалуйста, выберите временной слот';
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    if (!topic) {
+      errorDiv.textContent = 'Пожалуйста, укажите тему встречи';
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    if (!organizer) {
+      errorDiv.textContent = 'Пожалуйста, укажите организатора';
       errorDiv.style.display = 'block';
       return;
     }
@@ -76,7 +127,9 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           roomId: Number(roomId),
-          timeslotId: Number(timeslotId)
+          timeslotId: Number(timeslotId),
+          topic: topic,
+          organizer: organizer
         })
       });
 
