@@ -58,7 +58,7 @@ export class Timeslot {
     }
 
     get end() {
-        return this.#end; // либо this.getEnd()
+        return this.#end; 
     }
 
     get isAM() {

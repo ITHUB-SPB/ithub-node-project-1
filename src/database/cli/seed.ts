@@ -2,7 +2,6 @@ import chalk from "chalk";
 import db from "../connection.js";
 import SQLite from 'better-sqlite3';
 
-// Создаем прямое соединение для seed (better-sqlite3)
 const connection = new SQLite('db.sqlite3');
 
 export default function seedTables(tables: string[]) {
