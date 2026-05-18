@@ -2,6 +2,8 @@ import { fakerRU as faker } from "@faker-js/faker";
 import db from "../connection.js";
 import chalk from "chalk";
 
+faker.seed(42)
+
 export default async function seedTables(tables: string[]) {
     if (tables.length === 0) {
         await seedTimeslots();

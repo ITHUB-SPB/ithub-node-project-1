@@ -5,7 +5,7 @@ import { areaRoutes } from "./api/area/area.router.js";
 import { bookingRoutes } from "./api/booking/booking.router.js";
 import { timeslotRoutes } from "./api/timeslot/timeslot.router.js";
 
-const app = express();
+export const app = express();
 
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
