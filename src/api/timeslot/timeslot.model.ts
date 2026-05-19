@@ -93,6 +93,14 @@ export class Timeslot {
         this.setEnd(newDate);
     }
 
+    get AM(): boolean {
+        return this.#end.getHours() <= 12
+    }
+
+    get PM(): boolean {
+        return this.#start.getHours() >= 12
+    }
+
     toMapped() {
         return {
             start: this.#start.valueOf() / 1000,

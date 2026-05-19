@@ -1,11 +1,19 @@
 import { type Request, type Response } from 'express';
 import TimeslotService from './timeslot.service.js';
-import * as schema from './timeslot.schema.js';
+
+type QueryParams = {
+    timeOfDay?: string | undefined
+}
 
 export default class TimeslotController {
     static async findAll(request: Request, response: Response) {
         try {
-            const timeslots = await TimeslotService.findAll()
+            const timeOfDay = request.query['timeOfDay'] as string | undefined
+            const queryParams: QueryParams = {
+                timeOfDay: timeOfDay
+            }
+
+            const timeslots = await TimeslotService.findAll(queryParams)
 
             response.statusCode = 200
             return response.json({

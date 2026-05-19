@@ -2,7 +2,7 @@ import express, { type Request, type Response } from 'express';
 import { engine } from 'express-handlebars';
 import { bookingRoutes } from './api/booking/booking.router.js';
 import { timeslotRoutes } from './api/timeslot/timeslot.router.js';
-import { areaRoutes } from './api/area/area.router.js'
+import { areaRoutes } from './api/area/area.router.js';
 
 
 const app = express()
@@ -21,8 +21,7 @@ const rooms = [
     { id: 3, title: "B-200", capacity: '5-10' }
 ]
 
-app.get('/', (request: Request, response: Response) => {
-    // работать ajax-запросами
+app.get('/', (_request: Request, response: Response) => {
     response.render('index', { rooms })
 })
 
@@ -30,7 +29,6 @@ app.get('/rooms/:roomId', (request: Request, response: Response) => {
     const roomId = request.params["roomId"]
     const room = rooms.find(room => room.id === Number(roomId))
 
-    // работать классически
     response.render('detail', { room })
 })
 
@@ -38,7 +36,6 @@ app.get('/booking/:roomId', (request: Request, response: Response) => {
     const roomId = request.params["roomId"]
     const room = rooms.find(room => room.id === Number(roomId))
 
-    // работать классически
     response.render('booking', { room })
 })
 
