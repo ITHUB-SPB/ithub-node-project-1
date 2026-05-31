@@ -1,33 +1,29 @@
-import * as v from "valibot";
-import db from "../../database/connection.js";
-import {
-  areasSchema,
-  type AreasSchema,
-  type AreasQuerySchema,
-} from "./area.schema.js";
+import type { Kysely } from "kysely";
+import type { Database } from "../../database/interface.js";
+import type { Params } from "../lib/schema.js";
 
 export default class AreaService {
-  static async findAll(queryParams: AreasQuerySchema): Promise<AreasSchema> {
-    let statement = db.selectFrom("areas").selectAll().orderBy("areas.title");
+  constructor(private db: Kysely<Database>) {}
 
-    if (queryParams.limit) {
-      const offset = queryParams.offset || 0;
-      statement = statement.limit(queryParams.limit).offset(offset);
-    }
+  async findAll(params: Params) {
+    const filter = params.queryParams.filter ?? "";
+    const limit = params.queryParams.limit ?? 10;
+    const offset = params.queryParams.offset ?? 0;
 
-    if (queryParams.filter?.length) {
-      statement = statement.where("areas.id", "in", queryParams.filter);
+    let query = this.db
+      .selectFrom("areas")
+      .selectAll()
+      .orderBy("title", "asc");
 
-      if (queryParams.filter) {
-        // TODO перенести это действие в валибот
-        const ids = queryParams.filter.split(",").map(Number);
-        statement = statement.where("areas.id", "in", ids);
+    if (filter) {
+      const ids = filter.split(",").map(Number).filter((n) => !isNaN(n));
+      if (ids.length > 0) {
+        query = query.where("id", "in", ids);
       }
-
-      // const statement = connection.prepare('select * from areas order by title')
-      const areas = await statement.execute();
-
-      return v.parse(areasSchema, areas);
     }
+
+    query = query.limit(limit).offset(offset);
+
+    return await query.execute();
   }
 }

@@ -1,30 +1,39 @@
-import db from "../../database/connection.js";
+import type { Kysely } from "kysely";
+import type { Database } from "../../database/interface.js";
 
 export default class BookingService {
-    static async findAll(params?: {
-        limit?: number,
-        offset?: number,
-    }) {
-        let query = db.selectFrom('bookings').selectAll()
+  constructor(private db: Kysely<Database>) {}
 
-        if (params?.limit !== undefined) {
-            query = query.limit(params.limit)
-        }
+  async findAll(params?: { limit?: number; offset?: number }) {
+    let query = this.db.selectFrom("bookings").selectAll();
 
-        if (params?.offset !== undefined) {
-            query = query.offset(params.offset)
-        }
-
-        return await query.execute()
-
-        // return await db.selectFrom('bookings').selectAll().execute()
+    if (params?.limit !== undefined) {
+      query = query.limit(params.limit);
+    }
+    if (params?.offset !== undefined) {
+      query = query.offset(params.offset);
     }
 
-    static async create(payload: any) {
-        return await db.insertInto('bookings').values(payload).returningAll().executeTakeFirst()
-    }
+    return await query.execute();
+  }
 
-    static async delete(id: number) {
-        await db.deleteFrom('bookings').where('id', '=', id).execute()
-    }
+  async create(payload: any) {
+    return await this.db
+      .insertInto("bookings")
+      .values(payload)
+      .returningAll()
+      .executeTakeFirst();
+  }
+
+  async delete(id: number) {
+    await this.db.deleteFrom("bookings").where("id", "=", id).execute();
+  }
+
+  async findOne(id: number) {
+    return await this.db
+      .selectFrom("bookings")
+      .selectAll()
+      .where("id", "=", id)
+      .executeTakeFirst() ?? null;
+  }
 }
