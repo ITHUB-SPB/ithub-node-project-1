@@ -1,165 +1,312 @@
-import { assert, expect, test, describe, afterAll, beforeAll } from "vitest";
-import * as v from "valibot";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+
+const dbMocks = vi.hoisted(() => ({
+    selectExecute: vi.fn(),
+    selectExecuteTakeFirst: vi.fn(),
+    selectLimit: vi.fn(),
+    selectOffset: vi.fn(),
+    selectWhere: vi.fn(),
+    selectOrderBy: vi.fn(),
+    selectSelectAll: vi.fn(),
+    selectFrom: vi.fn(),
+    insertExecuteTakeFirst: vi.fn(),
+    insertReturningAll: vi.fn(),
+    insertValues: vi.fn(),
+    insertInto: vi.fn(),
+    deleteExecute: vi.fn(),
+    deleteWhere: vi.fn(),
+    deleteFrom: vi.fn(),
+}));
+
+vi.mock("../../src/database/connection.js", () => ({
+    default: {
+        selectFrom: dbMocks.selectFrom,
+        insertInto: dbMocks.insertInto,
+        deleteFrom: dbMocks.deleteFrom,
+    },
+}));
 
 import AreaService from "../../src/api/area/area.service";
-import { areasSchema } from "../../src/api/area/area.schema";
+import BookingService from "../../src/api/booking/booking.service";
+import TimeslotService from "../../src/api/timeslot/timeslot.service";
 
-import { createTables } from "../../src/database/cli/ddl";
-import seedTables from "../../src/database/cli/seed";
-import db from "../../src/database/connection";
+beforeEach(() => {
+    vi.clearAllMocks();
 
+    dbMocks.selectExecute.mockResolvedValue([]);
+    dbMocks.selectExecuteTakeFirst.mockResolvedValue(undefined);
 
-beforeAll(async () => {
-  await createTables(false);
-  await seedTables(["timeslots", "areas", "bookings"]);
+    dbMocks.selectLimit.mockReturnValue({
+        offset: dbMocks.selectOffset,
+    });
+    dbMocks.selectOffset.mockReturnValue({
+        where: dbMocks.selectWhere,
+        execute: dbMocks.selectExecute,
+    });
+    dbMocks.selectWhere.mockReturnValue({
+        where: dbMocks.selectWhere,
+        execute: dbMocks.selectExecute,
+        executeTakeFirst: dbMocks.selectExecuteTakeFirst,
+    });
+    dbMocks.selectOrderBy.mockReturnValue({
+        limit: dbMocks.selectLimit,
+        where: dbMocks.selectWhere,
+        execute: dbMocks.selectExecute,
+    });
+    dbMocks.selectSelectAll.mockReturnValue({
+        orderBy: dbMocks.selectOrderBy,
+        where: dbMocks.selectWhere,
+        execute: dbMocks.selectExecute,
+    });
+    dbMocks.selectFrom.mockReturnValue({
+        selectAll: dbMocks.selectSelectAll,
+        innerJoin: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+                where: vi.fn().mockReturnValue({
+                    execute: dbMocks.selectExecute,
+                }),
+            }),
+        }),
+        select: vi.fn().mockReturnValue({
+            where: vi.fn().mockReturnValue({
+                execute: dbMocks.selectExecute,
+            }),
+        }),
+    });
+
+    dbMocks.insertReturningAll.mockReturnValue({
+        executeTakeFirst: dbMocks.insertExecuteTakeFirst,
+    });
+    dbMocks.insertValues.mockReturnValue({
+        returningAll: dbMocks.insertReturningAll,
+    });
+    dbMocks.insertInto.mockReturnValue({
+        values: dbMocks.insertValues,
+    });
+
+    dbMocks.deleteWhere.mockReturnValue({
+        execute: dbMocks.deleteExecute,
+    });
+    dbMocks.deleteFrom.mockReturnValue({
+        where: dbMocks.deleteWhere,
+    });
 });
 
-afterAll(async () => {
-  await db.schema.dropTable("bookings").execute();
-  await db.schema.dropTable("timeslots").execute();
-  await db.schema.dropTable("areas").execute();
+describe("AreaService.findAll", () => {
+    test("возвращает список помещений", async () => {
+        const areas = [
+            {
+                id: 1,
+                title: "Помещение 1",
+                capacity: 10,
+                wifi: 1,
+                board: 0,
+                plasma: 1,
+            },
+        ];
+
+        dbMocks.selectExecute.mockResolvedValue(areas);
+
+        const result = await AreaService.findAll({});
+
+        expect(result).toEqual(areas);
+        expect(dbMocks.selectFrom).toHaveBeenCalledWith("areas");
+        expect(dbMocks.selectOrderBy).toHaveBeenCalledWith("areas.title");
+    });
+
+    test("добавляет limit и offset", async () => {
+        await AreaService.findAll({ limit: 2, offset: 3 });
+
+        expect(dbMocks.selectLimit).toHaveBeenCalledWith(2);
+        expect(dbMocks.selectOffset).toHaveBeenCalledWith(3);
+    });
+
+    test("добавляет фильтры", async () => {
+        await AreaService.findAll({
+            filter: [1, 2],
+            capacity: 8,
+            wifi: "1",
+            board: "1",
+            plasma: "1",
+        });
+
+        expect(dbMocks.selectWhere).toHaveBeenNthCalledWith(1, "areas.id", "in", [
+            1, 2,
+        ]);
+        expect(dbMocks.selectWhere).toHaveBeenNthCalledWith(
+            2,
+            "areas.capacity",
+            ">=",
+            8,
+        );
+        expect(dbMocks.selectWhere).toHaveBeenNthCalledWith(
+            3,
+            "areas.wifi",
+            "=",
+            1,
+        );
+        expect(dbMocks.selectWhere).toHaveBeenNthCalledWith(
+            4,
+            "areas.board",
+            "=",
+            1,
+        );
+        expect(dbMocks.selectWhere).toHaveBeenNthCalledWith(
+            5,
+            "areas.plasma",
+            "=",
+            1,
+        );
+    });
 });
 
-describe("Вывод списка помещений", () => {
-  test("Вывод без фильтров", async () => {
-    const expected = [
-      {
-        id: 6,
-        title: "Помещение 12",
-        capacity: 5,
-        wifi: 1,
-        board: 0,
-        plasma: 0,
-      },
-      {
-        id: 4,
-        title: "Помещение 120",
-        capacity: 8,
-        wifi: 1,
-        board: 0,
-        plasma: 1,
-      },
-      {
-        id: 8,
-        title: "Помещение 121",
-        capacity: 10,
-        wifi: 1,
-        board: 1,
-        plasma: 1,
-      },
-      {
-        id: 9,
-        title: "Помещение 142",
-        capacity: 19,
-        wifi: 1,
-        board: 0,
-        plasma: 1,
-      },
-      {
-        id: 3,
-        title: "Помещение 147",
-        capacity: 7,
-        wifi: 0,
-        board: 1,
-        plasma: 1,
-      },
-      {
-        id: 7,
-        title: "Помещение 174",
-        capacity: 17,
-        wifi: 1,
-        board: 1,
-        plasma: 0,
-      },
-      {
-        id: 2,
-        title: "Помещение 191",
-        capacity: 5,
-        wifi: 1,
-        board: 0,
-        plasma: 1,
-      },
-      {
-        id: 5,
-        title: "Помещение 32",
-        capacity: 11,
-        wifi: 0,
-        board: 1,
-        plasma: 0,
-      },
-      {
-        id: 10,
-        title: "Помещение 5",
-        capacity: 11,
-        wifi: 0,
-        board: 1,
-        plasma: 0,
-      },
-      {
-        id: 1,
-        title: "Помещение 75",
-        capacity: 20,
-        wifi: 0,
-        board: 1,
-        plasma: 1,
-      },
-    ];
+describe("AreaService.findById", () => {
+    test("возвращает помещение по id", async () => {
+        const area = {
+            id: 2,
+            title: "Помещение 2",
+            capacity: 12,
+            wifi: 1,
+            board: 1,
+            plasma: 0,
+        };
 
-    const areas = await AreaService.findAll({});
+        dbMocks.selectExecuteTakeFirst.mockResolvedValue(area);
 
-    const parseResult = v.safeParse(areasSchema, areas);
+        const result = await AreaService.findById(2);
 
-    expect(parseResult.success).toBe(true);
+        expect(result).toEqual(area);
+        expect(dbMocks.selectWhere).toHaveBeenCalledWith("id", "=", 2);
+    });
 
-    expect(parseResult.output).toHaveLength(10);
+    test("выбрасывает ошибку если помещения нет", async () => {
+        dbMocks.selectExecuteTakeFirst.mockResolvedValue(undefined);
 
-    for (const o of expected) {
-      expect(parseResult.output).toContainEqual(o);
-    }
-  });
+        await expect(AreaService.findById(999)).rejects.toThrow(
+            "Комната не найдена",
+        );
+    });
+});
 
-  test("Фильтрация по вместимости", async () => {
-    const expected = [
-      {
-        id: 9,
-        title: "Помещение 142",
-        capacity: 19,
-        wifi: 1,
-        board: 0,
-        plasma: 1,
-      },
-      {
-        id: 7,
-        title: "Помещение 174",
-        capacity: 17,
-        wifi: 1,
-        board: 1,
-        plasma: 0,
-      },
-      {
-        id: 1,
-        title: "Помещение 75",
-        capacity: 20,
-        wifi: 0,
-        board: 1,
-        plasma: 1,
-      },
-    ];
+describe("BookingService.delete", () => {
+    test("удаляет бронирование по id", async () => {
+        await BookingService.delete(4);
 
-    const queryParams = {
-      capacity: 17,
-    };
+        expect(dbMocks.deleteFrom).toHaveBeenCalledWith("bookings");
+        expect(dbMocks.deleteWhere).toHaveBeenCalledWith("id", "=", 4);
+        expect(dbMocks.deleteExecute).toHaveBeenCalled();
+    });
+});
 
-    const areas = await AreaService.findAll(queryParams);
+describe("BookingService.create", () => {
+    test("создает бронирование", async () => {
+        const booking = {
+            id: 1,
+            timeslotId: 2,
+            createdAt: 100,
+        };
 
-    const parseResult = v.safeParse(areasSchema, areas);
+        dbMocks.insertExecuteTakeFirst.mockResolvedValue(booking);
 
-    expect(parseResult.success).toBe(true);
+        const payload = {
+            timeslotId: 2,
+            createdAt: 100,
+        };
 
-    expect(parseResult.output).toHaveLength(3);
+        const result = await BookingService.create(payload);
 
-    for (const o of expected) {
-      expect(parseResult.output).toContainEqual(o);
-    }
-  });
+        expect(dbMocks.insertInto).toHaveBeenCalledWith("bookings");
+        expect(dbMocks.insertValues).toHaveBeenCalledWith(payload);
+        expect(result).toEqual(booking);
+    });
+});
+
+describe("BookingService.findAll", () => {
+    test("возвращает все бронирования", async () => {
+        const bookings = [
+            {
+                id: 1,
+                areaId: 1,
+                timeslotId: 2,
+                title: "Встреча",
+                username: "ivan",
+                createdAt: 100,
+            },
+        ];
+
+        dbMocks.selectExecute.mockResolvedValue(bookings);
+
+        const result = await BookingService.findAll();
+
+        expect(result).toEqual(bookings);
+    });
+
+    test("добавляет limit и offset", async () => {
+        const bookingsQuery = {
+            execute: dbMocks.selectExecute,
+            limit: vi.fn(),
+            offset: vi.fn(),
+        };
+
+        bookingsQuery.limit.mockReturnValue(bookingsQuery);
+        bookingsQuery.offset.mockReturnValue(bookingsQuery);
+
+        dbMocks.selectFrom.mockReturnValue({
+            selectAll: vi.fn().mockReturnValue(bookingsQuery),
+            innerJoin: vi.fn().mockReturnValue({
+                select: vi.fn().mockReturnValue({
+                    where: vi.fn().mockReturnValue({
+                        execute: dbMocks.selectExecute,
+                    }),
+                }),
+            }),
+            select: vi.fn().mockReturnValue({
+                where: vi.fn().mockReturnValue({
+                    execute: dbMocks.selectExecute,
+                }),
+            }),
+        });
+
+        await BookingService.findAll({ limit: 5, offset: 10 });
+
+        expect(bookingsQuery.limit).toHaveBeenCalledWith(5);
+        expect(bookingsQuery.offset).toHaveBeenCalledWith(10);
+    });
+});
+
+describe("TimeslotService.findAll", () => {
+    test("возвращает все слоты", async () => {
+        const slots = [
+            { id: 1, start: "10:00", end: "11:00" },
+            { id: 2, start: "15:00", end: "16:00" },
+        ];
+
+        dbMocks.selectExecute.mockResolvedValue(slots);
+
+        const result = await TimeslotService.findAll();
+
+        expect(result).toEqual(slots);
+    });
+
+    test("фильтрует слоты AM", async () => {
+        dbMocks.selectExecute.mockResolvedValue([
+            { id: 1, start: "10:00", end: "11:00" },
+            { id: 2, start: "12:00", end: "13:00" },
+        ]);
+
+        const result = await TimeslotService.findAll("AM");
+
+        expect(result).toEqual([{ id: 1, start: "10:00", end: "11:00" }]);
+    });
+
+    test("фильтрует слоты PM", async () => {
+        dbMocks.selectExecute.mockResolvedValue([
+            { id: 1, start: "11:00", end: "12:00" },
+            { id: 2, start: "15:00", end: "16:00" },
+        ]);
+
+        const result = await TimeslotService.findAll("PM");
+
+        expect(result).toEqual([{ id: 2, start: "15:00", end: "16:00" }]);
+    });
 });
