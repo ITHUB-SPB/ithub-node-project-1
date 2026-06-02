@@ -5,66 +5,60 @@ import BookingService from "./booking.service.js";
 import * as schema from "./booking.schema.js";
 
 export default class BookingController {
-    static async find(request: Request, response: Response): Promise<Response> {
-        const bookings = await BookingService.findAll();
+static async find(_request: Request, response: Response): Promise<Response> {
+    const bookings = await BookingService.findAll();
 
-        const data = {
-            bookings: bookings,
-        };
+    const data = {
+      bookings: bookings,
+    };
 
-        return response.status(200).json(data);
+    return response.status(200).json(data);
+  }
+
+  static async create(request: Request, response: Response): Promise<Response> {
+    try {
+      const payload = v.parse(schema.newBookingInSchema, request.body);
+
+      const createdBooking = await BookingService.create({
+        title: payload.title,
+        username: payload.username,
+        timeslotId: payload.timeslotId,
+        createdAt: Math.floor(Date.now() / 1000),
+      });
+
+      return response.status(201).json({
+        booking: createdBooking,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+
+      return response.status(400).json({
+        error: message,
+      });
     }
+  }
 
-    static async create(
-        request: Request,
-        response: Response,
-    ): Promise<Response> {
-        try {
-            const payload = v.parse(schema.newBookingInSchema, request.body);
+  static async delete(request: Request, response: Response): Promise<Response> {
+    try {
+      const id = v.parse(schema.bookingDeleteSchema, {
+        params: {
+          pathParams: {
+            id: Number(request.params["id"]),
+          },
+        },
+      }).params.pathParams.id;
 
-            const createdBooking = await BookingService.create({
-                timeslotId: payload.timeslotId,
-                createdAt: Math.floor(Date.now() / 1000),
-            });
+      await BookingService.delete(id);
 
-            return response.status(201).json({
-                booking: createdBooking,
-            });
-        } catch (error) {
-            const message =
-                error instanceof Error ? error.message : String(error);
+      return response.status(204).json({
+        message: `Запись с id ${id} была удалена`,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
 
-            return response.status(400).json({
-                error: message,
-            });
-        }
+      return response.status(400).json({
+        error: message,
+      });
     }
-
-    static async delete(
-        request: Request,
-        response: Response,
-    ): Promise<Response> {
-        try {
-            const id = v.parse(schema.bookingDeleteSchema, {
-                params: {
-                    pathParams: {
-                        id: Number(request.params["id"]),
-                    },
-                },
-            }).params.pathParams.id;
-
-            await BookingService.delete(id);
-
-            return response.status(204).json({
-                message: `Запись с id ${id} была удалена`,
-            });
-        } catch (error) {
-            const message =
-                error instanceof Error ? error.message : String(error);
-
-            return response.status(400).json({
-                error: message,
-            });
-        }
-    }
+  }
 }
