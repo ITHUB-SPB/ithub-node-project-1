@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("show booking form", async ({ page }) => {
-  await page.goto("http://localhost:3000/details/8");
+  await page.goto("/details/8");
 
   const bookingLink = page
     .locator("css=a", { hasText: /Забронировать/ })

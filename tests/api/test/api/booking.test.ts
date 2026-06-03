@@ -1,9 +1,9 @@
-import { describe, expect, it, beforeAll, afterAll, beforeEach } from 'vitest';
+import { describe, expect, it, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
-import { app } from '../../src/main.js';
-import db from '../../src/database/connection.js';
-import { createTables } from '../../src/database/cli/ddl.js';
-import seedTables from '../../src/database/cli/seed.js';
+import { app } from 'C:/Users/User/OneDrive/Desktop/ithub-node-project-1/src/main.js';
+import db from 'C:/Users/User/OneDrive/Desktop/ithub-node-project-1/src/database/connection.js';
+import { createTables } from '../../src/commands/ddl.js';
+import seedTables from '../../src/commands/seed.js';
 import BookingService from '../../src/api/booking/booking.service.js';
 
 describe('Booking API', () => {
@@ -46,6 +46,7 @@ describe('Booking API', () => {
 
     it('должен удалить существующее бронирование и вернуть 204', async () => {
       await request(app).delete(`/api/bookings/${testBookingId}`).expect(204);
+
       const all = await BookingService.findAll();
       expect(all.find(b => b.id === testBookingId)).toBeUndefined();
     });
@@ -60,7 +61,7 @@ describe('Booking API', () => {
       expect(response.body.error).toMatch(/положительное/i);
     });
 
-    it('должен вернуть 204 при попытке удалить несуществующую запись', async () => {
+    it('должен вернуть 204 при попытке удалить несуществующую запись (id не найден)', async () => {
       await request(app).delete('/api/bookings/999999').expect(204);
     });
   });
