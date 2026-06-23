@@ -131,25 +131,49 @@ async function seedBookings() {
         throw new Error("Таблица bookings уже содержит записи");
     }
 
-    // const userIdentificators = connection.prepare('select id from users').all()
-    // const startDates = faker.helpers.multiple(() => faker.date.past(), { count: 20 });
-    // const endDates = faker.helpers.multiple(() => faker.date.recent(), { count: 20 });
+    // Бронирования связаны по внешним ключам с помещениями и слотами,
+    // поэтому сначала получаем существующие id из этих таблиц
+    const areas = await db.selectFrom("areas").select("id").execute();
+    const timeslots = await db.selectFrom("timeslots").select("id").execute();
 
-    // const insertStatement = connection.prepare(
-    //     'insert into bookings (start, end, userId) values (?, ?, ?)',
-    // );
+    if (areas.length === 0 || timeslots.length === 0) {
+        throw new Error(
+            "Сначала наполните таблицы areas и timeslots (npm run db:seed areas timeslots)",
+        );
+    }
 
-    // for (const elementIx in userIdentificators) {
-    //     insertStatement.run(
-    //         startDates[elementIx]!.getTime(),
-    //         endDates[elementIx]!.getTime(),
-    //         userIdentificators[elementIx]!['id']
-    //     );
-    // }
+    const target = 20;
+    // Пара "помещение + слот" должна быть уникальной — нельзя дважды
+    // забронировать один и тот же слот в одной комнате
+    const usedPairs = new Set<string>();
+    const maxPairs = areas.length * timeslots.length;
 
-    // console.log(
-    //     chalk.green(
-    //         `✔ Было добавлено ${countStatement.all().length} записей в bookings`,
-    //     ),
-    // );
+    while (usedPairs.size < target && usedPairs.size < maxPairs) {
+        const area = faker.helpers.arrayElement(areas);
+        const timeslot = faker.helpers.arrayElement(timeslots);
+        const key = `${area.id}-${timeslot.id}`;
+
+        if (usedPairs.has(key)) {
+            continue;
+        }
+
+        usedPairs.add(key);
+
+        await db
+            .insertInto("bookings")
+            .values({
+                areaId: Number(area.id),
+                timeslotId: Number(timeslot.id),
+                title: faker.company.catchPhrase(),
+                username: faker.person.fullName(),
+                createdAt: Math.floor(faker.date.recent().getTime() / 1000),
+            })
+            .execute();
+    }
+
+    const added = await db.selectFrom("bookings").selectAll().execute();
+
+    console.log(
+        chalk.green(`✔ Было добавлено ${added.length} записей в bookings`),
+    );
 }
